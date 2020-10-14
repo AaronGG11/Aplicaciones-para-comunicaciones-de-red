@@ -1,9 +1,9 @@
+// Compilación gcc -o exp exp.c -lpthread
+
+#include <stdlib.h>
 #include <stdio.h>
 #include <pthread.h>
-#include <unistd.h>
-#include <string.h>
 #include "errores.h"
-
 
 //Presenta el resultado final del cálculo
 void fin_del_calculo(void *arg){
@@ -20,7 +20,9 @@ void *calculo(void *arg){
     //Parte obligatoria del cálculo
     //Deshabilitamos la posibilidad de cancelar el hilo
     error=pthread_setcancelstate(PTHREAD_CANCEL_DISABLE, &estado_ant);
-    if (error) error_fatal(error, "pthread_setcancelstate");
+
+    if (error) 
+        error_fatal(error, "pthread_setcancelstate");
     for(i = 1; i<10; i++){
         sumando *= x/i;
         resultado += sumando;
@@ -31,12 +33,21 @@ void *calculo(void *arg){
 
 	/*Una vez ejecutada la parte obligatoria habilitamos 
 	  la posibilidad de cancelar el hilo */
+
     error = pthread_setcanceltype(PTHREAD_CANCEL_DEFERRED,&tipo_ant);
-    if(error) error_fatal(error, "pthread_setcanceltype");
+
+    if(error) 
+        error_fatal(error, "pthread_setcanceltype");
+
     error = pthread_setcancelstate(PTHREAD_CANCEL_ENABLE,&estado_ant);
-    if(error) error_fatal(error, "pthread_setcancelstate");
+        
+    if(error) 
+        error_fatal(error, "pthread_setcancelstate");
+
     //En esta parte de refinamiento del cálculo se aceptan peticiones de cancelación
+    
     printf("Refinamiento del cálculo\n");
+
     for(;;){
         pthread_testcancel(); //Punto de cancelación
         //Si no hay petición de cancelación se ejecuta un nuevo refinamiento del cálculo
@@ -45,13 +56,12 @@ void *calculo(void *arg){
             resultado += sumando;
         }
     }
+
     pthread_cleanup_pop(1);
 }
 
-
 int main(int argc, char const *argv[])
 {
-    
     pthread_t hilo;
     int error, plazo;
     double x;
@@ -60,8 +70,7 @@ int main(int argc, char const *argv[])
     if(argc != 3){
         printf("Forma de uso: %s x plazo\n", argv[0]);
         exit(-1);
-    } 
-    else {
+    } else {
         x = atof(argv[1]);
         plazo = atoi(argv[2]);
     }
