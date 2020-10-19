@@ -1,18 +1,51 @@
 #include <stdio.h>
 #include <time.h>
 #include <stdlib.h>
+#include <pthread.h>
 #include "./library/Elem.h"
 #include "./library/Lista.h"
 
 void FuncionAleatoria(int numero_hilos, Lista numeros_rangos[]);
+void *ordenar(void *numeros);
 
 
 int main(int argc, char const *argv[])
 {
     int numero_hilos = atoi(argv[1]);
+    pthread_t hilos[numero_hilos];
+    int hilos_id[numero_hilos], error;
 
     Lista numeros[numero_hilos];
     FuncionAleatoria(numero_hilos, numeros);
+
+
+    for(int i=0; i<numero_hilos; i++){
+        hilos_id[i] = i+1;
+
+        error = pthread_create(&hilos[i], NULL, ordenar, &numeros[i]);
+
+        if(error){
+            printf("No se pudo crear el hilo %d\n", i+1);
+        }
+    }
+
+
+    for(int i=0; i<numero_hilos; i++){
+        pthread_join(hilos[i], (void **)&numeros[i]);
+    }
+
+    int contador = 0;
+    Lista resultado = Vacia();
+    for(int i=0; i<numero_hilos; i++){
+        if(i==0){
+            resultado = PegaListas(numeros[i], Vacia());
+        }
+        else{
+            resultado = PegaListas(resultado, numeros[i]);
+        }
+    }
+    ImpLista(resultado);
+    printf("Tamaño de lista: %d\n", NumElem(resultado));
 
     return 0;
 }
@@ -62,4 +95,9 @@ void FuncionAleatoria(int numero_hilos, Lista numeros[]){
             }
         }
     }
+}
+
+
+void *ordenar(void *numeros){
+    OrdLista(*(Lista*)numeros);
 }
