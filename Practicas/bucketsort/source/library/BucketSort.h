@@ -69,7 +69,14 @@ void FuncionAleatoria(int numero_hilos, Lista numeros[], int rangos[], int inici
 
 
 void *ordenar(void *numeros){
+    int estado_anterior, error;
+    error = pthread_setcancelstate(PTHREAD_CANCEL_DISABLE, &estado_anterior);
+    
+    if(error)
+        error_fatal(error, "pthread_setcancelstate");
+    
     OrdLista(*(Lista*)numeros);
+
 }
 
 
