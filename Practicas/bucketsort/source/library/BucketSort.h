@@ -21,17 +21,12 @@ void generarRangos(int rangos[], int limite_inferior, int limite_superior, int p
 
 
 
-void imprimirRangos(int rangos[], pthread_t hilos_id[]){
-    int i=0;
-    while(rangos[i]){
-        if(i==0){
-            printf("Lista: %d, %d - %d\n", (int)hilos_id[i], 0, rangos[i]);
-        }
-        else{
-            printf("Lista: %d, %d - %d\n", (int)hilos_id[i], rangos[i-1]+1, rangos[i]);
-        }
-
-        i++;
+void imprimirRangos(int rangos[], pthread_t hilos_id[], Lista numeros[], int numero_hilos){
+   for(int i=0; i<numero_hilos; i++){
+        if(i==0)
+            printf("\t-Lista: %d\t-Rango: [%d - %d]\tNúmero de elementos: %d\n", (int)hilos_id[i], 0, rangos[i], NumElem(numeros[i]));
+        else
+            printf("\t-Lista: %d\t-Rango: [%d - %d]\tNúmero de elementos: %d\n", (int)hilos_id[i], rangos[i-1]+1, rangos[i], NumElem(numeros[i]));
     }
 }
 
