@@ -1,5 +1,7 @@
 
-import com.escom.redes2.hilosanillo.Vista.VentanaInicio;
+import Logica.Hilo;
+import Vista.VentanaInicio;
+import java.util.Hashtable;
 
 /*
  * To change this license header, choose License Headers in Project Properties.
@@ -14,7 +16,21 @@ import com.escom.redes2.hilosanillo.Vista.VentanaInicio;
 public class App {
     public static void main(String[] args) 
     {
-        VentanaInicio ventanaInicio = new VentanaInicio();
-        ventanaInicio.setVisible(true);
+        int numero_hilos = 10;
+        int hilo_inicializador = 5;
+        
+        Hashtable<Integer, Hilo> threadPool = new Hashtable<>();
+
+        
+        for(int i=1; i<=numero_hilos; i++){
+            threadPool.put(i, new Hilo(numero_hilos, i));
+        }
+        
+        
+        
+        
+        
+        
+
     }
 }
