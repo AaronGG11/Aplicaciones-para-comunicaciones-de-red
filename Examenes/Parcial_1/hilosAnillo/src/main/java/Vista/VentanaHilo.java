@@ -5,6 +5,8 @@
  */
 package Vista;
 
+import javax.swing.JLabel;
+
 /**
  *
  * @author aarongarcia
@@ -16,7 +18,26 @@ public class VentanaHilo extends javax.swing.JFrame {
      */
     public VentanaHilo() {
         initComponents();
+        
     }
+    
+    public void setTotalHilos(String total){
+        this.jLabel_total_hilos.setText(total);
+    }
+    
+    public void setHiloActual(String actual){
+        this.jLabel_hilo_actual.setText(actual);
+    }
+    
+    public void setHiloPrevio(String previo){
+        this.jLabel_hilo_previo.setText(previo);
+    }
+    
+    public void setHiloSiguiente(String siguiente){
+        this.jLabel_hilo_siguiente.setText(siguiente);
+    }
+    
+    
 
     /**
      * This method is called from within the constructor to initialize the form.
@@ -30,21 +51,21 @@ public class VentanaHilo extends javax.swing.JFrame {
         jPanel1 = new javax.swing.JPanel();
         jPanel2 = new javax.swing.JPanel();
         jLabel1 = new javax.swing.JLabel();
-        jLabel2 = new javax.swing.JLabel();
+        jLabel_hilo_actual = new javax.swing.JLabel();
         jLabel4 = new javax.swing.JLabel();
-        jLabel5 = new javax.swing.JLabel();
+        jLabel_hilo_previo = new javax.swing.JLabel();
         jLabel6 = new javax.swing.JLabel();
-        jLabel7 = new javax.swing.JLabel();
+        jLabel_hilo_siguiente = new javax.swing.JLabel();
         jLabel8 = new javax.swing.JLabel();
-        jLabel9 = new javax.swing.JLabel();
+        jLabel_total_hilos = new javax.swing.JLabel();
         jLabel3 = new javax.swing.JLabel();
-        jTextField1 = new javax.swing.JTextField();
-        jButton1 = new javax.swing.JButton();
+        jTextField_nombre_Archivo = new javax.swing.JTextField();
+        jButton_hilo_buscar = new javax.swing.JButton();
         jScrollPane1 = new javax.swing.JScrollPane();
-        jTextArea1 = new javax.swing.JTextArea();
+        jTextArea_estatus = new javax.swing.JTextArea();
         jLabel10 = new javax.swing.JLabel();
 
-        setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+        setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
 
         jPanel1.setBackground(new java.awt.Color(255, 255, 255));
 
@@ -52,19 +73,19 @@ public class VentanaHilo extends javax.swing.JFrame {
 
         jLabel1.setText("Hilo");
 
-        jLabel2.setText("#");
+        jLabel_hilo_actual.setText("#");
 
         jLabel4.setText("Hilo previo: ");
 
-        jLabel5.setText("#");
+        jLabel_hilo_previo.setText("#");
 
         jLabel6.setText("Hilo siguiente:");
 
-        jLabel7.setText("#");
+        jLabel_hilo_siguiente.setText("#");
 
         jLabel8.setText("de");
 
-        jLabel9.setText("#");
+        jLabel_total_hilos.setText("#");
 
         javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
         jPanel2.setLayout(jPanel2Layout);
@@ -74,19 +95,19 @@ public class VentanaHilo extends javax.swing.JFrame {
                 .addGap(34, 34, 34)
                 .addComponent(jLabel4)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(jLabel5)
+                .addComponent(jLabel_hilo_previo)
                 .addGap(81, 81, 81)
                 .addComponent(jLabel6)
                 .addGap(18, 18, 18)
-                .addComponent(jLabel7)
+                .addComponent(jLabel_hilo_siguiente)
                 .addGap(76, 76, 76)
                 .addComponent(jLabel1)
                 .addGap(26, 26, 26)
-                .addComponent(jLabel2)
+                .addComponent(jLabel_hilo_actual)
                 .addGap(35, 35, 35)
                 .addComponent(jLabel8)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 39, Short.MAX_VALUE)
-                .addComponent(jLabel9)
+                .addComponent(jLabel_total_hilos)
                 .addGap(37, 37, 37))
         );
         jPanel2Layout.setVerticalGroup(
@@ -95,23 +116,23 @@ public class VentanaHilo extends javax.swing.JFrame {
                 .addGap(15, 15, 15)
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel4)
-                    .addComponent(jLabel5)
+                    .addComponent(jLabel_hilo_previo)
                     .addComponent(jLabel6)
-                    .addComponent(jLabel7)
+                    .addComponent(jLabel_hilo_siguiente)
                     .addComponent(jLabel1)
-                    .addComponent(jLabel2)
+                    .addComponent(jLabel_hilo_actual)
                     .addComponent(jLabel8)
-                    .addComponent(jLabel9))
+                    .addComponent(jLabel_total_hilos))
                 .addContainerGap(17, Short.MAX_VALUE))
         );
 
         jLabel3.setText("Archivo a buscar: ");
 
-        jButton1.setText("Buscar");
+        jButton_hilo_buscar.setText("Buscar");
 
-        jTextArea1.setColumns(20);
-        jTextArea1.setRows(5);
-        jScrollPane1.setViewportView(jTextArea1);
+        jTextArea_estatus.setColumns(20);
+        jTextArea_estatus.setRows(5);
+        jScrollPane1.setViewportView(jTextArea_estatus);
 
         jLabel10.setText("Estatus de busqueda");
 
@@ -122,14 +143,15 @@ public class VentanaHilo extends javax.swing.JFrame {
             .addComponent(jPanel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
             .addGroup(jPanel1Layout.createSequentialGroup()
                 .addGap(29, 29, 29)
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                    .addComponent(jLabel10)
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
                     .addGroup(jPanel1Layout.createSequentialGroup()
                         .addComponent(jLabel3, javax.swing.GroupLayout.PREFERRED_SIZE, 113, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addComponent(jTextField1))
-                    .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 540, Short.MAX_VALUE)
-                    .addComponent(jButton1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                        .addComponent(jTextField_nombre_Archivo, javax.swing.GroupLayout.DEFAULT_SIZE, 400, Short.MAX_VALUE))
+                    .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                        .addComponent(jLabel10)
+                        .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 525, Short.MAX_VALUE)
+                        .addComponent(jButton_hilo_buscar, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         jPanel1Layout.setVerticalGroup(
@@ -139,9 +161,9 @@ public class VentanaHilo extends javax.swing.JFrame {
                 .addGap(18, 18, 18)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel3)
-                    .addComponent(jTextField1, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(jTextField_nombre_Archivo, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jButton1, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(jButton_hilo_buscar, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(36, 36, 36)
                 .addComponent(jLabel10)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
@@ -161,6 +183,7 @@ public class VentanaHilo extends javax.swing.JFrame {
         );
 
         pack();
+        setLocationRelativeTo(null);
     }// </editor-fold>//GEN-END:initComponents
 
     /**
@@ -195,26 +218,30 @@ public class VentanaHilo extends javax.swing.JFrame {
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
                 new VentanaHilo().setVisible(true);
+                
             }
         });
     }
+    
+    
+    
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JButton jButton1;
+    private javax.swing.JButton jButton_hilo_buscar;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel10;
-    private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel4;
-    private javax.swing.JLabel jLabel5;
     private javax.swing.JLabel jLabel6;
-    private javax.swing.JLabel jLabel7;
     private javax.swing.JLabel jLabel8;
-    private javax.swing.JLabel jLabel9;
+    private javax.swing.JLabel jLabel_hilo_actual;
+    private javax.swing.JLabel jLabel_hilo_previo;
+    private javax.swing.JLabel jLabel_hilo_siguiente;
+    private javax.swing.JLabel jLabel_total_hilos;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel2;
     private javax.swing.JScrollPane jScrollPane1;
-    private javax.swing.JTextArea jTextArea1;
-    private javax.swing.JTextField jTextField1;
+    private javax.swing.JTextArea jTextArea_estatus;
+    private javax.swing.JTextField jTextField_nombre_Archivo;
     // End of variables declaration//GEN-END:variables
 }

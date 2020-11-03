@@ -5,6 +5,8 @@
  */
 package Vista;
 
+import java.util.Hashtable;
+
 /**
  *
  * @author aarongarcia
@@ -17,6 +19,8 @@ public class VentanaInicio extends javax.swing.JFrame {
     public VentanaInicio() {
         initComponents();
     }
+    
+    public static Integer numero_hilos;
 
     /**
      * This method is called from within the constructor to initialize the form.
@@ -31,11 +35,11 @@ public class VentanaInicio extends javax.swing.JFrame {
         jPanel2 = new javax.swing.JPanel();
         jLabel1 = new javax.swing.JLabel();
         jLabel2 = new javax.swing.JLabel();
-        jTextField1 = new javax.swing.JTextField();
-        jButton1 = new javax.swing.JButton();
+        JTextField_numero_hilos = new javax.swing.JTextField();
+        jButton_Inciar_App = new javax.swing.JButton();
         jLabel3 = new javax.swing.JLabel();
 
-        setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+        setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
 
         jPanel1.setBackground(new java.awt.Color(255, 255, 255));
 
@@ -57,10 +61,10 @@ public class VentanaInicio extends javax.swing.JFrame {
 
         jLabel2.setText("Número de hilos: ");
 
-        jButton1.setText("Iniciar");
-        jButton1.addActionListener(new java.awt.event.ActionListener() {
+        jButton_Inciar_App.setText("Iniciar");
+        jButton_Inciar_App.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton1ActionPerformed(evt);
+                jButton_Inciar_AppActionPerformed(evt);
             }
         });
 
@@ -78,12 +82,12 @@ public class VentanaInicio extends javax.swing.JFrame {
                         .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 465, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                                .addComponent(jButton1, javax.swing.GroupLayout.PREFERRED_SIZE, 452, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addComponent(jButton_Inciar_App, javax.swing.GroupLayout.PREFERRED_SIZE, 452, javax.swing.GroupLayout.PREFERRED_SIZE)
                                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                                     .addGroup(javax.swing.GroupLayout.Alignment.LEADING, jPanel1Layout.createSequentialGroup()
                                         .addComponent(jLabel2)
                                         .addGap(18, 18, 18)
-                                        .addComponent(jTextField1, javax.swing.GroupLayout.PREFERRED_SIZE, 322, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                        .addComponent(JTextField_numero_hilos, javax.swing.GroupLayout.PREFERRED_SIZE, 322, javax.swing.GroupLayout.PREFERRED_SIZE))
                                     .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))))
                     .addGroup(jPanel1Layout.createSequentialGroup()
                         .addGap(194, 194, 194)
@@ -99,10 +103,10 @@ public class VentanaInicio extends javax.swing.JFrame {
                 .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(18, 18, 18)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jTextField1, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(JTextField_numero_hilos, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jLabel2))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(jButton1, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(jButton_Inciar_App, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 117, Short.MAX_VALUE)
                 .addComponent(jLabel3)
                 .addContainerGap())
@@ -123,9 +127,36 @@ public class VentanaInicio extends javax.swing.JFrame {
         setLocationRelativeTo(null);
     }// </editor-fold>//GEN-END:initComponents
 
-    private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_jButton1ActionPerformed
+    private void jButton_Inciar_AppActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton_Inciar_AppActionPerformed
+        numero_hilos = Integer.parseInt(JTextField_numero_hilos.getText());
+        this.setVisible(false);
+        
+        Hashtable<Integer,VentanaHilo> ventanas = new Hashtable<>();
+        
+        for(Integer i=1; i<=numero_hilos; i++){
+            ventanas.put(i, new VentanaHilo());
+            
+            ventanas.get(i).setTotalHilos(numero_hilos.toString());
+            ventanas.get(i).setHiloActual(i.toString());
+            
+            if(i==1){
+                ventanas.get(i).setHiloPrevio(numero_hilos.toString());
+                ventanas.get(i).setHiloSiguiente(Integer.valueOf(i+1).toString());
+            }else if(i==numero_hilos){
+                ventanas.get(i).setHiloPrevio(Integer.valueOf(i-1).toString());
+                ventanas.get(i).setHiloSiguiente("1");
+            }else{
+                ventanas.get(i).setHiloPrevio(Integer.valueOf(i-1).toString());
+                ventanas.get(i).setHiloSiguiente(Integer.valueOf(i+1).toString());
+            }
+            
+            
+            ventanas.get(i).setVisible(true);
+            
+        }
+        
+        
+    }//GEN-LAST:event_jButton_Inciar_AppActionPerformed
 
     /**
      * @param args the command line arguments
@@ -164,12 +195,12 @@ public class VentanaInicio extends javax.swing.JFrame {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JButton jButton1;
+    private javax.swing.JTextField JTextField_numero_hilos;
+    private javax.swing.JButton jButton_Inciar_App;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel2;
-    private javax.swing.JTextField jTextField1;
     // End of variables declaration//GEN-END:variables
 }
