@@ -17,6 +17,7 @@ public class Hilo extends Thread{
     private Hilo anterior;
     private Hilo siguiente;
     
+    
     private Integer bandera;
     private Integer actual;
     

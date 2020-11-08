@@ -5,6 +5,7 @@
  */
 package Vista;
 
+import Logica.Hilo;
 import java.util.Hashtable;
 
 /**
@@ -21,6 +22,7 @@ public class VentanaInicio extends javax.swing.JFrame {
     }
     
     public static Integer numero_hilos;
+     
 
     /**
      * This method is called from within the constructor to initialize the form.
@@ -132,30 +134,69 @@ public class VentanaInicio extends javax.swing.JFrame {
         this.setVisible(false);
         
         Hashtable<Integer,VentanaHilo> ventanas = new Hashtable<>();
+        Hashtable<Integer,Hilo> threadPool = new Hashtable<>();
         
+        // Creando hilos 
+        for(Integer i=1; i<=numero_hilos; i++){
+            threadPool.put(i, new Hilo(i));
+        }
+        // Asignando anterior y siguiente a cada hilo
+        for(Integer i=1; i<=numero_hilos; i++){
+            if(i==1){
+                threadPool.get(i).setAnterior(threadPool.get(numero_hilos));
+                threadPool.get(i).setSiguiente(threadPool.get(i+1));
+            }else if(i==numero_hilos){
+                threadPool.get(i).setAnterior(threadPool.get(numero_hilos-1));
+                threadPool.get(i).setSiguiente(threadPool.get(1));
+            }else{
+                threadPool.get(i).setAnterior(threadPool.get(i-1));
+                threadPool.get(i).setSiguiente(threadPool.get(i+1));
+            }
+        }
+
+        // Abriendo ventanas 
         for(Integer i=1; i<=numero_hilos; i++){
             ventanas.put(i, new VentanaHilo());
             
             ventanas.get(i).setTotalHilos(numero_hilos.toString());
-            ventanas.get(i).setHiloActual(i.toString());
+            ventanas.get(i).setHiloActual(threadPool.get(i).getActual().toString());
+            //ventanas.get(i).setHiloActual(i.toString());
             
             if(i==1){
-                ventanas.get(i).setHiloPrevio(numero_hilos.toString());
-                ventanas.get(i).setHiloSiguiente(Integer.valueOf(i+1).toString());
+                ventanas.get(i).setHiloPrevio(threadPool.get(numero_hilos).getActual().toString());
+                ventanas.get(i).setHiloSiguiente(threadPool.get(i+1).getActual().toString());
+                //ventanas.get(i).setHiloPrevio(numero_hilos.toString());
+                //ventanas.get(i).setHiloSiguiente(Integer.valueOf(i+1).toString());
             }else if(i==numero_hilos){
-                ventanas.get(i).setHiloPrevio(Integer.valueOf(i-1).toString());
-                ventanas.get(i).setHiloSiguiente("1");
+                ventanas.get(i).setHiloPrevio(threadPool.get(i-1).getActual().toString());
+                ventanas.get(i).setHiloSiguiente(threadPool.get(1).getActual().toString());
+                //ventanas.get(i).setHiloPrevio(Integer.valueOf(i-1).toString());
+                //ventanas.get(i).setHiloSiguiente("1");
             }else{
-                ventanas.get(i).setHiloPrevio(Integer.valueOf(i-1).toString());
-                ventanas.get(i).setHiloSiguiente(Integer.valueOf(i+1).toString());
+                ventanas.get(i).setHiloPrevio(threadPool.get(i-1).getActual().toString());
+                ventanas.get(i).setHiloSiguiente(threadPool.get(i+1).getActual().toString());
+                //ventanas.get(i).setHiloPrevio(Integer.valueOf(i-1).toString());
+                //ventanas.get(i).setHiloSiguiente(Integer.valueOf(i+1).toString());
             }
-            
-            
             ventanas.get(i).setVisible(true);
-            
+        }
+
+        boolean ba = true;
+        while(ba){
+            for(Integer i=1; i<=numero_hilos;i++){
+                if(!ventanas.get(i).getNombreArchivo().isEmpty() || ventanas.get(i).getNombreArchivo() != null){
+                    ba = false;
+                    threadPool.get(i).setNombre_archivo(ventanas.get(i).getNombreArchivo());
+                    threadPool.get(i).start();
+                }
+            }
         }
         
         
+        
+       
+
+      
     }//GEN-LAST:event_jButton_Inciar_AppActionPerformed
 
     /**

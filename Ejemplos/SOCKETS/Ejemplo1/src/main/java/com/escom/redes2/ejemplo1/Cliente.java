@@ -13,9 +13,10 @@ import java.net.*;
 public class Cliente {
     public static void main(String[] args) 
     {
+        System.out.printf("Escriba la dirección del servidor: ");
+        BufferedReader br1 = new BufferedReader(new InputStreamReader(System.in));
+
       try{
-            BufferedReader br1 = new BufferedReader(new InputStreamReader(System.in));
-            System.out.printf("Escriba la dirección del servidor: ");
             String host = br1.readLine();
             System.out.printf("\n\nEscriba el puerto:");
             int pto = Integer.parseInt(br1.readLine());

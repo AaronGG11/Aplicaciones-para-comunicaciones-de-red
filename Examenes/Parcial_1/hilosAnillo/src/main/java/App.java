@@ -18,6 +18,7 @@ import java.util.Hashtable;
 public class App {
     public static void main(String[] args) throws InterruptedException 
     {
+        /*
         Integer numero_hilos = 10;
         Integer hilo_inicializador = 1;
         String archivo_buscar = "a4.txt";
@@ -45,7 +46,11 @@ public class App {
         
         threadPool.get(hilo_inicializador).setNombre_archivo(archivo_buscar);
         threadPool.get(hilo_inicializador).start();
+        */
         
+        VentanaInicio home = new VentanaInicio();
+        home.setVisible(true);
+    
         
     }
 }
