@@ -5,7 +5,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 public class Server {
-    public static final int PORT = 4444;
+    public static final int PORT = 1234;
     public static void main(String[] args) throws IOException {
         // Establece el puerto en el que escucha peticiones
         ServerSocket socketServidor = null;

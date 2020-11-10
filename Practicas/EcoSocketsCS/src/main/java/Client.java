@@ -8,12 +8,22 @@ public class Client {
         Socket socketCliente = null;
         BufferedReader entrada = null;
         PrintWriter salida = null;
+        BufferedReader stdIn =
+                new BufferedReader(new InputStreamReader(System.in));
 
         // Creamos un socket en el lado cliente, enlazado con un
         // servidor que está en la misma máquina que el cliente
         // y que escucha en el puerto 4444
         try {
-            socketCliente = new Socket("localhost", 4444);
+
+            System.out.println("Escriba la dirección del servidor: ");
+            String host = stdIn.readLine();
+            System.out.printf("\nEscriba el puerto:");
+            Integer puerto = Integer.parseInt(stdIn.readLine());
+
+
+
+            socketCliente = new Socket(host, puerto);
             // Obtenemos el canal de entrada
             entrada = new BufferedReader(new InputStreamReader(socketCliente.getInputStream()));
 
@@ -24,8 +34,7 @@ public class Client {
             System.err.println("No puede establer canales de E/S para la conexión");
             System.exit(-1);
         }
-        BufferedReader stdIn =
-                new BufferedReader(new InputStreamReader(System.in));
+
 
         String linea;
 
@@ -35,6 +44,7 @@ public class Client {
         try {
             //while (true) {
                 // Leo la entrada del usuario
+                System.out.printf("\nEscriba el mensaje eco:");
                 linea = stdIn.readLine();
                 // La envia al servidor
                 salida.println(linea);
