@@ -28,7 +28,7 @@ public class CMulticastNB {
             Enumeration<NetworkInterface> nets = NetworkInterface.getNetworkInterfaces();
             for (NetworkInterface netint : Collections.list(nets))
                 displayInterfaceInformation(netint);
-            NetworkInterface ni = NetworkInterface.getByName("eth3");
+            NetworkInterface ni = NetworkInterface.getByName("en0");
             DatagramChannel cl =DatagramChannel.open(StandardProtocolFamily.INET);
             cl.setOption(StandardSocketOptions.SO_REUSEADDR, true);
             cl.setOption(StandardSocketOptions.IP_MULTICAST_IF, ni);
