@@ -25,7 +25,7 @@ public class CatThread extends Thread implements ActionListener {
             if (!thread_ready) {
                 assignOrderGame();
                 createBoard();
-                customWait(500);
+                customWait(200);
                 updatePlayers();
                 implementsListener();
                 thread_ready = true;
@@ -35,25 +35,19 @@ public class CatThread extends Thread implements ActionListener {
         }
     }
 
-    public void createBoard() {
-        if (game.player_id_1.equals(getName())) {
-            board = new Board(getName(), game.game_id, "X");
-        }
-        if (game.player_id_2.equals(getName())) {
-            board = new Board(getName(), game.game_id, "O");
-        }
-        board.setVisible(true);
-    }
-
 
     public void assignOrderGame() {
         game.assignPlayers(getName());
     }
 
-
-    public void updatePlayers() {
-        this.board.player_1.setText(game.player_id_1);
-        this.board.player_2.setText(game.player_id_2);
+    public void createBoard() {
+        if (game.player_id_1.equals(getName())) {
+            board = new Board(getName(), game.game_id);
+        }
+        if (game.player_id_2.equals(getName())) {
+            board = new Board(getName(), game.game_id);
+        }
+        board.setVisible(true);
     }
 
     public void customWait(Integer duration) {
@@ -62,6 +56,13 @@ public class CatThread extends Thread implements ActionListener {
         } catch (InterruptedException error) {
             System.out.println("Failed to wait: " + error.getMessage());
         }
+    }
+
+
+    public void updatePlayers() {
+        this.board.player_1.setText(game.player_id_1);
+        this.board.player_2.setText(game.player_id_2);
+        board.turn.setText("Turno: " + game.turn);
     }
 
     public void implementsListener() {
@@ -74,6 +75,7 @@ public class CatThread extends Thread implements ActionListener {
         board.btn7.addActionListener(this);
         board.btn8.addActionListener(this);
         board.btn9.addActionListener(this);
+        board.turn.addActionListener(this);
     }
 
 
@@ -159,7 +161,7 @@ public class CatThread extends Thread implements ActionListener {
     public void modifyBoard(int button_id, int option) { //
         ImageIcon imageIcon = new ImageIcon();
 
-        if (option == 1) {
+        if (option == 1) { // this player
             game.check_buttons[button_id] = false;
             game.addButtonToPlayer(getName(), button_id);
             if (game.player_id_1.equals(getName())) {
@@ -170,7 +172,7 @@ public class CatThread extends Thread implements ActionListener {
             }
         }
 
-        if (option == 0) {
+        if (option == 0) { // other player
             if (game.player_id_1.equals(getName())) {
                 imageIcon = new ImageIcon("o.png");
             }
@@ -206,5 +208,7 @@ public class CatThread extends Thread implements ActionListener {
         if (button_id == 9) {
             board.btn9.setIcon(imageIcon);
         }
+
+        board.turn.setText("Turno: " + game.turn);
     }
 }

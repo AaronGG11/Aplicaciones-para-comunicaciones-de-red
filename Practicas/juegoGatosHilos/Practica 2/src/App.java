@@ -1,10 +1,3 @@
-/*
-    Instituto Politecnico Nacional
-    Muñoz Primero Elias
-    Aplicaciones para comunicaciones de red
-    Practica Dos - Juego del gato con hilos
- */
-
 import Modelo.CatThread;
 import Modelo.Game;
 

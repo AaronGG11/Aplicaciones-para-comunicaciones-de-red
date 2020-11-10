@@ -12,10 +12,10 @@ public class Board extends JFrame {
     
     JPanel panel;
     public JLabel player_1, versus, player_2;
-    public JButton btn1,btn2,btn3,btn4,btn5,btn6,btn7,btn8,btn9;    
+    public JButton btn1, btn2, btn3, btn4, btn5, btn6, btn7, btn8, btn9, turn;
 
-    public Board(String nombreHilo, int idpartida, String simbolo) {
-        setSize(230,300);
+    public Board(String nombreHilo, int idpartida) {
+        setSize(230,350);
         setTitle("Game: " + idpartida + "  Thread: " + nombreHilo);
         setResizable(false);
         setDefaultCloseOperation(DO_NOTHING_ON_CLOSE);
@@ -42,7 +42,7 @@ public class Board extends JFrame {
         player_1.setForeground(Color.white);
         player_1.setBackground(new Color(165, 203, 175));
         player_1.setHorizontalAlignment(SwingConstants.CENTER);
-        player_1.setFont(new Font("arial", 1, 8));
+        player_1.setFont(new Font("arial", 1, 10));
         panel.add(player_1);
 
         versus = new JLabel();
@@ -52,7 +52,7 @@ public class Board extends JFrame {
         versus.setBackground(new Color(165, 203, 175));
         versus.setText("VS");
         versus.setHorizontalAlignment(SwingConstants.CENTER);
-        versus.setFont(new Font("arial", 1, 8));
+        versus.setFont(new Font("arial", 1, 10));
         panel.add(versus);
 
         player_2 = new JLabel();
@@ -61,7 +61,7 @@ public class Board extends JFrame {
         player_2.setForeground(Color.white);
         player_2.setBackground(new Color(165, 203, 175));
         player_2.setHorizontalAlignment(SwingConstants.CENTER);
-        player_2.setFont(new Font("arial", 1, 8));
+        player_2.setFont(new Font("arial", 1, 10));
         panel.add(player_2);
     }
     
@@ -119,6 +119,12 @@ public class Board extends JFrame {
         btn9.setBackground(new Color(130, 202, 32));
         btn9.setForeground(new Color(130, 202, 32));
         panel.add(btn9);
+
+        turn = new JButton();
+        turn.setBounds(20,280, 190, 30);
+        btn9.setBackground(new Color(130, 202, 32));
+        btn9.setForeground(new Color(130, 202, 32));
+        panel.add(turn);
    }
 
 }
