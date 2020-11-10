@@ -4,17 +4,17 @@ import java.util.ArrayList;
 import java.util.concurrent.Semaphore;
 
 public class Game {
-    public final Integer game_id;
-    Integer free_buttons;
-    Boolean check_buttons[] = new Boolean[10];
-    Boolean ready;
-    ArrayList<Integer> player_buttons_1;
-    ArrayList<Integer> player_buttons_2;
-    String player_id_1;
-    String player_id_2;
-    String turn;
-    String winner;
-    Semaphore semaphore;
+    private Integer game_id;
+    private Integer free_buttons;
+    private Boolean check_buttons[] = new Boolean[10];
+    private Boolean ready;
+    private ArrayList<Integer> player_buttons_1;
+    private ArrayList<Integer> player_buttons_2;
+    private String player_id_1;
+    private String player_id_2;
+    private String turn;
+    private String winner;
+    private Semaphore semaphore;
 
 
     public Game(int game_id) {
@@ -142,5 +142,85 @@ public class Game {
         } finally {
             semaphore.release();
         }
-    }   
+    }
+
+    public Integer getGame_id() {
+        return game_id;
+    }
+
+    public void setGame_id(Integer game_id) {
+        this.game_id = game_id;
+    }
+
+    public Integer getFree_buttons() {
+        return free_buttons;
+    }
+
+    public void setFree_buttons(Integer free_buttons) {
+        this.free_buttons = free_buttons;
+    }
+
+    public Boolean[] getCheck_buttons() {
+        return check_buttons;
+    }
+
+    public void setCheck_buttons(Boolean[] check_buttons) {
+        this.check_buttons = check_buttons;
+    }
+
+    public Boolean getReady() {
+        return ready;
+    }
+
+    public void setReady(Boolean ready) {
+        this.ready = ready;
+    }
+
+    public ArrayList<Integer> getPlayer_buttons_1() {
+        return player_buttons_1;
+    }
+
+    public void setPlayer_buttons_1(ArrayList<Integer> player_buttons_1) {
+        this.player_buttons_1 = player_buttons_1;
+    }
+
+    public ArrayList<Integer> getPlayer_buttons_2() {
+        return player_buttons_2;
+    }
+
+    public void setPlayer_buttons_2(ArrayList<Integer> player_buttons_2) {
+        this.player_buttons_2 = player_buttons_2;
+    }
+
+    public String getPlayer_id_1() {
+        return player_id_1;
+    }
+
+    public void setPlayer_id_1(String player_id_1) {
+        this.player_id_1 = player_id_1;
+    }
+
+    public String getPlayer_id_2() {
+        return player_id_2;
+    }
+
+    public void setPlayer_id_2(String player_id_2) {
+        this.player_id_2 = player_id_2;
+    }
+
+    public String getTurn() {
+        return turn;
+    }
+
+    public void setTurn(String turn) {
+        this.turn = turn;
+    }
+
+    public String getWinner() {
+        return winner;
+    }
+
+    public void setWinner(String winner) {
+        this.winner = winner;
+    }
 }

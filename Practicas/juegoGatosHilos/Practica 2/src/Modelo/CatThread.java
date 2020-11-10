@@ -9,9 +9,9 @@ import javax.swing.JOptionPane;
 
 public class CatThread extends Thread implements ActionListener {
 
-    Game game;
-    Board board;
-    Boolean thread_ready;
+    private Game game;
+    private Board board;
+    private Boolean thread_ready;
 
     public CatThread(int thread_id, Game game) {
         super("thread" + thread_id);
@@ -41,11 +41,11 @@ public class CatThread extends Thread implements ActionListener {
     }
 
     public void createBoard() {
-        if (game.player_id_1.equals(getName())) {
-            board = new Board(getName(), game.game_id);
+        if (game.getPlayer_id_1().equals(getName())) {
+            board = new Board(getName(), game.getGame_id());
         }
-        if (game.player_id_2.equals(getName())) {
-            board = new Board(getName(), game.game_id);
+        if (game.getPlayer_id_2().equals(getName())) {
+            board = new Board(getName(), game.getGame_id());
         }
         board.setVisible(true);
     }
@@ -60,9 +60,9 @@ public class CatThread extends Thread implements ActionListener {
 
 
     public void updatePlayers() {
-        this.board.player_1.setText(game.player_id_1);
-        this.board.player_2.setText(game.player_id_2);
-        board.turn.setText("Turno: " + game.turn);
+        this.board.player_1.setText(game.getPlayer_id_1());
+        this.board.player_2.setText(game.getPlayer_id_2());
+        board.turn.setText("Turno: " + game.getTurn());
     }
 
     public void implementsListener() {
@@ -81,7 +81,7 @@ public class CatThread extends Thread implements ActionListener {
 
     public void updateBoard() {
         // Actual player is 1, switch to player 2
-        if (game.player_id_1.equals(getName())) {
+        if (game.getPlayer_id_1().equals(getName())) {
             ArrayList<Integer> buttons = new ArrayList<>();
             buttons = game.getPlayerButtons2();
             for (Integer id : buttons) {
@@ -90,7 +90,7 @@ public class CatThread extends Thread implements ActionListener {
         }
 
         // Actual player is 2, switch to player 1
-        if (game.player_id_2.equals(getName())) {
+        if (game.getPlayer_id_2().equals(getName())) {
             ArrayList<Integer> buttons = new ArrayList<>();
             buttons = game.getPlayerButtons1();
             for (Integer id : buttons) {
@@ -102,54 +102,54 @@ public class CatThread extends Thread implements ActionListener {
 
     @Override
     public void actionPerformed(ActionEvent e) {
-        if (game.free_buttons == 0) {
+        if (game.getFree_buttons() == 0) {
 
-        } else if (game.turn.equals(getName())) {
+        } else if (game.getTurn().equals(getName())) {
 
             game.assignTurn(getName()); // TODO
 
             if (e.getSource() == board.btn1) {
-                if (game.check_buttons[1] == true) {
+                if (game.getCheck_buttons()[1] == true) {
                     modifyBoard(1, 1);
                 }
             }
             if (e.getSource() == board.btn2) {
-                if (game.check_buttons[2] == true) {
+                if (game.getCheck_buttons()[2] == true) {
                     modifyBoard(2, 1);
                 }
             }
             if (e.getSource() == board.btn3) {
-                if (game.check_buttons[3] == true) {
+                if (game.getCheck_buttons()[3] == true) {
                     modifyBoard(3, 1);
                 }
             }
             if (e.getSource() == board.btn4) {
-                if (game.check_buttons[4] == true) {
+                if (game.getCheck_buttons()[4] == true) {
                     modifyBoard(4, 1);
                 }
             }
             if (e.getSource() == board.btn5) {
-                if (game.check_buttons[5] == true) {
+                if (game.getCheck_buttons()[5] == true) {
                     modifyBoard(5, 1);
                 }
             }
             if (e.getSource() == board.btn6) {
-                if (game.check_buttons[6] == true) {
+                if (game.getCheck_buttons()[6] == true) {
                     modifyBoard(6, 1);
                 }
             }
             if (e.getSource() == board.btn7) {
-                if (game.check_buttons[7] == true) {
+                if (game.getCheck_buttons()[7] == true) {
                     modifyBoard(7, 1);
                 }
             }
             if (e.getSource() == board.btn8) {
-                if (game.check_buttons[8] == true) {
+                if (game.getCheck_buttons()[8] == true) {
                     modifyBoard(8, 1);
                 }
             }
             if (e.getSource() == board.btn9) {
-                if (game.check_buttons[9] == true) {
+                if (game.getCheck_buttons()[9] == true) {
                     modifyBoard(9, 1);
                 }
             }
@@ -162,21 +162,21 @@ public class CatThread extends Thread implements ActionListener {
         ImageIcon imageIcon = new ImageIcon();
 
         if (option == 1) { // this player
-            game.check_buttons[button_id] = false;
+            game.getCheck_buttons()[button_id] = false;
             game.addButtonToPlayer(getName(), button_id);
-            if (game.player_id_1.equals(getName())) {
+            if (game.getPlayer_id_1().equals(getName())) {
                 imageIcon = new ImageIcon("x.png");
             }
-            if (game.player_id_2.equals(getName())) {
+            if (game.getPlayer_id_2().equals(getName())) {
                 imageIcon = new ImageIcon("o.png");
             }
         }
 
         if (option == 0) { // other player
-            if (game.player_id_1.equals(getName())) {
+            if (game.getPlayer_id_1().equals(getName())) {
                 imageIcon = new ImageIcon("o.png");
             }
-            if (game.player_id_2.equals(getName())) {
+            if (game.getPlayer_id_2().equals(getName())) {
                 imageIcon = new ImageIcon("x.png");
             }
         }
@@ -209,6 +209,6 @@ public class CatThread extends Thread implements ActionListener {
             board.btn9.setIcon(imageIcon);
         }
 
-        board.turn.setText("Turno: " + game.turn);
+        board.turn.setText("Turno: " + game.getTurn());
     }
 }

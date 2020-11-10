@@ -10,7 +10,7 @@ import javax.swing.SwingConstants;
 
 public class Board extends JFrame {
     
-    JPanel panel;
+    public JPanel panel;
     public JLabel player_1, versus, player_2;
     public JButton btn1, btn2, btn3, btn4, btn5, btn6, btn7, btn8, btn9, turn;
 
@@ -42,7 +42,7 @@ public class Board extends JFrame {
         player_1.setForeground(Color.white);
         player_1.setBackground(new Color(165, 203, 175));
         player_1.setHorizontalAlignment(SwingConstants.CENTER);
-        player_1.setFont(new Font("arial", 1, 10));
+        player_1.setFont(new Font("arial", 1, 12));
         panel.add(player_1);
 
         versus = new JLabel();
@@ -61,7 +61,7 @@ public class Board extends JFrame {
         player_2.setForeground(Color.white);
         player_2.setBackground(new Color(165, 203, 175));
         player_2.setHorizontalAlignment(SwingConstants.CENTER);
-        player_2.setFont(new Font("arial", 1, 10));
+        player_2.setFont(new Font("arial", 1, 12));
         panel.add(player_2);
     }
     
