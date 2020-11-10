@@ -29,10 +29,23 @@ public class CatThread extends Thread implements ActionListener {
                 updatePlayers();
                 implementsListener();
                 thread_ready = true;
-            } else {
-                 updateBoard();
+            } else { // Playing and updating board
+                updateBoard();
+                if(game.getWinner().equals("")){ // nobody has won
+                    updateBoard();
+                } else { // somebody has won, but there are still free buttons
+                    updateBoard();
+                    break;
+                }
+            }
+
+            if ((game.getFree_buttons() == 0) && game.getWinner().equals("")) {
+                JOptionPane.showMessageDialog(null, getName() + ":  tied game");
+                break;
             }
         }
+        customWait(4000);
+        board.dispose();
     }
 
 
@@ -170,6 +183,7 @@ public class CatThread extends Thread implements ActionListener {
             if (game.getPlayer_id_2().equals(getName())) {
                 imageIcon = new ImageIcon("o.png");
             }
+            findWinner();
         }
 
         if (option == 0) { // other player
@@ -210,5 +224,55 @@ public class CatThread extends Thread implements ActionListener {
         }
 
         board.turn.setText("Turno: " + game.getTurn());
+    }
+
+
+    public void findWinner(){
+        ArrayList<Integer> buttons = new ArrayList<>();
+        // Player #1
+        if(game.getPlayer_id_1().equals(getName())){
+            buttons = game.getPlayerButtons1();
+        }
+        // Player #2
+        if(game.getPlayer_id_2().equals(getName())){
+            buttons = game.getPlayer_buttons_2();
+        }
+
+        /* possible cases where a player can win
+         * 1 2 3
+         * 4 5 6
+         * 7 8 9
+         * */
+
+        if(game.getPlayer_id_1().equals(getName())){
+            System.out.println(getName() + game.getPlayerButtons1().toString());
+        }else{
+            System.out.println(getName() + game.getPlayerButtons2().toString());
+        }
+
+        if(((buttons.indexOf(1) != -1) && (buttons.indexOf(2) != -1) && (buttons.indexOf(3) != -1)) || // CASE 1: 1,2,3
+                ((buttons.indexOf(4) != -1) && (buttons.indexOf(5) != -1) && (buttons.indexOf(6) != -1)) || // CASE 2: 4,5,6
+                ((buttons.indexOf(7) != -1) && (buttons.indexOf(8) != -1) && (buttons.indexOf(9) != -1)) || // CASE 3: 7,8,9
+                ((buttons.indexOf(1) != -1) && (buttons.indexOf(4) != -1) && (buttons.indexOf(7) != -1)) || // CASE 4: 1,4,7
+                ((buttons.indexOf(2) != -1) && (buttons.indexOf(5) != -1) && (buttons.indexOf(8) != -1)) || // CASE 5: 2,5,8
+                ((buttons.indexOf(3) != -1) && (buttons.indexOf(6) != -1) && (buttons.indexOf(9) != -1)) || // CASE 6: 3,6,9
+                ((buttons.indexOf(1) != -1) && (buttons.indexOf(5) != -1) && (buttons.indexOf(9) != -1)) || // CASE 7: 1,5,9
+                ((buttons.indexOf(3) != -1) && (buttons.indexOf(5) != -1) && (buttons.indexOf(7) != -1)))   // CASE 8: 3,5,7
+        {
+            game.assignWinner(getName());
+            JOptionPane.showMessageDialog(null, "Thread --- "+ game.getWinner() +" --- win");
+        }
+
+
+
+
+
+
+
+
+
+
+
+
     }
 }
