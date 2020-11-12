@@ -1,0 +1,11 @@
+T 2.2 Eco de datagramas en java con mesajes divididos.
+A partir del ejemplo mostrado en clase de sockets de datagrama, modificarlo para que funcione como un servicio de eco y que considere paquetes de no más de 20 bytes de longitud.
+
+El buffer de envío debe de tener un tamaño máximo de 20, si el mensaje ocupa más espacio se deberán de enviar varios datagramas.
+
+El receptor deberá de reconstruir el mensaje en una sola linea.
+
+El mensaje se enviará por el cliente, el servidor lo recibe y lo imprime en su salida estandar, posteriormente, respetando el límite de 20 bytes lo reenvía al cliente y este lo reconstruye e imprime en una sola linea.
+
+
+Fecha de entrega	domingo, 22 de noviembre de 2020, 23:55
