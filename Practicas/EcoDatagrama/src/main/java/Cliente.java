@@ -1,5 +1,7 @@
 import java.net.*;
 import java.io.*;
+import java.util.Hashtable;
+import java.util.Map;
 
 public class Cliente {
     public static void main(String[] args){
@@ -9,6 +11,8 @@ public class Cliente {
 
         String mensaje_fin = "FINDECONECCION";
         byte[] byte_mensaje_fin = mensaje_fin.getBytes();
+
+        Map<String, StringBuilder> mensajes = new Hashtable<>();
 
         try{
             DatagramSocket cl = new DatagramSocket();
