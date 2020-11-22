@@ -8,7 +8,7 @@ public class Servidor {
         Integer puerto = 2000;
         Integer longitud_paquete = 20;
 
-        String mensaje_fin = "FINDECONECCION"; // longitud(mensaje_fin) <= ongitud_paquete
+        String mensaje_fin = "FINDECONECCION"; // longitud(mensaje_fin) <= longitud_paquete
         byte[] byte_mensaje_fin = mensaje_fin.getBytes();
 
         Map<String, StringBuilder> mensajes = new Hashtable<>();
