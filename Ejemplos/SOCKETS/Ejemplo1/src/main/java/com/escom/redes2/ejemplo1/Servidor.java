@@ -16,7 +16,7 @@ public class Servidor {
     {
         try{
             // Se crea el socket
-            ServerSocket s = new ServerSocket(1234);
+            ServerSocket s = new ServerSocket(54783);
             System.out.println("Esperando cliente ...");
             // Iniciamos el ciclo infinito 
             for(;;){
