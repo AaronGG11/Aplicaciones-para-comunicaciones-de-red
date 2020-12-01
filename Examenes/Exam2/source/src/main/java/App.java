@@ -1,4 +1,4 @@
-import Board.Board;
+import view.Board;
 
 import javax.swing.*;
 import java.awt.*;
@@ -21,5 +21,7 @@ public class App {
         ImageIcon foto = new ImageIcon(images_path.toString());
         Icon icono = new ImageIcon(foto.getImage().getScaledInstance(tablero.btn_11.getWidth(),tablero.btn_11.getHeight(), Image.SCALE_DEFAULT));
         tablero.btn_11.setIcon(icono);
+        tablero.btn_54.setIcon(icono);
+        tablero.btn_32.setIcon(icono);
     }
 }

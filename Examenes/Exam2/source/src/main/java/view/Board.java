@@ -1,4 +1,4 @@
-package Board;
+package view;
 
 import java.awt.Color;
 import java.awt.Font;
@@ -89,6 +89,7 @@ public class Board extends JFrame {
         score_1.setOpaque(true);
         score_1.setForeground(Color.white);
         score_1.setBackground(new Color(165, 203, 175));
+        score_1.setText("0");
         score_1.setHorizontalAlignment(SwingConstants.CENTER);
         score_1.setFont(new Font("arial", 1, 12));
         panel.add(score_1);
@@ -108,6 +109,7 @@ public class Board extends JFrame {
         score_2.setOpaque(true);
         score_2.setForeground(Color.white);
         score_2.setBackground(new Color(165, 203, 175));
+        score_2.setText("0");
         score_2.setHorizontalAlignment(SwingConstants.CENTER);
         score_2.setFont(new Font("arial", 1, 12));
         panel.add(score_2);
@@ -370,5 +372,4 @@ public class Board extends JFrame {
         btn_85.setForeground(new Color(130, 202, 32));
         panel.add(btn_85);
     }
-
 }
