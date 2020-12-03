@@ -21,10 +21,14 @@ void imprimirResumen(int numero_hilos, pthread_t hilos_id[], int limite_inferior
 }
 
 
+
+
+
 int main(int argc, char const *argv[])
 {
     int numero_hilos = atoi(argv[1]);
-    int rangos[numero_hilos], error;
+    int rangos[numero_hilos];
+    int error;
     pthread_t hilos_id[numero_hilos];
     Lista numeros[numero_hilos];
 
