@@ -394,4 +394,104 @@ public class Board extends JFrame {
         btn_85.setForeground(new Color(130, 202, 32));
         panel.add(btn_85);
     }
+
+    public void deshabilitarBotones(){
+        btn_11.setEnabled(Boolean.FALSE);
+        btn_12.setEnabled(Boolean.FALSE);
+        btn_13.setEnabled(Boolean.FALSE);
+        btn_14.setEnabled(Boolean.FALSE);
+        btn_15.setEnabled(Boolean.FALSE);
+
+        btn_21.setEnabled(Boolean.FALSE);
+        btn_22.setEnabled(Boolean.FALSE);
+        btn_23.setEnabled(Boolean.FALSE);
+        btn_24.setEnabled(Boolean.FALSE);
+        btn_25.setEnabled(Boolean.FALSE);
+
+        btn_31.setEnabled(Boolean.FALSE);
+        btn_32.setEnabled(Boolean.FALSE);
+        btn_33.setEnabled(Boolean.FALSE);
+        btn_34.setEnabled(Boolean.FALSE);
+        btn_35.setEnabled(Boolean.FALSE);
+
+        btn_41.setEnabled(Boolean.FALSE);
+        btn_42.setEnabled(Boolean.FALSE);
+        btn_43.setEnabled(Boolean.FALSE);
+        btn_44.setEnabled(Boolean.FALSE);
+        btn_45.setEnabled(Boolean.FALSE);
+
+        btn_51.setEnabled(Boolean.FALSE);
+        btn_52.setEnabled(Boolean.FALSE);
+        btn_53.setEnabled(Boolean.FALSE);
+        btn_54.setEnabled(Boolean.FALSE);
+        btn_55.setEnabled(Boolean.FALSE);
+
+        btn_61.setEnabled(Boolean.FALSE);
+        btn_62.setEnabled(Boolean.FALSE);
+        btn_63.setEnabled(Boolean.FALSE);
+        btn_64.setEnabled(Boolean.FALSE);
+        btn_65.setEnabled(Boolean.FALSE);
+
+        btn_71.setEnabled(Boolean.FALSE);
+        btn_72.setEnabled(Boolean.FALSE);
+        btn_73.setEnabled(Boolean.FALSE);
+        btn_74.setEnabled(Boolean.FALSE);
+        btn_75.setEnabled(Boolean.FALSE);
+
+        btn_81.setEnabled(Boolean.FALSE);
+        btn_82.setEnabled(Boolean.FALSE);
+        btn_83.setEnabled(Boolean.FALSE);
+        btn_84.setEnabled(Boolean.FALSE);
+        btn_85.setEnabled(Boolean.FALSE);
+    }
+
+    public void habilitarBotones(){
+        btn_11.setEnabled(Boolean.TRUE);
+        btn_12.setEnabled(Boolean.TRUE);
+        btn_13.setEnabled(Boolean.TRUE);
+        btn_14.setEnabled(Boolean.TRUE);
+        btn_15.setEnabled(Boolean.TRUE);
+
+        btn_21.setEnabled(Boolean.TRUE);
+        btn_22.setEnabled(Boolean.TRUE);
+        btn_23.setEnabled(Boolean.TRUE);
+        btn_24.setEnabled(Boolean.TRUE);
+        btn_25.setEnabled(Boolean.TRUE);
+
+        btn_31.setEnabled(Boolean.TRUE);
+        btn_32.setEnabled(Boolean.TRUE);
+        btn_33.setEnabled(Boolean.TRUE);
+        btn_34.setEnabled(Boolean.TRUE);
+        btn_35.setEnabled(Boolean.TRUE);
+
+        btn_41.setEnabled(Boolean.TRUE);
+        btn_42.setEnabled(Boolean.TRUE);
+        btn_43.setEnabled(Boolean.TRUE);
+        btn_44.setEnabled(Boolean.TRUE);
+        btn_45.setEnabled(Boolean.TRUE);
+
+        btn_51.setEnabled(Boolean.TRUE);
+        btn_52.setEnabled(Boolean.TRUE);
+        btn_53.setEnabled(Boolean.TRUE);
+        btn_54.setEnabled(Boolean.TRUE);
+        btn_55.setEnabled(Boolean.TRUE);
+
+        btn_61.setEnabled(Boolean.TRUE);
+        btn_62.setEnabled(Boolean.TRUE);
+        btn_63.setEnabled(Boolean.TRUE);
+        btn_64.setEnabled(Boolean.TRUE);
+        btn_65.setEnabled(Boolean.TRUE);
+
+        btn_71.setEnabled(Boolean.TRUE);
+        btn_72.setEnabled(Boolean.TRUE);
+        btn_73.setEnabled(Boolean.TRUE);
+        btn_74.setEnabled(Boolean.TRUE);
+        btn_75.setEnabled(Boolean.TRUE);
+
+        btn_81.setEnabled(Boolean.TRUE);
+        btn_82.setEnabled(Boolean.TRUE);
+        btn_83.setEnabled(Boolean.TRUE);
+        btn_84.setEnabled(Boolean.TRUE);
+        btn_85.setEnabled(Boolean.TRUE);
+    }
 }
