@@ -13,6 +13,7 @@ public class Board extends JFrame {
     public JPanel panel;
     public JLabel lbl_player_1, lbl_player_2, lbl_vs;
     public JLabel lbl_score, score_1, score_2;
+    public JLabel lbl_turn;
     public JButton btn_11, btn_12, btn_13, btn_14, btn_15;
     public JButton btn_21, btn_22, btn_23, btn_24, btn_25;
     public JButton btn_31, btn_32, btn_33, btn_34, btn_35;
@@ -21,7 +22,7 @@ public class Board extends JFrame {
     public JButton btn_61, btn_62, btn_63, btn_64, btn_65;
     public JButton btn_71, btn_72, btn_73, btn_74, btn_75;
     public JButton btn_81, btn_82, btn_83, btn_84, btn_85;
-    public JButton btn_turn;
+    public JButton btn_turn, btn_start;
 
     public Board(String puertoJugador) {
         setSize(590,725);
@@ -47,16 +48,16 @@ public class Board extends JFrame {
 
     public void createLabels(){
         lbl_player_1 = new JLabel();
-        lbl_player_1.setBounds(10,620, 225, 30);
+        lbl_player_1.setBounds(10,620, 170, 30);
         lbl_player_1.setOpaque(true);
         lbl_player_1.setForeground(Color.white);
         lbl_player_1.setBackground(new Color(165, 203, 175));
         lbl_player_1.setHorizontalAlignment(SwingConstants.CENTER);
-        lbl_player_1.setFont(new Font("arial", 1, 12));
+        lbl_player_1.setFont(new Font("arial", 1, 10));
         panel.add(lbl_player_1);
 
         lbl_vs = new JLabel();
-        lbl_vs.setBounds(245,620, 100, 30);
+        lbl_vs.setBounds(190,620, 90, 30);
         lbl_vs.setOpaque(true);
         lbl_vs.setForeground(Color.white);
         lbl_vs.setBackground(new Color(165, 203, 175));
@@ -66,63 +67,84 @@ public class Board extends JFrame {
         panel.add(lbl_vs);
 
         lbl_player_2 = new JLabel();
-        lbl_player_2.setBounds(355,620, 225, 30);
+        lbl_player_2.setBounds(290,620, 170, 30);
         lbl_player_2.setOpaque(true);
         lbl_player_2.setForeground(Color.white);
         lbl_player_2.setBackground(new Color(165, 203, 175));
         lbl_player_2.setHorizontalAlignment(SwingConstants.CENTER);
-        lbl_player_2.setFont(new Font("arial", 1, 12));
+        lbl_player_2.setFont(new Font("arial", 1, 10));
         panel.add(lbl_player_2);
 
         lbl_score = new JLabel();
-        lbl_score.setBounds(10,660, 110, 30);
+        lbl_score.setBounds(10,660, 80, 30);
         lbl_score.setOpaque(true);
         lbl_score.setForeground(Color.white);
         lbl_score.setBackground(new Color(165, 203, 175));
         lbl_score.setText("Puntuación: ");
         lbl_score.setHorizontalAlignment(SwingConstants.CENTER);
-        lbl_score.setFont(new Font("arial", 1, 12));
+        lbl_score.setFont(new Font("arial", 1, 10));
         panel.add(lbl_score);
 
         score_1 = new JLabel();
-        score_1.setBounds(125,660, 110, 30);
+        score_1.setBounds(100,660, 80, 30);
         score_1.setOpaque(true);
         score_1.setForeground(Color.white);
         score_1.setBackground(new Color(165, 203, 175));
         score_1.setText("0");
         score_1.setHorizontalAlignment(SwingConstants.CENTER);
-        score_1.setFont(new Font("arial", 1, 12));
+        score_1.setFont(new Font("arial", 1, 10));
         panel.add(score_1);
 
+        /*
+        // turn button
+        btn_turn = new JButton();
+        btn_turn.setBounds(190,660,90,30);
+        btn_turn.setBackground(new Color(130, 202, 32));
+        btn_turn.setForeground(new Color(130, 202, 32));
+        btn_turn.setText("1234");
+        panel.add(btn_turn);
+         */
+
+        lbl_turn = new JLabel();
+        lbl_turn.setBounds(190,660, 90, 30);
+        lbl_turn.setOpaque(true);
+        lbl_turn.setForeground(Color.white);
+        lbl_turn.setBackground(new Color(165, 203, 175));
+        lbl_turn.setHorizontalAlignment(SwingConstants.CENTER);
+        lbl_turn.setFont(new Font("arial", 1, 10));
+        panel.add(lbl_turn);
+
+
         lbl_score = new JLabel();
-        lbl_score.setBounds(355,660, 110, 30);
+        lbl_score.setBounds(290,660, 80, 30);
         lbl_score.setOpaque(true);
         lbl_score.setForeground(Color.white);
         lbl_score.setBackground(new Color(165, 203, 175));
         lbl_score.setText("Puntuación: ");
         lbl_score.setHorizontalAlignment(SwingConstants.CENTER);
-        lbl_score.setFont(new Font("arial", 1, 12));
+        lbl_score.setFont(new Font("arial", 1, 10));
         panel.add(lbl_score);
 
         score_2 = new JLabel();
-        score_2.setBounds(470,660, 110, 30);
+        score_2.setBounds(380,660, 80, 30);
         score_2.setOpaque(true);
         score_2.setForeground(Color.white);
         score_2.setBackground(new Color(165, 203, 175));
         score_2.setText("0");
         score_2.setHorizontalAlignment(SwingConstants.CENTER);
-        score_2.setFont(new Font("arial", 1, 12));
+        score_2.setFont(new Font("arial", 1, 10));
         panel.add(score_2);
     }
 
     public void createButtons(){
-        // turn button
-        btn_turn = new JButton();
-        btn_turn.setBounds(240,660,110,30);
-        btn_turn.setBackground(new Color(130, 202, 32));
-        btn_turn.setForeground(new Color(130, 202, 32));
-        btn_turn.setText("1234");
-        panel.add(btn_turn);
+        // Boton iniciar
+        btn_start = new JButton();
+        btn_start.setBounds(470,620,110,70);
+        btn_start.setBackground(new Color(130, 202, 32));
+        btn_start.setForeground(new Color(130, 202, 32));
+        btn_start.setText("Iniciar");
+        btn_start.setFont(new Font("Calibri", 1, 15));
+        panel.add(btn_start);
 
         // Fila #1
         btn_11 = new JButton();
