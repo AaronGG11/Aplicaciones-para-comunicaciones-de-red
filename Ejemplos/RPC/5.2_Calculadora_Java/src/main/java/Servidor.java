@@ -7,21 +7,25 @@ public class Servidor implements Calculadora {
     public Servidor() {}
 
     public int suma(int a, int b) {
+        System.out.println("Realizando suma");
         return a+b;
     }
 
     @Override
     public int resta(int a, int b) throws RemoteException {
+        System.out.println("Realizando resta");
         return a-b;
     }
 
     @Override
     public int multiplicacion(int a, int b) throws RemoteException {
+        System.out.println("Realizando multiplicacion");
         return a*b;
     }
 
     @Override
     public float division(int a, int b) throws RemoteException {
+        System.out.println("Realizando division");
         if(b==0) {return 0;}
         else {return (float) a/b;}
     }
