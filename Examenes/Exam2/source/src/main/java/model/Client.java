@@ -8,25 +8,17 @@ import java.util.Iterator;
 
 public class Client { // Sockets TCP (de flujo) NO BLOQUEANTES
     public static void main(String[] args){
-        String host = "127.0.0.1";
-        Integer puerto = 9000;
-
-        StringBuilder images_path = new StringBuilder();
-        images_path.append("..");
-        images_path.append(File.separator);
-        images_path.append("customers");
-        images_path.append(File.separator);
-
         try{
-            InetSocketAddress dst = new InetSocketAddress(host,puerto);
+            String dir="127.0.0.1";
+            int pto = 9999;
+            ByteBuffer b1=null, b2=null;
+            InetSocketAddress dst = new InetSocketAddress(dir,pto);
             SocketChannel cl = SocketChannel.open();
-
+            BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
             cl.configureBlocking(false);
-
             Selector sel = Selector.open();
             cl.register(sel, SelectionKey.OP_CONNECT);
             cl.connect(dst);
-
             while(true){
                 sel.select();
                 Iterator<SelectionKey>it = sel.selectedKeys().iterator();
@@ -38,21 +30,27 @@ public class Client { // Sockets TCP (de flujo) NO BLOQUEANTES
                         if(ch.isConnectionPending()){
                             System.out.println("Estableciendo conexion con el servidor... espere..");
                             try{
-                                ch.finishConnect(); // Esperar a que termine la conexion
+                                ch.finishConnect();
                             }catch(Exception e){
                                 e.printStackTrace();
                             }//catch
-                            System.out.println("Conexion establecida...");
+                            System.out.println("Conexion establecida...\nEscribe texto <Enter> para enviar, SALIR para terminar:");
                         }//if
                         ch.register(sel, SelectionKey.OP_READ|SelectionKey.OP_WRITE);
-                        Utilidades.crearCarpeta(""+cl.socket().getPort());
                         continue;
                     }//if
                     if(k.isReadable()){
-                        System.out.println("es leible");
+                        SocketChannel ch = (SocketChannel)k.channel();
+                        b1 = ByteBuffer.allocate(2000);
+                        b1.clear();
+                        int n = ch.read(b1);
+                        b1.flip();
+                        String eco = new String(b1.array(),0,n);
+                        System.out.println("Eco  de "+n+" bytes recibido: "+eco);
+                        k.cancel();
                         continue;
                     } else if(k.isWritable()){
-                        System.out.println("es escribible");
+                        k.interestOps(SelectionKey.OP_READ);
                         continue;
                     } //if
                 }//while
@@ -60,5 +58,5 @@ public class Client { // Sockets TCP (de flujo) NO BLOQUEANTES
         }catch(Exception e){
             e.printStackTrace();
         }//catch
-    }//main
+    }
 }

@@ -6,32 +6,23 @@ import java.io.*;
 import java.net.*;
 import java.nio.ByteBuffer;
 import java.nio.channels.*;
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
+import java.util.*;
 
 
 public class Server { // Sockets TCP (de flujo) NO BLOQUEANTES
     public static void main(String[] args){
-        Integer puerto = 9000;
-        List<Integer> puertos_activos = new ArrayList<>();
-
-        Boolean bandera_orden = Boolean.TRUE;
-        List<String> imagenes_orden = new ArrayList<>();
-        imagenes_orden = Utilidades.obtenerOrdenImagenes(bandera_orden);
-
-        // Path de carpeta con imagenes
-        StringBuilder images_path = new StringBuilder();
-        images_path.append("..");
-        images_path.append(File.separator);
-        images_path.append("images");
-        images_path.append(File.separator);
+        List<String> tipo_mensaje = new ArrayList<>();
+        tipo_mensaje.add("imagen");
+        tipo_mensaje.add("movimiento");
+        tipo_mensaje.add("otro");
 
         try{
+            String EECO="";
+            int pto=9999;
+
             ServerSocketChannel s = ServerSocketChannel.open();
             s.configureBlocking(false);
-            s.socket().bind(new InetSocketAddress(puerto));
-
+            s.socket().bind(new InetSocketAddress(pto));
             System.out.println("Esperando clientes...");
 
             Selector sel = Selector.open();
@@ -47,36 +38,50 @@ public class Server { // Sockets TCP (de flujo) NO BLOQUEANTES
 
                     if(k.isAcceptable()){
                         SocketChannel cl = s.accept();
-                        puertos_activos.add(cl.socket().getPort());
                         System.out.println("Cliente conectado desde " + cl.socket().getInetAddress() + ":"+ cl.socket().getPort());
                         cl.configureBlocking(false);
                         cl.register(sel,SelectionKey.OP_READ|SelectionKey.OP_WRITE);
                         continue;
                     }
                     if(k.isReadable()){
+                        try{
+                            SocketChannel ch = (SocketChannel)k.channel();
+                            ByteBuffer b = ByteBuffer.allocate(2000);
+                            b.clear();
+                            int n=0;
+                            String msj="";
+                            n=ch.read(b);
+                            b.flip();
+                            if(n>0)
+                                msj = new String(b.array(),0,n);
+                            System.out.println("Mensaje de "+n+" bytes recibido: "+msj);
+                            if (msj.equalsIgnoreCase("SALIR")){
+                                k.interestOps(SelectionKey.OP_WRITE);
+                                ch.close();
+                                // k.cancel();
+                            }else{
+                                EECO="ECO->"+msj;
+                                k.interestOps(SelectionKey.OP_WRITE);
+                            }//else
+                        }catch(IOException io){}
                         continue;
                     }else if(k.isWritable()){
-                        // Enviar imagenes
-                        String imagen_fondo = "fondo.jpg";
-                        SocketChannel ch = (SocketChannel)k.channel();
+                        try{
+                            SocketChannel ch = (SocketChannel)k.channel();
 
-                        BufferedImage image = ImageIO.read(new File(images_path.toString() + imagen_fondo));
-                        ByteArrayOutputStream baos = new ByteArrayOutputStream();
-                        ImageIO.write( image, "jpg", baos );
-                        baos.flush();
-                        byte[] imageInByte = baos.toByteArray();
-                        baos.close();
-                        ByteBuffer byteBuffer = ByteBuffer.wrap(imageInByte);
+                            EECO = tipo_mensaje.get(0);
+                            ByteBuffer bb = ByteBuffer.wrap(EECO.getBytes());
+                            ch.write(bb);
+                            System.out.println("Mensaje de "+EECO.length() +" bytes enviado: "+EECO);
 
-                        ch.write(byteBuffer);
-                        ch.close();
-
+                        }catch(IOException io){}
+                        k.interestOps(SelectionKey.OP_READ);
                         continue;
-                    }
-                }
-            }
+                    }//if
+                }//while
+            }//while
         }catch(Exception e){
             e.printStackTrace();
-        }
-    }
+        }//catch
+    }//main
 }
