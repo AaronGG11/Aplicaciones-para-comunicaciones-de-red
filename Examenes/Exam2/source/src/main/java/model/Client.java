@@ -1,19 +1,15 @@
 package model;
 
-import javax.swing.*;
-import java.io.File;
-import java.net.InetSocketAddress;
-import java.nio.channels.SelectionKey;
-import java.nio.channels.Selector;
-import java.nio.channels.SocketChannel;
+import java.nio.channels.*;
+import java.io.*;
+import java.net.*;
+import java.nio.ByteBuffer;
 import java.util.Iterator;
 
 public class Client { // Sockets TCP (de flujo) NO BLOQUEANTES
-    public static void main(String[] args) {
-        // Variables
-        String host="127.0.0.1";
+    public static void main(String[] args){
+        String host = "127.0.0.1";
         Integer puerto = 9000;
-        InetSocketAddress dst = new InetSocketAddress(host, puerto);
 
         StringBuilder images_path = new StringBuilder();
         images_path.append("..");
@@ -22,44 +18,47 @@ public class Client { // Sockets TCP (de flujo) NO BLOQUEANTES
         images_path.append(File.separator);
 
         try{
-            // Iniciar programa
-            String[] list = {"Pareja", "Solitario"};
-            JComboBox jcb = new JComboBox(list);
-            JOptionPane.showMessageDialog( null, jcb, "Modo de juego ", JOptionPane.QUESTION_MESSAGE);
+            InetSocketAddress dst = new InetSocketAddress(host,puerto);
+            SocketChannel cl = SocketChannel.open();
 
-            SocketChannel cliente = SocketChannel.open();
-            cliente.configureBlocking(false);
-            Selector selector = Selector.open();
-            cliente.register(selector, SelectionKey.OP_CONNECT);
-            cliente.connect(dst);
+            cl.configureBlocking(false);
+
+            Selector sel = Selector.open();
+            cl.register(sel, SelectionKey.OP_CONNECT);
+            cl.connect(dst);
 
             while(true){
-                selector.select(); // Esperar a tener un evento
-                Iterator<SelectionKey> iterador = selector.selectedKeys().iterator();
-
-                while(iterador.hasNext()){
-                    SelectionKey clave = (SelectionKey)iterador.next();
-                    iterador.remove();
-
-                    if(clave.isConnectable()){
-
-                    }
-
-                    if(clave.isReadable()){
-
-                    }
-
-                    if(clave.isWritable()){
-
-                    }
-                }
-
-
-
-            }
+                sel.select();
+                Iterator<SelectionKey>it = sel.selectedKeys().iterator();
+                while(it.hasNext()){
+                    SelectionKey k = (SelectionKey)it.next();
+                    it.remove();
+                    if(k.isConnectable()){
+                        SocketChannel ch = (SocketChannel)k.channel();
+                        if(ch.isConnectionPending()){
+                            System.out.println("Estableciendo conexion con el servidor... espere..");
+                            try{
+                                ch.finishConnect(); // Esperar a que termine la conexion
+                            }catch(Exception e){
+                                e.printStackTrace();
+                            }//catch
+                            System.out.println("Conexion establecida...");
+                        }//if
+                        ch.register(sel, SelectionKey.OP_READ|SelectionKey.OP_WRITE);
+                        Utilidades.crearCarpeta(""+cl.socket().getPort());
+                        continue;
+                    }//if
+                    if(k.isReadable()){
+                        System.out.println("es leible");
+                        continue;
+                    } else if(k.isWritable()){
+                        System.out.println("es escribible");
+                        continue;
+                    } //if
+                }//while
+            }//while
         }catch(Exception e){
             e.printStackTrace();
-        }
-
-    }
+        }//catch
+    }//main
 }
