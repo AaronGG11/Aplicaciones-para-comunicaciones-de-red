@@ -39,7 +39,7 @@ public class Servidor {
                             b.flip();
                             if(n>0)
                                 msj = new String(b.array(),0,n);
-                            System.out.println("Mensaje de "+n+" bytes recibido: "+msj);
+                            System.out.println("Mensaje [" + ch.socket().getPort() + "] de "+n+" bytes recibido: "+msj);
                             if (msj.equalsIgnoreCase("SALIR")){
                                 k.interestOps(SelectionKey.OP_WRITE);
                                 ch.close();
@@ -55,7 +55,7 @@ public class Servidor {
                             SocketChannel ch = (SocketChannel)k.channel();
                             ByteBuffer bb = ByteBuffer.wrap(EECO.getBytes());
                             ch.write(bb);
-                            System.out.println("Mensaje de "+EECO.length() +" bytes enviado: "+EECO);
+                            System.out.println("Mensaje ["+ ch.socket().getPort() +"] de"+EECO.length() +" bytes enviado: "+EECO);
                             EECO="";
                         }catch(IOException io){}
                         k.interestOps(SelectionKey.OP_READ);
