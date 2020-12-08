@@ -11,10 +11,31 @@ import java.util.*;
 
 public class Server { // Sockets TCP (de flujo) NO BLOQUEANTES
     public static void main(String[] args){
+        // Mensajes
         List<String> tipo_mensaje = new ArrayList<>();
         tipo_mensaje.add("imagen");
         tipo_mensaje.add("movimiento");
         tipo_mensaje.add("otro");
+
+        // Path de carpeta con imagenes
+        StringBuilder images_path = new StringBuilder();
+        images_path.append("..");
+        images_path.append(File.separator);
+        images_path.append("images");
+        images_path.append(File.separator);
+
+        // Nombres imagenes
+        List<String> nombres_imagenes = new ArrayList<>();
+        nombres_imagenes = Utilidades.obtenerNombresImagenes();
+
+        // Control de clientes
+        Map<SocketChannel, ArrayList<Object>> clientes = new Hashtable<SocketChannel, ArrayList<Object>>();
+        // Llave Socket channel
+        // ArrayList[0] -> numero de imagenes enviadas
+        // ArrayList[1] ->
+
+
+
 
         try{
             String EECO="";
@@ -69,11 +90,14 @@ public class Server { // Sockets TCP (de flujo) NO BLOQUEANTES
                         try{
                             SocketChannel ch = (SocketChannel)k.channel();
 
-                            EECO = tipo_mensaje.get(0);
-                            ByteBuffer bb = ByteBuffer.wrap(EECO.getBytes());
-                            ch.write(bb);
-                            System.out.println("Mensaje de "+EECO.length() +" bytes enviado: "+EECO);
+                            BufferedImage image = ImageIO.read(new File(images_path + "fondo.jpg"));
+                            ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
+                            ImageIO.write(image, "jpg", byteArrayOutputStream);
 
+                            byte[] size = ByteBuffer.allocate(4).putInt(byteArrayOutputStream.size()).array();
+
+                            ch.write(ByteBuffer.wrap(size));// tamaño
+                            ch.write(ByteBuffer.wrap(byteArrayOutputStream.toByteArray()));//datos
                         }catch(IOException io){}
                         k.interestOps(SelectionKey.OP_READ);
                         continue;

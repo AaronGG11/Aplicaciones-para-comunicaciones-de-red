@@ -1,12 +1,15 @@
 package model;
 
+import javax.imageio.ImageIO;
+import java.awt.image.BufferedImage;
 import java.nio.channels.*;
 import java.io.*;
 import java.net.*;
 import java.nio.ByteBuffer;
 import java.util.Iterator;
 
-public class Client { // Sockets TCP (de flujo) NO BLOQUEANTES
+
+public class Client {
     public static void main(String[] args){
         try{
             String dir="127.0.0.1";
@@ -41,13 +44,49 @@ public class Client { // Sockets TCP (de flujo) NO BLOQUEANTES
                     }//if
                     if(k.isReadable()){
                         SocketChannel ch = (SocketChannel)k.channel();
-                        b1 = ByteBuffer.allocate(2000);
+
+                        b1 = ByteBuffer.allocate(500000);
+                        b1.clear();
+
+                        byte[] sizeAr = new byte[4];
+                        ch.read(ByteBuffer.wrap(sizeAr));
+
+                        int size = ByteBuffer.wrap(sizeAr).asIntBuffer().get();
+
+                        byte[] imageAr = new byte[size];
+                        ch.read(ByteBuffer.wrap(imageAr));
+
+                        BufferedImage image = ImageIO.read(new ByteArrayInputStream(imageAr));
+                        System.out.println("Received " + image.getHeight() + "x" + image.getWidth() + ": " + System.currentTimeMillis());
+
+                        Utilidades.crearCarpeta("prueba");
+
+                        // Path de carpeta con imagenes
+                        StringBuilder images_path = new StringBuilder();
+                        images_path.append("..");
+                        images_path.append(File.separator);
+                        images_path.append("customers");
+                        images_path.append(File.separator);
+
+
+                        ImageIO.write(image, "jpg", new File(images_path.toString() + "prueba" + File.separator + "imagenx.jpg"));
+
+
+
+
+                        //System.out.println(size);
+
+
+                        /*
+                        b1 = ByteBuffer.allocate(500000);
                         b1.clear();
                         int n = ch.read(b1);
                         b1.flip();
-                        String eco = new String(b1.array(),0,n);
-                        System.out.println("Eco  de "+n+" bytes recibido: "+eco);
-                        k.cancel();
+                        System.out.println("Eco  de "+n+" bytes recibido: ");
+
+                         */
+
+                        k.interestOps(SelectionKey.OP_WRITE);
                         continue;
                     } else if(k.isWritable()){
                         k.interestOps(SelectionKey.OP_READ);
@@ -58,5 +97,6 @@ public class Client { // Sockets TCP (de flujo) NO BLOQUEANTES
         }catch(Exception e){
             e.printStackTrace();
         }//catch
-    }
+
+    }//main
 }

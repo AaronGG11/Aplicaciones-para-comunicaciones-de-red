@@ -4,11 +4,9 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 public class Utilidades {
-    public static List<String> obtenerOrdenImagenes(Boolean orden){
+    public static List<String> obtenerNombresImagenes(){
         List<String> resultado = new ArrayList<>();
 
         for(int i=1; i<=20; i++){
@@ -19,9 +17,16 @@ public class Utilidades {
             if(i==20){  resultado.addAll(resultado.subList(30,35)); }
         }
 
-        if(!orden){
-            Collections.shuffle(resultado);
-        }
+        return resultado;
+    }
+
+
+    public static List<String> obtenerOrdenImagenes(Boolean orden){
+        List<String> resultado = new ArrayList<>();
+
+        resultado = obtenerNombresImagenes();
+
+        if(!orden){ Collections.shuffle(resultado); }
 
         return resultado;
     }
