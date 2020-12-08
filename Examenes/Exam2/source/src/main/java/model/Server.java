@@ -8,7 +8,6 @@ import java.nio.ByteBuffer;
 import java.nio.channels.*;
 import java.util.*;
 
-
 public class Server { // Sockets TCP (de flujo) NO BLOQUEANTES
     public static void main(String[] args){
         // Mensajes
@@ -96,7 +95,7 @@ public class Server { // Sockets TCP (de flujo) NO BLOQUEANTES
 
                             byte[] size = ByteBuffer.allocate(4).putInt(byteArrayOutputStream.size()).array();
 
-                            ch.write(ByteBuffer.wrap(tipo_mensaje.get(2).getBytes()));
+                            ch.write(ByteBuffer.wrap(tipo_mensaje.get(0).getBytes()));
                             ch.write(ByteBuffer.wrap(size));// tamaño
                             ch.write(ByteBuffer.wrap(byteArrayOutputStream.toByteArray()));//datos
                         }catch(IOException io){}
