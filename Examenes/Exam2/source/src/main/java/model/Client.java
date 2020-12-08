@@ -1,12 +1,15 @@
 package model;
 
+import javax.imageio.ImageIO;
+import java.awt.image.BufferedImage;
 import java.nio.channels.*;
 import java.io.*;
 import java.net.*;
 import java.nio.ByteBuffer;
 import java.util.Iterator;
 
-public class Client { // Sockets TCP (de flujo) NO BLOQUEANTES
+
+public class Client {
     public static void main(String[] args){
         try{
             String dir="127.0.0.1";
@@ -41,13 +44,39 @@ public class Client { // Sockets TCP (de flujo) NO BLOQUEANTES
                     }//if
                     if(k.isReadable()){
                         SocketChannel ch = (SocketChannel)k.channel();
-                        b1 = ByteBuffer.allocate(2000);
+
+                        b1 = ByteBuffer.allocate(500000);
                         b1.clear();
-                        int n = ch.read(b1);
-                        b1.flip();
-                        String eco = new String(b1.array(),0,n);
-                        System.out.println("Eco  de "+n+" bytes recibido: "+eco);
-                        k.cancel();
+
+                        byte[] tipo = new byte[3];
+                        ch.read(ByteBuffer.wrap(tipo));
+                        String tipo_msg = new String(ByteBuffer.wrap(tipo).array());
+
+                        byte[] sizeAr = new byte[4];
+                        ch.read(ByteBuffer.wrap(sizeAr));
+
+                        int size = ByteBuffer.wrap(sizeAr).asIntBuffer().get();
+
+                        byte[] imageAr = new byte[size];
+                        ch.read(ByteBuffer.wrap(imageAr));
+
+                        BufferedImage image = ImageIO.read(new ByteArrayInputStream(imageAr));
+                        System.out.println("Received " + image.getHeight() + "x" + image.getWidth() + ": " + System.currentTimeMillis());
+                        System.out.println(tipo_msg);
+
+                        // Path de carpeta con imagenes
+                        StringBuilder images_path = new StringBuilder();
+                        images_path.append("..");
+                        images_path.append(File.separator);
+                        images_path.append("customers");
+                        images_path.append(File.separator);
+
+                        Utilidades.crearCarpeta(""+((InetSocketAddress)cl.getLocalAddress()).getPort());
+                        System.out.println(((InetSocketAddress)cl.getLocalAddress()).getPort());
+                        ImageIO.write(image, "jpg", new File(images_path.toString() + ((InetSocketAddress)cl.getLocalAddress()).getPort() + File.separator + "prueba.jpg"));
+
+
+                        k.interestOps(SelectionKey.OP_WRITE);
                         continue;
                     } else if(k.isWritable()){
                         k.interestOps(SelectionKey.OP_READ);
@@ -58,5 +87,6 @@ public class Client { // Sockets TCP (de flujo) NO BLOQUEANTES
         }catch(Exception e){
             e.printStackTrace();
         }//catch
-    }
+
+    }//main
 }
