@@ -48,6 +48,11 @@ public class Client {
                         b1 = ByteBuffer.allocate(500000);
                         b1.clear();
 
+                        byte[] tipo = new byte[3];
+                        ch.read(ByteBuffer.wrap(tipo));
+                        String eco = new String(b1.array(),0,3);
+                        String tipo_msg = new String(ByteBuffer.wrap(tipo).array());
+
                         byte[] sizeAr = new byte[4];
                         ch.read(ByteBuffer.wrap(sizeAr));
 
@@ -58,33 +63,8 @@ public class Client {
 
                         BufferedImage image = ImageIO.read(new ByteArrayInputStream(imageAr));
                         System.out.println("Received " + image.getHeight() + "x" + image.getWidth() + ": " + System.currentTimeMillis());
+                        System.out.println(tipo_msg);
 
-                        Utilidades.crearCarpeta("prueba");
-
-                        // Path de carpeta con imagenes
-                        StringBuilder images_path = new StringBuilder();
-                        images_path.append("..");
-                        images_path.append(File.separator);
-                        images_path.append("customers");
-                        images_path.append(File.separator);
-
-
-                        ImageIO.write(image, "jpg", new File(images_path.toString() + "prueba" + File.separator + "imagenx.jpg"));
-
-
-
-
-                        //System.out.println(size);
-
-
-                        /*
-                        b1 = ByteBuffer.allocate(500000);
-                        b1.clear();
-                        int n = ch.read(b1);
-                        b1.flip();
-                        System.out.println("Eco  de "+n+" bytes recibido: ");
-
-                         */
 
                         k.interestOps(SelectionKey.OP_WRITE);
                         continue;

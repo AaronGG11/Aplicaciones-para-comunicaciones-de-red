@@ -13,9 +13,9 @@ public class Server { // Sockets TCP (de flujo) NO BLOQUEANTES
     public static void main(String[] args){
         // Mensajes
         List<String> tipo_mensaje = new ArrayList<>();
-        tipo_mensaje.add("imagen");
-        tipo_mensaje.add("movimiento");
-        tipo_mensaje.add("otro");
+        tipo_mensaje.add("img");
+        tipo_mensaje.add("mov");
+        tipo_mensaje.add("len");
 
         // Path de carpeta con imagenes
         StringBuilder images_path = new StringBuilder();
@@ -96,6 +96,7 @@ public class Server { // Sockets TCP (de flujo) NO BLOQUEANTES
 
                             byte[] size = ByteBuffer.allocate(4).putInt(byteArrayOutputStream.size()).array();
 
+                            ch.write(ByteBuffer.wrap(tipo_mensaje.get(2).getBytes()));
                             ch.write(ByteBuffer.wrap(size));// tamaño
                             ch.write(ByteBuffer.wrap(byteArrayOutputStream.toByteArray()));//datos
                         }catch(IOException io){}
