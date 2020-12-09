@@ -1,11 +1,11 @@
-package model;
+package Utilidades;
 
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-public class Utilidades {
+public class Memorama {
     public static List<String> obtenerNombresImagenes(){
         List<String> resultado = new ArrayList<>();
 
