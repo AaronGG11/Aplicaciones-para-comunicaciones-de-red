@@ -36,7 +36,7 @@ public class Memorama {
         StringBuilder images_path = new StringBuilder();
         images_path.append("..");
         images_path.append(File.separator);
-        images_path.append("customers");
+        images_path.append("customer_resources");
         images_path.append(File.separator);
 
         File directorio = new File(images_path + nombre_carpeta);
