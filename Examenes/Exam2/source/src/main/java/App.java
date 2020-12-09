@@ -1,30 +1,21 @@
+import model.Utilidades;
 import view.Board;
-import view.Login;
 
-import javax.swing.*;
-import java.awt.*;
+import javax.imageio.ImageIO;
+import java.awt.image.BufferedImage;
+import java.io.ByteArrayOutputStream;
 import java.io.File;
+import java.io.IOException;
+import java.net.InetSocketAddress;
+import java.nio.ByteBuffer;
+import java.util.ArrayList;
+import java.util.List;
 
 public class App {
     public static void main(String[] args)
     {
-        // Path de carpeta de imagenes
-        StringBuilder images_path = new StringBuilder();
-        images_path.append("..");
-        images_path.append(File.separator);
-        images_path.append("images");
-        images_path.append(File.separator);
-        images_path.append("fondo.jpg");
+        String cadena = "mov";
+        System.out.println(cadena.getBytes().length);
 
-        /*
-        Board tablero = new Board("1234");
-        tablero.setVisible(true);
-
-        ImageIcon foto = new ImageIcon(images_path.toString());
-        Icon icono = new ImageIcon(foto.getImage().getScaledInstance(tablero.btn_11.getWidth(),tablero.btn_11.getHeight(), Image.SCALE_DEFAULT));
-        tablero.btn_11.setIcon(icono);
-        tablero.btn_54.setIcon(icono);
-        tablero.btn_32.setIcon(icono);
-        * */
     }
 }
