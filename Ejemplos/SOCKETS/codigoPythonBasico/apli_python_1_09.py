@@ -4,7 +4,7 @@ import socket
 
 def modif_modo_socket():
     s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-    s.setblocking(1)
+    s.setblocking(1) # no bloqueante
     s.settimeout(0.5)
     s.bind(("127.0.0.1", 0))
     

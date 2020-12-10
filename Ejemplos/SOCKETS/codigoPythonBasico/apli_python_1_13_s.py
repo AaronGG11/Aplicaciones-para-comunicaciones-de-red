@@ -11,7 +11,7 @@ carga_util = 2048
 def servidor_eco(puerto):
     """ Servidor de eco simple """
     # Crea un socket UDP
-    sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+    sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM) # UDP -> datagrama
 
     # Ligamos el socket con el puerto
     dir_server = (host, puerto)

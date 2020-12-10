@@ -12,7 +12,7 @@ reserva = 5
 def servidor_eco(port):
     """ Servidor de eco simple"""
     # Crea un socket TCP
-    sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+    sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM) # TCP -> FLUJO
     # Habilitamos la reusabilidad del socket 
     sock.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
     # Ligamos al número de puerto

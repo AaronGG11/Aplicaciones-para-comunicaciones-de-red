@@ -4,7 +4,7 @@ import socket
 
 def encuentra_nombre_servicio():
     protocolo = 'tcp'
-    for puerto in [80, 25]:
+    for puerto in [80, 10000]:
         print ("Puerto: %s => nombre de servicio: %s" %(puerto, socket.getservbyport(puerto, protocolo)))
     print ("Puerto: %s => nombre de servicio: %s" %(53, socket.getservbyport(53, 'udp')))
     

@@ -3,7 +3,7 @@
 import socket
 
 def tiempo_vida_socket():
-    s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+    s = socket.socket(socket.AF_INET, socket.SOCK_STREAM) # Socket de flujo
     print ("Default tiempo del socket: %s" %s.gettimeout())
     s.settimeout(100)
     print ("Tiempo nuevo: %s" %s.gettimeout())    

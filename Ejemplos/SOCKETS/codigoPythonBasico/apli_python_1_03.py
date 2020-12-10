@@ -6,8 +6,8 @@ from binascii import hexlify
 
 def convertir_ip4():
     for dir_ip in ['127.0.0.1', '192.168.0.1']:
-        datos_dir_ip = socket.inet_aton(dir_ip)
-        cambio_dir_ip = socket.inet_ntoa(datos_dir_ip)
+        datos_dir_ip = socket.inet_aton(dir_ip) # conversion a octetos
+        cambio_dir_ip = socket.inet_ntoa(datos_dir_ip) # convertir de formato de red a ascii
         print ("Dir ip: %s => Original: %s, nuevo: %s" %(dir_ip, hexlify(datos_dir_ip), cambio_dir_ip))
    
 if __name__ == '__main__':
