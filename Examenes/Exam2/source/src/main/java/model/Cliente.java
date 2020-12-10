@@ -18,6 +18,8 @@ public class Cliente {
 
     public static void main( String[] args ) {
 
+
+
         // Path de carpeta con imagenes
         StringBuilder images_path = new StringBuilder();
         images_path.append("..");

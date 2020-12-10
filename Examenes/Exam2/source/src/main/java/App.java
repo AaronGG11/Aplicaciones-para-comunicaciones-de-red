@@ -22,11 +22,5 @@ public class App {
         tablero.setVisible(true);
 
         tablero.ponerImagenFondo(images_path.toString());
-
-
-
-
-
-
     }
 }
