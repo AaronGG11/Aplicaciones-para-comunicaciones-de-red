@@ -1,5 +1,7 @@
 package model;
 
+import Utilidades.Archivos;
+
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
@@ -24,7 +26,7 @@ public class Cliente {
         images_path.append(File.separator);
 
         String outputFile = images_path+"images.zip" , host = "127.0.0.1";
-        int port = 8001, bufferSize = 20000000;
+        int port = 9000, bufferSize = 20000000;
 
         try {
             ByteBuffer buffer = ByteBuffer.allocate(bufferSize);
@@ -33,7 +35,7 @@ public class Cliente {
             Selector selector = Selector.open();
             SocketChannel connectionClient = SocketChannel.open();
             connectionClient.configureBlocking(false);
-            connectionClient.connect( new InetSocketAddress(host, port) );
+            connectionClient.connect( new InetSocketAddress(host, port));
             connectionClient.register(selector, SelectionKey.OP_CONNECT);
 
             while(true) {
@@ -77,10 +79,31 @@ public class Cliente {
                             }
                             buffer.clear();
                         }
-                        channel.close();
+
                         destination.close();
                         os.close();
                         System.out.println("Recibidos: " + counter + " Bytes");
+
+                        // TODO : Descomprimir zip recibido
+                        Archivos.unzip(images_path.toString()+"images.zip" ,images_path.toString());
+                        System.out.println("Carpeta descomprimida correctamente");
+
+                        // TODO : Cambiar nombre de carpeta zip que se descomprimio
+                        File sourceFile = new File(images_path.toString() + "images");
+                        File destFile = new File(images_path.toString() + channel.socket().getLocalPort());
+
+                        if (sourceFile.renameTo(destFile)) {
+                            System.out.println("Carpeta renombrada correctamente");
+                        } else {
+                            System.out.println("Error al renombrar carpeta");
+                        }
+
+                        // TODO : Eliminar archivo zip recibido
+                        Archivos.eliminarArchivo(images_path.toString() + "images.zip");
+
+
+
+                        channel.close();
                     }
                 }
             }

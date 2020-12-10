@@ -23,7 +23,7 @@ public class Servidor {
         images_path.append(File.separator);
 
         String inputFile = images_path.toString() + "images.zip", host = "127.0.0.1";
-        int port = 8001, bufferSize = 20000000;
+        int port = 9000, bufferSize = 20000000;
 
         try {
             ByteBuffer buffer = ByteBuffer.allocate(bufferSize);
