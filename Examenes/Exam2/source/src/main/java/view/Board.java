@@ -1,12 +1,7 @@
 package view;
 
-import java.awt.Color;
-import java.awt.Font;
-import javax.swing.JButton;
-import javax.swing.JFrame;
-import javax.swing.JLabel;
-import javax.swing.JPanel;
-import javax.swing.SwingConstants;
+import java.awt.*;
+import javax.swing.*;
 
 
 public class Board extends JFrame {
@@ -594,4 +589,64 @@ public class Board extends JFrame {
         if(boton_id == 84) btn_11.setEnabled(Boolean.TRUE);
         if(boton_id == 85) btn_11.setEnabled(Boolean.TRUE);
     }
+
+    public void ponerImagenFondo(String path){
+        ImageIcon foto = new ImageIcon(path);
+        Icon icono = new ImageIcon(foto.getImage().getScaledInstance(btn_11.getWidth(),btn_11.getHeight(), Image.SCALE_DEFAULT));
+
+        btn_11.setIcon(icono);
+        btn_12.setIcon(icono);
+        btn_13.setIcon(icono);
+        btn_14.setIcon(icono);
+        btn_15.setIcon(icono);
+
+        btn_21.setIcon(icono);
+        btn_22.setIcon(icono);
+        btn_23.setIcon(icono);
+        btn_24.setIcon(icono);
+        btn_25.setIcon(icono);
+
+        btn_31.setIcon(icono);
+        btn_32.setIcon(icono);
+        btn_33.setIcon(icono);
+        btn_34.setIcon(icono);
+        btn_35.setIcon(icono);
+
+        btn_31.setIcon(icono);
+        btn_32.setIcon(icono);
+        btn_33.setIcon(icono);
+        btn_34.setIcon(icono);
+        btn_35.setIcon(icono);
+
+        btn_41.setIcon(icono);
+        btn_42.setIcon(icono);
+        btn_43.setIcon(icono);
+        btn_44.setIcon(icono);
+        btn_45.setIcon(icono);
+
+        btn_51.setIcon(icono);
+        btn_52.setIcon(icono);
+        btn_53.setIcon(icono);
+        btn_54.setIcon(icono);
+        btn_55.setIcon(icono);
+
+        btn_61.setIcon(icono);
+        btn_62.setIcon(icono);
+        btn_63.setIcon(icono);
+        btn_64.setIcon(icono);
+        btn_65.setIcon(icono);
+
+        btn_71.setIcon(icono);
+        btn_72.setIcon(icono);
+        btn_73.setIcon(icono);
+        btn_74.setIcon(icono);
+        btn_75.setIcon(icono);
+
+        btn_81.setIcon(icono);
+        btn_82.setIcon(icono);
+        btn_83.setIcon(icono);
+        btn_84.setIcon(icono);
+        btn_85.setIcon(icono);
+    }
+
 }

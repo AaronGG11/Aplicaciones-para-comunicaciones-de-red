@@ -1,5 +1,8 @@
 import Utilidades.Archivos;
+import view.Board;
 
+import javax.swing.*;
+import java.awt.*;
 import java.io.File;
 
 public class App {
@@ -9,16 +12,21 @@ public class App {
         StringBuilder images_path = new StringBuilder();
         images_path.append("..");
         images_path.append(File.separator);
+        images_path.append("server_resources");
+        images_path.append(File.separator);
+        images_path.append("images");
+        images_path.append(File.separator);
+        images_path.append("fondo.jpg");
+
+        Board tablero = new Board("algo");
+        tablero.setVisible(true);
+
+        tablero.ponerImagenFondo(images_path.toString());
 
 
 
-        File sourceFile = new File(images_path.toString() + "prueba" );
-        File destFile = new File(images_path.toString() + "algo" );
 
-        if (sourceFile.renameTo(destFile)) {
-            System.out.println("Directory renamed successfully");
-        } else {
-            System.out.println("Failed to rename directory");
-        }
+
+
     }
 }
