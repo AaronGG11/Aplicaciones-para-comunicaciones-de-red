@@ -2,6 +2,7 @@ package model;
 
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.net.InetSocketAddress;
 import java.nio.ByteBuffer;
@@ -19,10 +20,10 @@ public class Cliente {
         StringBuilder images_path = new StringBuilder();
         images_path.append("..");
         images_path.append(File.separator);
-        images_path.append("server_resources");
+        images_path.append("customer_resources");
         images_path.append(File.separator);
 
-        String inputFile = images_path+"images.zip" , host = "127.0.0.1";
+        String outputFile = images_path+"images.zip" , host = "127.0.0.1";
         int port = 8001, bufferSize = 20000000;
 
         try {
@@ -38,11 +39,14 @@ public class Cliente {
             while(true) {
                 selector.select();
                 Iterator<SelectionKey> iterator = selector.selectedKeys().iterator();
+
                 while ( iterator.hasNext() ) {
                     SelectionKey key = (SelectionKey) iterator.next();
                     iterator.remove();
-                    SocketChannel client = (SocketChannel) key.channel();
+
                     if( key.isConnectable() ) {
+                        SocketChannel client = (SocketChannel) key.channel();
+
                         if( client.isConnectionPending() ) {
                             System.out.println("Intentando establecer la conexion");
                             try {
@@ -51,32 +55,32 @@ public class Cliente {
                                 e.printStackTrace();
                             }
                         }
-                        client.register(selector, SelectionKey.OP_WRITE);
+                        client.register(selector, SelectionKey.OP_WRITE|SelectionKey.OP_READ);
                         continue;
                     }
 
+                    int counter = 0;
                     if( key.isWritable() ){
-                        FileInputStream is = new FileInputStream( inputFile );
-                        FileChannel source = is.getChannel();
+                        System.out.println("escribir");
+                        key.interestOps(SelectionKey.OP_READ);
+                    } else if(key.isReadable()){
+                        SocketChannel channel = (SocketChannel) key.channel();
+                        FileOutputStream os = new FileOutputStream(outputFile);
+                        FileChannel destination = os.getChannel();
                         int res;
-                        int counter = 0;
-                        buffer.clear();
-                        while( ( res = source.read(buffer) ) != -1 ){
-                            System.out.println("Leyendo "+res+" bytes");
-                            //if ( res == -1 ) break;
+                        while( ( res = channel.read(buffer) ) != -1){
                             counter += res;
-                            //buffer.put(byteArr, 0, Math.min(res, buffer.limit()));
+                            System.out.println("Leyendo bloque de "+res+" Bytes");
                             buffer.flip();
                             while( buffer.hasRemaining() ){
-                                client.write(buffer);
+                                destination.write(buffer);
                             }
                             buffer.clear();
                         }
-                        source.close();
-                        client.close();
-                        is.close();
-                        System.out.println("Leidos: " + counter+ " Bytes");
-                        return;
+                        channel.close();
+                        destination.close();
+                        os.close();
+                        System.out.println("Recibidos: " + counter + " Bytes");
                     }
                 }
             }

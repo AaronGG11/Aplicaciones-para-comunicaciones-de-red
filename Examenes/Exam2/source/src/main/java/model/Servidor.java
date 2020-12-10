@@ -1,6 +1,7 @@
 package model;
 
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.net.InetSocketAddress;
 import java.nio.ByteBuffer;
@@ -18,51 +19,64 @@ public class Servidor {
         StringBuilder images_path = new StringBuilder();
         images_path.append("..");
         images_path.append(File.separator);
-        images_path.append("customer_resources");
+        images_path.append("server_resources");
         images_path.append(File.separator);
 
-        String outputFile = images_path.toString() + "imagen_cliente.zip", host = "127.0.0.1";
+        String inputFile = images_path.toString() + "images.zip", host = "127.0.0.1";
         int port = 8001, bufferSize = 20000000;
+
         try {
             ByteBuffer buffer = ByteBuffer.allocate(bufferSize);
+
             Selector selector = Selector.open();
             ServerSocketChannel server = ServerSocketChannel.open();
             server.configureBlocking(false);
             server.socket().bind(new InetSocketAddress(host, port));
             server.register(selector, SelectionKey.OP_ACCEPT);
             System.out.println("Servidor iniciado...");
+
             while(true) {
                 selector.select();
                 Iterator<SelectionKey> iterator = selector.selectedKeys().iterator();
+
                 while ( iterator.hasNext() ) {
                     SelectionKey key = (SelectionKey) iterator.next();
                     iterator.remove();
+
                     if (key.isAcceptable()) {
                         SocketChannel client = server.accept();
                         client.configureBlocking(false);
-                        client.register(selector, SelectionKey.OP_READ);
+                        client.register(selector, SelectionKey.OP_READ|SelectionKey.OP_WRITE);
                         continue;
                     }
 
-                    int counter = 1;
                     if ( key.isReadable() ) {
-                        SocketChannel channel = (SocketChannel) key.channel();
-                        FileOutputStream os = new FileOutputStream(outputFile);
-                        FileChannel destination = os.getChannel();
+                        System.out.println("leer");
+                    }else if (key.isWritable()){
+                        SocketChannel client = (SocketChannel) key.channel();
+                        FileInputStream is = new FileInputStream( inputFile );
+                        FileChannel source = is.getChannel();
                         int res;
-                        while( ( res = channel.read(buffer) ) != -1){
+                        int counter = 0;
+                        buffer.clear();
+                        while( ( res = source.read(buffer) ) != -1 ){
+                            System.out.println("Leyendo "+res+" bytes");
+                            //if ( res == -1 ) break;
                             counter += res;
-                            System.out.println("Leyendo bloque de "+res+" Bytes");
+                            //buffer.put(byteArr, 0, Math.min(res, buffer.limit()));
                             buffer.flip();
                             while( buffer.hasRemaining() ){
-                                destination.write(buffer);
+                                client.write(buffer);
                             }
                             buffer.clear();
                         }
-                        channel.close();
-                        destination.close();
-                        os.close();
-                        System.out.println("Recibidos: " + counter+ " Bytes");
+                        source.close();
+                        client.close();
+                        is.close();
+                        System.out.println("Leidos: " + counter+ " Bytes");
+
+                        //key.interestOps(SelectionKey.OP_READ);
+                        continue;
                     }
                 }
             }
