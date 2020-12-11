@@ -2,24 +2,20 @@ package model;
 
 import Utilidades.Archivos;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
-import java.io.IOException;
+import java.io.*;
 import java.net.InetSocketAddress;
 import java.nio.ByteBuffer;
 import java.nio.channels.FileChannel;
 import java.nio.channels.SelectionKey;
 import java.nio.channels.Selector;
 import java.nio.channels.SocketChannel;
+import java.util.ArrayList;
 import java.util.Iterator;
+import java.util.List;
 
 public class Cliente {
 
     public static void main( String[] args ) {
-
-
-
         // Path de carpeta con imagenes
         StringBuilder images_path = new StringBuilder();
         images_path.append("..");
@@ -27,12 +23,16 @@ public class Cliente {
         images_path.append("customer_resources");
         images_path.append(File.separator);
 
+        // TODO : Tipos de mensajes
+        List<String> tipo_mensaje = new ArrayList<>();
+        tipo_mensaje.add("img");
+        tipo_mensaje.add("mov");
+
         String outputFile = images_path+"images.zip" , host = "127.0.0.1";
         int port = 9000, bufferSize = 20000000;
 
         try {
             ByteBuffer buffer = ByteBuffer.allocate(bufferSize);
-            byte[] byteArr = new byte[buffer.capacity()];
 
             Selector selector = Selector.open();
             SocketChannel connectionClient = SocketChannel.open();
@@ -71,6 +71,13 @@ public class Cliente {
                         SocketChannel channel = (SocketChannel) key.channel();
                         FileOutputStream os = new FileOutputStream(outputFile);
                         FileChannel destination = os.getChannel();
+
+                        ByteBuffer tipo = ByteBuffer.allocate(3);
+                        channel.read(tipo);
+                        tipo.flip();
+                        String algo = new String(tipo.array(),0,3);
+                        System.out.println("Tipo de mensaje: " + algo);
+
                         int res;
                         while( ( res = channel.read(buffer) ) != -1){
                             counter += res;

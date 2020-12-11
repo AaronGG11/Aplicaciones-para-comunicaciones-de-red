@@ -1,5 +1,6 @@
 package model;
 
+import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
@@ -10,7 +11,9 @@ import java.nio.channels.SelectionKey;
 import java.nio.channels.Selector;
 import java.nio.channels.ServerSocketChannel;
 import java.nio.channels.SocketChannel;
+import java.util.ArrayList;
 import java.util.Iterator;
+import java.util.List;
 
 
 public class Servidor {
@@ -21,6 +24,12 @@ public class Servidor {
         images_path.append(File.separator);
         images_path.append("server_resources");
         images_path.append(File.separator);
+
+        // TODO : Tipos de mensajes
+        List<String> tipo_mensaje = new ArrayList<>();
+        tipo_mensaje.add("img");
+        tipo_mensaje.add("mov");
+
 
         String inputFile = images_path.toString() + "images.zip", host = "127.0.0.1";
         int port = 9000, bufferSize = 20000000;
@@ -59,6 +68,11 @@ public class Servidor {
                         int res;
                         int counter = 0;
                         buffer.clear();
+
+                        // TODO : Enviar tipo de mensaje
+                        String ejemplo = "img";
+                        client.write(ByteBuffer.wrap(ejemplo.getBytes()));
+
                         while( ( res = source.read(buffer) ) != -1 ){
                             System.out.println("Leyendo "+res+" bytes");
                             //if ( res == -1 ) break;
