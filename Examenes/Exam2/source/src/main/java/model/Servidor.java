@@ -1,5 +1,7 @@
 package model;
 
+import Utilidades.Memorama;
+
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
@@ -11,9 +13,7 @@ import java.nio.channels.SelectionKey;
 import java.nio.channels.Selector;
 import java.nio.channels.ServerSocketChannel;
 import java.nio.channels.SocketChannel;
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
+import java.util.*;
 
 
 public class Servidor {
@@ -30,6 +30,9 @@ public class Servidor {
         tipo_mensaje.add("img");
         tipo_mensaje.add("mov");
 
+        // Control de jugadores
+        Map<SocketChannel, Memorama> jugadores = new Hashtable<>();
+
 
         String inputFile = images_path.toString() + "images.zip", host = "127.0.0.1";
         int port = 9000, bufferSize = 20000000;
@@ -44,6 +47,7 @@ public class Servidor {
             server.register(selector, SelectionKey.OP_ACCEPT);
             System.out.println("Servidor iniciado...");
 
+
             while(true) {
                 selector.select();
                 Iterator<SelectionKey> iterator = selector.selectedKeys().iterator();
@@ -55,12 +59,32 @@ public class Servidor {
                     if (key.isAcceptable()) {
                         SocketChannel client = server.accept();
                         client.configureBlocking(false);
-                        client.register(selector, SelectionKey.OP_READ|SelectionKey.OP_WRITE);
+                        client.register(selector, SelectionKey.OP_READ);
+
+                        jugadores.put(client,new Memorama());
+                        jugadores.get(client).setPuerto(""+client.socket().getPort());
+
+                        System.out.println("Cliente " + client.getRemoteAddress() + " registrado");
                         continue;
                     }
 
                     if ( key.isReadable() ) {
-                        System.out.println("leer");
+                        SocketChannel channel = (SocketChannel) key.channel();
+
+                        ByteBuffer tipo = ByteBuffer.allocate(3);
+                        channel.read(tipo);
+                        tipo.flip();
+                        String algo = new String(tipo.array(),0,3);
+                        System.out.println("Tipo de mensaje: " + algo);
+
+
+                        // Ver mensaje
+                        System.out.println("Deteccion de solicitud");
+
+                        channel.register(selector, SelectionKey.OP_WRITE);
+                        key.interestOps(SelectionKey.OP_WRITE);
+
+
                     }else if (key.isWritable()){
                         SocketChannel client = (SocketChannel) key.channel();
                         FileInputStream is = new FileInputStream( inputFile );
@@ -70,14 +94,12 @@ public class Servidor {
                         buffer.clear();
 
                         // TODO : Enviar tipo de mensaje
-                        String ejemplo = "img";
-                        client.write(ByteBuffer.wrap(ejemplo.getBytes()));
+                        client.write(ByteBuffer.wrap(tipo_mensaje.get(0).getBytes()));
 
                         while( ( res = source.read(buffer) ) != -1 ){
                             System.out.println("Leyendo "+res+" bytes");
-                            //if ( res == -1 ) break;
                             counter += res;
-                            //buffer.put(byteArr, 0, Math.min(res, buffer.limit()));
+
                             buffer.flip();
                             while( buffer.hasRemaining() ){
                                 client.write(buffer);
