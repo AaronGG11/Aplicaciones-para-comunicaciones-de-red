@@ -127,7 +127,7 @@ public class Archivos {
         File fichero = new File(path);
 
         if (fichero.delete())
-            System.out.println("El archivo zip ha sido borrado correctamente");
+            System.out.println("Archivo ZIP borrado correctamente");
         else
             System.out.println("El archivo zip no pudó ser borrado");
     }
