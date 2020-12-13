@@ -3,6 +3,8 @@ package model;
 import Utilidades.Archivos;
 import Utilidades.Memorama;
 
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.io.*;
 import java.net.InetSocketAddress;
 import java.nio.ByteBuffer;
@@ -26,8 +28,11 @@ public class Cliente {
 
         // TODO : Tipos de mensajes
         List<String> tipo_mensaje = new ArrayList<>();
-        tipo_mensaje.add("img");
-        tipo_mensaje.add("mov");
+        tipo_mensaje.add("img"); // imagenes de juego
+        tipo_mensaje.add("mov"); // movimeinto de juego
+        tipo_mensaje.add("ini"); // inicio de jeugo
+        tipo_mensaje.add("tip"); // tipo juego
+        tipo_mensaje.add("fin"); // fin de juego
 
         // TODO : Instancia de memorama
         Memorama memorama = new Memorama();
@@ -52,6 +57,7 @@ public class Cliente {
                     SelectionKey key = (SelectionKey) iterator.next();
                     iterator.remove();
 
+                    // TODO : ES CONECTABLE
                     if( key.isConnectable() ) {
                         SocketChannel client = (SocketChannel) key.channel();
 
@@ -64,23 +70,51 @@ public class Cliente {
                             }
                         }
                         System.out.println("Conexión establecida correctamente");
+
+                        // TODO : Pedir modo de juego
+                        memorama.setPuerto(""+client.socket().getLocalPort());
+                        memorama.setTipo_juego(Memorama.obtenerModoJuego(memorama.getPuerto()));
+
+                        System.out.println("Seleccion de modo de juego -> " + memorama.getTipo_juego());
+
                         client.register(selector, SelectionKey.OP_WRITE|SelectionKey.OP_READ);
                         continue;
                     }
 
+                    // TODO : ES ESCRIBIBLE
                     int counter = 0;
                     if( key.isWritable() ){
+                        SocketChannel client = (SocketChannel) key.channel();
+
                         if(!memorama.getHay_imagenes()){
-                            SocketChannel client = (SocketChannel) key.channel();
                             client.write(ByteBuffer.wrap(tipo_mensaje.get(0).getBytes()));
 
                             System.out.println("Solicitando imagenes al servidor");
                             key.interestOps(SelectionKey.OP_READ);
                         }
 
+                        if(memorama.getRecibir_tipo()){
+                            if(memorama.getTipo_juego().equals("Solitario")){
+                                client.write(ByteBuffer.wrap((tipo_mensaje.get(3) + new String("uno")).getBytes()));
+                            }
+                            if(memorama.getTipo_juego().equals("Pareja")){
+                                client.write(ByteBuffer.wrap((tipo_mensaje.get(3) + new String("duo")).getBytes()));
+                            }
+
+                            System.out.println("Informando al servidor el modo de juego");
+                            key.interestOps(SelectionKey.OP_READ);
+                        }
+
+                        if(memorama.getTerminar_juego()){
+                            client.write(ByteBuffer.wrap(tipo_mensaje.get(4).getBytes()));
+                            System.out.println("Informando al servidor le ternimo del juego");
+
+                            key.interestOps(SelectionKey.OP_READ);
+                        }
+
                         continue;
 
-                    } else if(key.isReadable()){
+                    } else if(key.isReadable()){ // TODO : ES LEIBLE
                         try {
                             SocketChannel channel = (SocketChannel) key.channel();
 
@@ -93,19 +127,20 @@ public class Cliente {
 
 
                             if(tipo_msg.equals("img")){
-
                                 FileOutputStream os = new FileOutputStream(outputFile);
                                 FileChannel destination = os.getChannel();
                                 int res;
 
-                                while( ( res = channel.read(buffer) ) != -1){
+                                int contador_imagenes = 0;
+                                while( ( (res = channel.read(buffer) ) != -1) ){
                                     counter += res;
-                                    System.out.println("Leyendo bloque de "+res+" Bytes");
+                                    System.out.println("Leyendo bloque de " + res + " Bytes");
                                     buffer.flip();
                                     while( buffer.hasRemaining() ){
                                         destination.write(buffer);
                                     }
                                     buffer.clear();
+                                    if(counter == 16206554){break;}
                                 }
 
                                 destination.close();
@@ -128,16 +163,40 @@ public class Cliente {
 
                                 // TODO : Eliminar archivo zip recibido
                                 Archivos.eliminarArchivo(images_path.toString() + "images.zip");
-
                                 memorama.setHay_imagenes(Boolean.TRUE);
                                 System.out.println("Imagenes recibidas correctamente");
-                            }else{
+
+                                // TODO : Mostrar tablero
+
+
+                                // TODO : Enviar al servidor el tipo de juego
+                                memorama.setRecibir_tipo(Boolean.TRUE);
                             }
 
+                            if(tipo_msg.equals("tip")){
+                                System.out.println("El servidor registro el modo de juego");
+                                memorama.setRecibir_tipo(Boolean.FALSE);
 
+                                // TODO : Solicitar inicar juego sin importar modo de juego
+                                // A LA ESPERA DEL BOTON INCIAR
+                                memorama.configurarTablero(images_path.toString());
+                                memorama.implementsListener();
 
+                                if(memorama.getTipo_juego().equals("Solitario")){
+                                    while(!memorama.getSolicitar_inicio()){
+                                        continue;
+                                    }
+                                    // TODO : Cerrar el socket channel
+                                    memorama.setTerminar_juego(Boolean.TRUE);
+                                    System.out.println("Solicitando iniciar el juego");
+                                }else if(memorama.getTipo_juego().equals("Pareja")){
+                                    // Habilita boton de inicar solo hasta que
+                                }
+                            }
 
-                            channel.close();
+                            key.interestOps(SelectionKey.OP_WRITE);
+                            continue;
+                            //channel.close();
                         }catch (IOException io){}
                     }
                 }
@@ -147,4 +206,6 @@ public class Cliente {
             e.printStackTrace();
         }
     }
+
+
 }
