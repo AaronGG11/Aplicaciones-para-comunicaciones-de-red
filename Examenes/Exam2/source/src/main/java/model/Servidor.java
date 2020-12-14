@@ -106,6 +106,18 @@ public class Servidor {
                             System.out.println("Cliente " + channel.getRemoteAddress() + " va a terminar juego");
                         }
 
+                        if(tipo_msg.equals("ini")){
+                            jugadores.get(channel).setSolicitar_inicio(Boolean.TRUE);
+                            System.out.println("Cliente " + channel.getRemoteAddress() + " solicita iniciar juego");
+                        }
+
+                        if(tipo_msg.equals("fin")){
+                            jugadores.get(channel).setTerminar_juego(Boolean.TRUE);
+                            System.out.println("Cliente " + channel.getRemoteAddress() + " solicita terminar juego");
+                        }
+
+
+
                         key.interestOps(SelectionKey.OP_WRITE);
 
                     }else if (key.isWritable()){ // TODO : ES ESCRIBIBLE
@@ -143,20 +155,28 @@ public class Servidor {
                         if(jugadores.get(client).getRecibir_tipo()){
                             // TODO : Enviar tipo de mensaje
                             client.write(ByteBuffer.wrap(tipo_mensaje.get(3).getBytes()));
-                            System.out.println("Avisando al cliente que se registro modo de juego");
+                            System.out.println("Modo de juego registrado para el cliente " + client.getRemoteAddress());
                             jugadores.get(client).setRecibir_tipo(Boolean.FALSE);
+                            key.interestOps(SelectionKey.OP_READ);
+                        }
+
+                        if(jugadores.get(client).getSolicitar_inicio()){
+                            // TODO : Enviar tipo de mensaje
+                            client.write(ByteBuffer.wrap(tipo_mensaje.get(2).getBytes()));
+                            jugadores.get(client).setHora_inicio(LocalTime.now());
+                            System.out.println("Registro de hora de incio " + jugadores.get(client).getHora_inicio().toString() + " para cliente " + client.getRemoteAddress());
+                            jugadores.get(client).setSolicitar_inicio(Boolean.FALSE);
                             key.interestOps(SelectionKey.OP_READ);
                         }
 
                         if(jugadores.get(client).getTerminar_juego()){
                             // TODO : Enviar tipo de mensaje
                             client.write(ByteBuffer.wrap(tipo_mensaje.get(4).getBytes()));
-                            System.out.println("Enviando hora final de juego");
+                            System.out.println("Registro de hora final de juego");
                             jugadores.get(client).setHora_fin(LocalTime.now());
-                            client.write(ByteBuffer.wrap(jugadores.get(client).getHora_fin().toString().getBytes())); // 15
+                            jugadores.get(client).setTerminar_juego(Boolean.FALSE);
                             System.out.println("Cliente " + client.getRemoteAddress() + " termino su ejecucion");
                             client.close();
-
                         }
 
                         continue;

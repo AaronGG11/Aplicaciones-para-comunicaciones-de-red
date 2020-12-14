@@ -12,6 +12,8 @@ import java.nio.channels.FileChannel;
 import java.nio.channels.SelectionKey;
 import java.nio.channels.Selector;
 import java.nio.channels.SocketChannel;
+import java.time.Duration;
+import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -105,12 +107,21 @@ public class Cliente {
                             key.interestOps(SelectionKey.OP_READ);
                         }
 
-                        if(memorama.getTerminar_juego()){
-                            client.write(ByteBuffer.wrap(tipo_mensaje.get(4).getBytes()));
-                            System.out.println("Informando al servidor le ternimo del juego");
+                        if(memorama.getSolicitar_inicio()){
+                            client.write(ByteBuffer.wrap(tipo_mensaje.get(2).getBytes()));
+                            System.out.println("Solicitando iniciar el juego");
 
                             key.interestOps(SelectionKey.OP_READ);
                         }
+
+                        if(memorama.getTerminar_juego()){
+                            client.write(ByteBuffer.wrap(tipo_mensaje.get(4).getBytes()));
+                            System.out.println("Solicitando terminar juego");
+
+                            key.interestOps(SelectionKey.OP_READ);
+                        }
+
+
 
                         continue;
 
@@ -183,18 +194,46 @@ public class Cliente {
                                 memorama.implementsListener();
 
                                 if(memorama.getTipo_juego().equals("Solitario")){
+                                    // Se solicita mediante listener al presionar un boton
                                     while(!memorama.getSolicitar_inicio()){
                                         continue;
                                     }
-                                    // TODO : Cerrar el socket channel
-                                    memorama.setTerminar_juego(Boolean.TRUE);
-                                    System.out.println("Solicitando iniciar el juego");
+
                                 }else if(memorama.getTipo_juego().equals("Pareja")){
                                     // Habilita boton de inicar solo hasta que
                                 }
                             }
 
-                            key.interestOps(SelectionKey.OP_WRITE);
+                            if(tipo_msg.equals("ini")){
+                                memorama.setSolicitar_inicio(Boolean.FALSE);
+                                memorama.getTablero().btn_start.setEnabled(Boolean.FALSE);
+                                memorama.getTablero().habilitarBotones();
+
+                                memorama.setHora_inicio(LocalTime.now());
+
+                                System.out.println("Se habilitaron imagenes de memorama");
+                                System.out.println("Se desactivo boton de iniciar");
+                                System.out.println("Puede comenzar jugar, el servidor registro hora de incio");
+
+                                while(!memorama.getTerminar_juego()){
+                                    continue;
+                                }
+                            }
+
+                            if(tipo_msg.equals("fin")){
+                                memorama.setTerminar_juego(Boolean.FALSE);
+                                memorama.setHora_fin(LocalTime.now());
+                                channel.close();
+
+                                Archivos.eliminarCarpeta(images_path.toString(), ""+memorama.getPuerto());
+
+                                System.out.println("El servidor registro hora de fin");
+                                System.out.println("Tiempo de juego: "  +
+                                        Duration.between(memorama.getHora_inicio(),memorama.getHora_fin()).toSeconds() + " segundos");
+                                System.out.println("Juego terminado, socket cerrado correctamente");
+                            }
+
+                            if(channel.isOpen()){ key.interestOps(SelectionKey.OP_WRITE);}
                             continue;
                             //channel.close();
                         }catch (IOException io){}

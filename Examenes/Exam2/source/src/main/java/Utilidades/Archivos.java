@@ -53,15 +53,10 @@ public class Archivos {
         }
     }
 
-    public static void eliminarCarpeta(String nombre_carpeta){
-        // Path de carpeta de imagenes
-        StringBuilder images_path = new StringBuilder();
-        images_path.append("..");
-        images_path.append(File.separator);
-        images_path.append("customers");
-        images_path.append(File.separator);
+    public static void eliminarCarpeta(String path, String nombre_carpeta){
 
-        File directorio = new File(images_path + nombre_carpeta);
+
+        File directorio = new File(path + nombre_carpeta);
         if (directorio.exists()) {
             // Eliminar contendio
             for(File archvio:  directorio.listFiles()){

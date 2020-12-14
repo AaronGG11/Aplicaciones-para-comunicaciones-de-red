@@ -399,11 +399,13 @@ public class Memorama implements ActionListener {
             this.setImagen_volteada(null);
 
             if(this.getPares_ganados()==20){
+                this.setTerminar_juego(Boolean.TRUE);
                 JOptionPane.showMessageDialog(null, "Ganaste");
-                customWait(3000);
-                tablero.dispose();
                 this.setEs_juego_terminado(Boolean.TRUE);
                 System.out.println("Tablero eliminado");
+                customWait(3000);
+                tablero.dispose();
+                System.exit( 0 );
             }
         }
     }
