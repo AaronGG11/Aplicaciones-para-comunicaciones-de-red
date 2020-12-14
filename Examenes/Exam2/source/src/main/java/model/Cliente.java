@@ -1,23 +1,26 @@
 package model;
 
 import Utilidades.Archivos;
+import Utilidades.Memorama;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
-import java.io.IOException;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.io.*;
 import java.net.InetSocketAddress;
 import java.nio.ByteBuffer;
 import java.nio.channels.FileChannel;
 import java.nio.channels.SelectionKey;
 import java.nio.channels.Selector;
 import java.nio.channels.SocketChannel;
+import java.time.Duration;
+import java.time.LocalTime;
+import java.util.ArrayList;
 import java.util.Iterator;
+import java.util.List;
 
 public class Cliente {
 
     public static void main( String[] args ) {
-
         // Path de carpeta con imagenes
         StringBuilder images_path = new StringBuilder();
         images_path.append("..");
@@ -25,12 +28,22 @@ public class Cliente {
         images_path.append("customer_resources");
         images_path.append(File.separator);
 
+        // TODO : Tipos de mensajes
+        List<String> tipo_mensaje = new ArrayList<>();
+        tipo_mensaje.add("img"); // imagenes de juego
+        tipo_mensaje.add("mov"); // movimeinto de juego
+        tipo_mensaje.add("ini"); // inicio de jeugo
+        tipo_mensaje.add("tip"); // tipo juego
+        tipo_mensaje.add("fin"); // fin de juego
+
+        // TODO : Instancia de memorama
+        Memorama memorama = new Memorama();
+
         String outputFile = images_path+"images.zip" , host = "127.0.0.1";
         int port = 9000, bufferSize = 20000000;
 
         try {
             ByteBuffer buffer = ByteBuffer.allocate(bufferSize);
-            byte[] byteArr = new byte[buffer.capacity()];
 
             Selector selector = Selector.open();
             SocketChannel connectionClient = SocketChannel.open();
@@ -46,64 +59,184 @@ public class Cliente {
                     SelectionKey key = (SelectionKey) iterator.next();
                     iterator.remove();
 
+                    // TODO : ES CONECTABLE
                     if( key.isConnectable() ) {
                         SocketChannel client = (SocketChannel) key.channel();
 
                         if( client.isConnectionPending() ) {
-                            System.out.println("Intentando establecer la conexion");
+                            System.out.println("Intentando establecer conexion");
                             try {
                                 client.finishConnect();
                             } catch (IOException e) {
                                 e.printStackTrace();
                             }
                         }
+                        System.out.println("Conexión establecida correctamente");
+
+                        // TODO : Pedir modo de juego
+                        memorama.setPuerto(""+client.socket().getLocalPort());
+                        memorama.setTipo_juego(Memorama.obtenerModoJuego(memorama.getPuerto()));
+
+                        System.out.println("Seleccion de modo de juego -> " + memorama.getTipo_juego());
+
                         client.register(selector, SelectionKey.OP_WRITE|SelectionKey.OP_READ);
                         continue;
                     }
 
+                    // TODO : ES ESCRIBIBLE
                     int counter = 0;
                     if( key.isWritable() ){
-                        System.out.println("escribir");
-                        key.interestOps(SelectionKey.OP_READ);
-                    } else if(key.isReadable()){
-                        SocketChannel channel = (SocketChannel) key.channel();
-                        FileOutputStream os = new FileOutputStream(outputFile);
-                        FileChannel destination = os.getChannel();
-                        int res;
-                        while( ( res = channel.read(buffer) ) != -1){
-                            counter += res;
-                            System.out.println("Leyendo bloque de "+res+" Bytes");
-                            buffer.flip();
-                            while( buffer.hasRemaining() ){
-                                destination.write(buffer);
+                        SocketChannel client = (SocketChannel) key.channel();
+
+                        if(!memorama.getHay_imagenes()){
+                            client.write(ByteBuffer.wrap(tipo_mensaje.get(0).getBytes()));
+
+                            System.out.println("Solicitando imagenes al servidor");
+                            key.interestOps(SelectionKey.OP_READ);
+                        }
+
+                        if(memorama.getRecibir_tipo()){
+                            if(memorama.getTipo_juego().equals("Solitario")){
+                                client.write(ByteBuffer.wrap((tipo_mensaje.get(3) + new String("uno")).getBytes()));
                             }
-                            buffer.clear();
+                            if(memorama.getTipo_juego().equals("Pareja")){
+                                client.write(ByteBuffer.wrap((tipo_mensaje.get(3) + new String("duo")).getBytes()));
+                            }
+
+                            System.out.println("Informando al servidor el modo de juego");
+                            key.interestOps(SelectionKey.OP_READ);
                         }
 
-                        destination.close();
-                        os.close();
-                        System.out.println("Recibidos: " + counter + " Bytes");
+                        if(memorama.getSolicitar_inicio()){
+                            client.write(ByteBuffer.wrap(tipo_mensaje.get(2).getBytes()));
+                            System.out.println("Solicitando iniciar el juego");
 
-                        // TODO : Descomprimir zip recibido
-                        Archivos.unzip(images_path.toString()+"images.zip" ,images_path.toString());
-                        System.out.println("Carpeta descomprimida correctamente");
-
-                        // TODO : Cambiar nombre de carpeta zip que se descomprimio
-                        File sourceFile = new File(images_path.toString() + "images");
-                        File destFile = new File(images_path.toString() + channel.socket().getLocalPort());
-
-                        if (sourceFile.renameTo(destFile)) {
-                            System.out.println("Carpeta renombrada correctamente");
-                        } else {
-                            System.out.println("Error al renombrar carpeta");
+                            key.interestOps(SelectionKey.OP_READ);
                         }
 
-                        // TODO : Eliminar archivo zip recibido
-                        Archivos.eliminarArchivo(images_path.toString() + "images.zip");
+                        if(memorama.getTerminar_juego()){
+                            client.write(ByteBuffer.wrap(tipo_mensaje.get(4).getBytes()));
+                            System.out.println("Solicitando terminar juego");
+
+                            key.interestOps(SelectionKey.OP_READ);
+                        }
 
 
 
-                        channel.close();
+                        continue;
+
+                    } else if(key.isReadable()){ // TODO : ES LEIBLE
+                        try {
+                            SocketChannel channel = (SocketChannel) key.channel();
+
+                            ByteBuffer tipo = ByteBuffer.allocate(3);
+                            channel.read(tipo);
+                            tipo.flip();
+                            String tipo_msg = new String(tipo.array(),0,3);
+                            System.out.println("Tipo de mensaje: " + tipo_msg);
+                            tipo.clear();
+
+
+                            if(tipo_msg.equals("img")){
+                                FileOutputStream os = new FileOutputStream(outputFile);
+                                FileChannel destination = os.getChannel();
+                                int res;
+
+                                int contador_imagenes = 0;
+                                while( ( (res = channel.read(buffer) ) != -1) ){
+                                    counter += res;
+                                    System.out.println("Leyendo bloque de " + res + " Bytes");
+                                    buffer.flip();
+                                    while( buffer.hasRemaining() ){
+                                        destination.write(buffer);
+                                    }
+                                    buffer.clear();
+                                    if(counter == 16206554){break;}
+                                }
+
+                                destination.close();
+                                os.close();
+                                System.out.println("Recibidos: " + counter + " Bytes");
+
+                                // TODO : Descomprimir zip recibido
+                                Archivos.unzip(images_path.toString()+"images.zip" ,images_path.toString());
+                                System.out.println("Carpeta descomprimida correctamente");
+
+                                // TODO : Cambiar nombre de carpeta zip que se descomprimio
+                                File sourceFile = new File(images_path.toString() + "images");
+                                File destFile = new File(images_path.toString() + channel.socket().getLocalPort());
+
+                                if (sourceFile.renameTo(destFile)) {
+                                    System.out.println("Carpeta renombrada correctamente");
+                                } else {
+                                    System.out.println("Error al renombrar carpeta");
+                                }
+
+                                // TODO : Eliminar archivo zip recibido
+                                Archivos.eliminarArchivo(images_path.toString() + "images.zip");
+                                memorama.setHay_imagenes(Boolean.TRUE);
+                                System.out.println("Imagenes recibidas correctamente");
+
+                                // TODO : Mostrar tablero
+
+
+                                // TODO : Enviar al servidor el tipo de juego
+                                memorama.setRecibir_tipo(Boolean.TRUE);
+                            }
+
+                            if(tipo_msg.equals("tip")){
+                                System.out.println("El servidor registro el modo de juego");
+                                memorama.setRecibir_tipo(Boolean.FALSE);
+
+                                // TODO : Solicitar inicar juego sin importar modo de juego
+                                // A LA ESPERA DEL BOTON INCIAR
+                                memorama.configurarTablero(images_path.toString());
+                                memorama.implementsListener();
+
+                                if(memorama.getTipo_juego().equals("Solitario")){
+                                    // Se solicita mediante listener al presionar un boton
+                                    while(!memorama.getSolicitar_inicio()){
+                                        continue;
+                                    }
+
+                                }else if(memorama.getTipo_juego().equals("Pareja")){
+                                    // Habilita boton de inicar solo hasta que
+                                }
+                            }
+
+                            if(tipo_msg.equals("ini")){
+                                memorama.setSolicitar_inicio(Boolean.FALSE);
+                                memorama.getTablero().btn_start.setEnabled(Boolean.FALSE);
+                                memorama.getTablero().habilitarBotones();
+
+                                memorama.setHora_inicio(LocalTime.now());
+
+                                System.out.println("Se habilitaron imagenes de memorama");
+                                System.out.println("Se desactivo boton de iniciar");
+                                System.out.println("Puede comenzar jugar, el servidor registro hora de incio");
+
+                                while(!memorama.getTerminar_juego()){
+                                    continue;
+                                }
+                            }
+
+                            if(tipo_msg.equals("fin")){
+                                memorama.setTerminar_juego(Boolean.FALSE);
+                                memorama.setHora_fin(LocalTime.now());
+                                channel.close();
+
+                                Archivos.eliminarCarpeta(images_path.toString(), ""+memorama.getPuerto());
+
+                                System.out.println("El servidor registro hora de fin");
+                                System.out.println("Tiempo de juego: "  +
+                                        Duration.between(memorama.getHora_inicio(),memorama.getHora_fin()).toSeconds() + " segundos");
+                                System.out.println("Juego terminado, socket cerrado correctamente");
+                            }
+
+                            if(channel.isOpen()){ key.interestOps(SelectionKey.OP_WRITE);}
+                            continue;
+                            //channel.close();
+                        }catch (IOException io){}
                     }
                 }
             }
@@ -112,4 +245,6 @@ public class Cliente {
             e.printStackTrace();
         }
     }
+
+
 }

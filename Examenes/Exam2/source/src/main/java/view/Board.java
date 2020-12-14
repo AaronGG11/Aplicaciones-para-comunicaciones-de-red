@@ -1,6 +1,7 @@
 package view;
 
 import java.awt.*;
+import java.io.File;
 import javax.swing.*;
 
 
@@ -491,61 +492,79 @@ public class Board extends JFrame {
     }
 
     public void deshabilitarBoton(Integer boton_id){
-        if(boton_id == 11) btn_11.setEnabled(Boolean.FALSE);
-        if(boton_id == 12) btn_11.setEnabled(Boolean.FALSE);
-        if(boton_id == 13) btn_11.setEnabled(Boolean.FALSE);
-        if(boton_id == 14) btn_11.setEnabled(Boolean.FALSE);
-        if(boton_id == 15) btn_11.setEnabled(Boolean.FALSE);
+        if(boton_id == 1) btn_11.setEnabled(Boolean.FALSE);
+        if(boton_id == 2) btn_12.setEnabled(Boolean.FALSE);
+        if(boton_id == 3) btn_13.setEnabled(Boolean.FALSE);
+        if(boton_id == 4) btn_14.setEnabled(Boolean.FALSE);
+        if(boton_id == 5) btn_15.setEnabled(Boolean.FALSE);
 
-        if(boton_id == 21) btn_11.setEnabled(Boolean.FALSE);
-        if(boton_id == 22) btn_11.setEnabled(Boolean.FALSE);
-        if(boton_id == 23) btn_11.setEnabled(Boolean.FALSE);
-        if(boton_id == 24) btn_11.setEnabled(Boolean.FALSE);
-        if(boton_id == 25) btn_11.setEnabled(Boolean.FALSE);
+        if(boton_id == 6) btn_21.setEnabled(Boolean.FALSE);
+        if(boton_id == 7) btn_22.setEnabled(Boolean.FALSE);
+        if(boton_id == 8) btn_23.setEnabled(Boolean.FALSE);
+        if(boton_id == 9) btn_24.setEnabled(Boolean.FALSE);
+        if(boton_id == 10) btn_25.setEnabled(Boolean.FALSE);
 
-        if(boton_id == 31) btn_11.setEnabled(Boolean.FALSE);
-        if(boton_id == 32) btn_11.setEnabled(Boolean.FALSE);
-        if(boton_id == 33) btn_11.setEnabled(Boolean.FALSE);
-        if(boton_id == 34) btn_11.setEnabled(Boolean.FALSE);
-        if(boton_id == 35) btn_11.setEnabled(Boolean.FALSE);
+        if(boton_id == 11) btn_31.setEnabled(Boolean.FALSE);
+        if(boton_id == 12) btn_32.setEnabled(Boolean.FALSE);
+        if(boton_id == 13) btn_33.setEnabled(Boolean.FALSE);
+        if(boton_id == 14) btn_34.setEnabled(Boolean.FALSE);
+        if(boton_id == 15) btn_35.setEnabled(Boolean.FALSE);
 
-        if(boton_id == 41) btn_11.setEnabled(Boolean.FALSE);
-        if(boton_id == 42) btn_11.setEnabled(Boolean.FALSE);
-        if(boton_id == 43) btn_11.setEnabled(Boolean.FALSE);
-        if(boton_id == 44) btn_11.setEnabled(Boolean.FALSE);
-        if(boton_id == 45) btn_11.setEnabled(Boolean.FALSE);
+        if(boton_id == 16) btn_41.setEnabled(Boolean.FALSE);
+        if(boton_id == 17) btn_42.setEnabled(Boolean.FALSE);
+        if(boton_id == 18) btn_43.setEnabled(Boolean.FALSE);
+        if(boton_id == 19) btn_44.setEnabled(Boolean.FALSE);
+        if(boton_id == 20) btn_45.setEnabled(Boolean.FALSE);
 
-        if(boton_id == 51) btn_11.setEnabled(Boolean.FALSE);
-        if(boton_id == 52) btn_11.setEnabled(Boolean.FALSE);
-        if(boton_id == 53) btn_11.setEnabled(Boolean.FALSE);
-        if(boton_id == 54) btn_11.setEnabled(Boolean.FALSE);
-        if(boton_id == 55) btn_11.setEnabled(Boolean.FALSE);
+        if(boton_id == 21) btn_51.setEnabled(Boolean.FALSE);
+        if(boton_id == 22) btn_52.setEnabled(Boolean.FALSE);
+        if(boton_id == 23) btn_53.setEnabled(Boolean.FALSE);
+        if(boton_id == 24) btn_54.setEnabled(Boolean.FALSE);
+        if(boton_id == 25) btn_55.setEnabled(Boolean.FALSE);
 
-        if(boton_id == 61) btn_11.setEnabled(Boolean.FALSE);
-        if(boton_id == 62) btn_11.setEnabled(Boolean.FALSE);
-        if(boton_id == 63) btn_11.setEnabled(Boolean.FALSE);
-        if(boton_id == 64) btn_11.setEnabled(Boolean.FALSE);
-        if(boton_id == 65) btn_11.setEnabled(Boolean.FALSE);
+        if(boton_id == 26) btn_61.setEnabled(Boolean.FALSE);
+        if(boton_id == 27) btn_62.setEnabled(Boolean.FALSE);
+        if(boton_id == 28) btn_63.setEnabled(Boolean.FALSE);
+        if(boton_id == 29) btn_64.setEnabled(Boolean.FALSE);
+        if(boton_id == 30) btn_65.setEnabled(Boolean.FALSE);
 
-        if(boton_id == 71) btn_11.setEnabled(Boolean.FALSE);
-        if(boton_id == 72) btn_11.setEnabled(Boolean.FALSE);
-        if(boton_id == 73) btn_11.setEnabled(Boolean.FALSE);
-        if(boton_id == 74) btn_11.setEnabled(Boolean.FALSE);
-        if(boton_id == 75) btn_11.setEnabled(Boolean.FALSE);
+        if(boton_id == 31) btn_71.setEnabled(Boolean.FALSE);
+        if(boton_id == 32) btn_72.setEnabled(Boolean.FALSE);
+        if(boton_id == 33) btn_73.setEnabled(Boolean.FALSE);
+        if(boton_id == 34) btn_74.setEnabled(Boolean.FALSE);
+        if(boton_id == 35) btn_75.setEnabled(Boolean.FALSE);
 
-        if(boton_id == 81) btn_11.setEnabled(Boolean.FALSE);
-        if(boton_id == 82) btn_11.setEnabled(Boolean.FALSE);
-        if(boton_id == 83) btn_11.setEnabled(Boolean.FALSE);
-        if(boton_id == 84) btn_11.setEnabled(Boolean.FALSE);
-        if(boton_id == 85) btn_11.setEnabled(Boolean.FALSE);
+        if(boton_id == 36) btn_81.setEnabled(Boolean.FALSE);
+        if(boton_id == 37) btn_82.setEnabled(Boolean.FALSE);
+        if(boton_id == 38) btn_83.setEnabled(Boolean.FALSE);
+        if(boton_id == 39) btn_84.setEnabled(Boolean.FALSE);
+        if(boton_id == 40) btn_85.setEnabled(Boolean.FALSE);
     }
 
     public void habilitarBoton(Integer boton_id){
+        if(boton_id == 1) btn_11.setEnabled(Boolean.TRUE);
+        if(boton_id == 2) btn_11.setEnabled(Boolean.TRUE);
+        if(boton_id == 3) btn_11.setEnabled(Boolean.TRUE);
+        if(boton_id == 4) btn_11.setEnabled(Boolean.TRUE);
+        if(boton_id == 5) btn_11.setEnabled(Boolean.TRUE);
+
+        if(boton_id == 6) btn_11.setEnabled(Boolean.TRUE);
+        if(boton_id == 7) btn_11.setEnabled(Boolean.TRUE);
+        if(boton_id == 8) btn_11.setEnabled(Boolean.TRUE);
+        if(boton_id == 9) btn_11.setEnabled(Boolean.TRUE);
+        if(boton_id == 10) btn_11.setEnabled(Boolean.TRUE);
+
         if(boton_id == 11) btn_11.setEnabled(Boolean.TRUE);
         if(boton_id == 12) btn_11.setEnabled(Boolean.TRUE);
         if(boton_id == 13) btn_11.setEnabled(Boolean.TRUE);
         if(boton_id == 14) btn_11.setEnabled(Boolean.TRUE);
         if(boton_id == 15) btn_11.setEnabled(Boolean.TRUE);
+
+        if(boton_id == 16) btn_11.setEnabled(Boolean.TRUE);
+        if(boton_id == 17) btn_11.setEnabled(Boolean.TRUE);
+        if(boton_id == 18) btn_11.setEnabled(Boolean.TRUE);
+        if(boton_id == 19) btn_11.setEnabled(Boolean.TRUE);
+        if(boton_id == 20) btn_11.setEnabled(Boolean.TRUE);
 
         if(boton_id == 21) btn_11.setEnabled(Boolean.TRUE);
         if(boton_id == 22) btn_11.setEnabled(Boolean.TRUE);
@@ -553,41 +572,23 @@ public class Board extends JFrame {
         if(boton_id == 24) btn_11.setEnabled(Boolean.TRUE);
         if(boton_id == 25) btn_11.setEnabled(Boolean.TRUE);
 
+        if(boton_id == 26) btn_11.setEnabled(Boolean.TRUE);
+        if(boton_id == 27) btn_11.setEnabled(Boolean.TRUE);
+        if(boton_id == 28) btn_11.setEnabled(Boolean.TRUE);
+        if(boton_id == 29) btn_11.setEnabled(Boolean.TRUE);
+        if(boton_id == 30) btn_11.setEnabled(Boolean.TRUE);
+
         if(boton_id == 31) btn_11.setEnabled(Boolean.TRUE);
         if(boton_id == 32) btn_11.setEnabled(Boolean.TRUE);
         if(boton_id == 33) btn_11.setEnabled(Boolean.TRUE);
         if(boton_id == 34) btn_11.setEnabled(Boolean.TRUE);
         if(boton_id == 35) btn_11.setEnabled(Boolean.TRUE);
 
-        if(boton_id == 41) btn_11.setEnabled(Boolean.TRUE);
-        if(boton_id == 42) btn_11.setEnabled(Boolean.TRUE);
-        if(boton_id == 43) btn_11.setEnabled(Boolean.TRUE);
-        if(boton_id == 44) btn_11.setEnabled(Boolean.TRUE);
-        if(boton_id == 45) btn_11.setEnabled(Boolean.TRUE);
-
-        if(boton_id == 51) btn_11.setEnabled(Boolean.TRUE);
-        if(boton_id == 52) btn_11.setEnabled(Boolean.TRUE);
-        if(boton_id == 53) btn_11.setEnabled(Boolean.TRUE);
-        if(boton_id == 54) btn_11.setEnabled(Boolean.TRUE);
-        if(boton_id == 55) btn_11.setEnabled(Boolean.TRUE);
-
-        if(boton_id == 61) btn_11.setEnabled(Boolean.TRUE);
-        if(boton_id == 62) btn_11.setEnabled(Boolean.TRUE);
-        if(boton_id == 63) btn_11.setEnabled(Boolean.TRUE);
-        if(boton_id == 64) btn_11.setEnabled(Boolean.TRUE);
-        if(boton_id == 65) btn_11.setEnabled(Boolean.TRUE);
-
-        if(boton_id == 71) btn_11.setEnabled(Boolean.TRUE);
-        if(boton_id == 72) btn_11.setEnabled(Boolean.TRUE);
-        if(boton_id == 73) btn_11.setEnabled(Boolean.TRUE);
-        if(boton_id == 74) btn_11.setEnabled(Boolean.TRUE);
-        if(boton_id == 75) btn_11.setEnabled(Boolean.TRUE);
-
-        if(boton_id == 81) btn_11.setEnabled(Boolean.TRUE);
-        if(boton_id == 82) btn_11.setEnabled(Boolean.TRUE);
-        if(boton_id == 83) btn_11.setEnabled(Boolean.TRUE);
-        if(boton_id == 84) btn_11.setEnabled(Boolean.TRUE);
-        if(boton_id == 85) btn_11.setEnabled(Boolean.TRUE);
+        if(boton_id == 36) btn_11.setEnabled(Boolean.TRUE);
+        if(boton_id == 37) btn_11.setEnabled(Boolean.TRUE);
+        if(boton_id == 38) btn_11.setEnabled(Boolean.TRUE);
+        if(boton_id == 39) btn_11.setEnabled(Boolean.TRUE);
+        if(boton_id == 40) btn_11.setEnabled(Boolean.TRUE);
     }
 
     public void ponerImagenFondo(String path){
@@ -649,4 +650,64 @@ public class Board extends JFrame {
         btn_85.setIcon(icono);
     }
 
+    public void deshabilitarJugador2(){
+        lbl_player_2.setVisible(Boolean.FALSE);
+        lbl_vs.setVisible(Boolean.FALSE);
+        lbl_score.setVisible(Boolean.FALSE);
+        lbl_turn.setVisible(Boolean.FALSE);
+        score_2.setVisible(Boolean.FALSE);
+    }
+
+    public void establecerImagen(Integer boton, String path){
+        ImageIcon foto = new ImageIcon(path + File.separator);
+        Icon icono = new ImageIcon(foto.getImage().getScaledInstance(btn_11.getWidth(),btn_11.getHeight(), Image.SCALE_DEFAULT));
+
+        if(boton==1){btn_11.setIcon(icono);}
+        if(boton==2){btn_12.setIcon(icono);}
+        if(boton==3){btn_13.setIcon(icono);}
+        if(boton==4){btn_14.setIcon(icono);}
+        if(boton==5){btn_15.setIcon(icono);}
+
+        if(boton==6){btn_21.setIcon(icono);}
+        if(boton==7){btn_22.setIcon(icono);}
+        if(boton==8){btn_23.setIcon(icono);}
+        if(boton==9){btn_24.setIcon(icono);}
+        if(boton==10){btn_25.setIcon(icono);}
+
+        if(boton==11){btn_31.setIcon(icono);}
+        if(boton==12){btn_32.setIcon(icono);}
+        if(boton==13){btn_33.setIcon(icono);}
+        if(boton==14){btn_34.setIcon(icono);}
+        if(boton==15){btn_35.setIcon(icono);}
+
+        if(boton==16){btn_41.setIcon(icono);}
+        if(boton==17){btn_42.setIcon(icono);}
+        if(boton==18){btn_43.setIcon(icono);}
+        if(boton==19){btn_44.setIcon(icono);}
+        if(boton==20){btn_45.setIcon(icono);}
+
+        if(boton==21){btn_51.setIcon(icono);}
+        if(boton==22){btn_52.setIcon(icono);}
+        if(boton==23){btn_53.setIcon(icono);}
+        if(boton==24){btn_54.setIcon(icono);}
+        if(boton==25){btn_55.setIcon(icono);}
+
+        if(boton==26){btn_61.setIcon(icono);}
+        if(boton==27){btn_62.setIcon(icono);}
+        if(boton==28){btn_63.setIcon(icono);}
+        if(boton==29){btn_64.setIcon(icono);}
+        if(boton==30){btn_65.setIcon(icono);}
+
+        if(boton==31){btn_71.setIcon(icono);}
+        if(boton==32){btn_72.setIcon(icono);}
+        if(boton==33){btn_73.setIcon(icono);}
+        if(boton==34){btn_74.setIcon(icono);}
+        if(boton==35){btn_75.setIcon(icono);}
+
+        if(boton==36){btn_81.setIcon(icono);}
+        if(boton==37){btn_82.setIcon(icono);}
+        if(boton==38){btn_83.setIcon(icono);}
+        if(boton==39){btn_84.setIcon(icono);}
+        if(boton==40){btn_85.setIcon(icono);}
+    }
 }
