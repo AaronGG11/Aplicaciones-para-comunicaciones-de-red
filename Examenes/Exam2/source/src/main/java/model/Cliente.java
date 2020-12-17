@@ -3,8 +3,6 @@ package model;
 import Utilidades.Archivos;
 import Utilidades.Memorama;
 
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.io.*;
 import java.net.InetSocketAddress;
 import java.nio.ByteBuffer;
@@ -15,6 +13,7 @@ import java.nio.channels.SocketChannel;
 import java.time.Duration;
 import java.time.LocalTime;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
 
@@ -35,6 +34,10 @@ public class Cliente {
         tipo_mensaje.add("ini"); // inicio de jeugo
         tipo_mensaje.add("tip"); // tipo juego
         tipo_mensaje.add("fin"); // fin de juego
+        tipo_mensaje.add("ord"); // orden de imagenes
+        tipo_mensaje.add("tur"); // turno
+        tipo_mensaje.add("jug"); // solicitar pareja
+
 
         // TODO : Instancia de memorama
         Memorama memorama = new Memorama();
@@ -78,6 +81,7 @@ public class Cliente {
                         memorama.setTipo_juego(Memorama.obtenerModoJuego(memorama.getPuerto()));
 
                         System.out.println("Seleccion de modo de juego -> " + memorama.getTipo_juego());
+                        memorama.setEs_mi_turno(Boolean.TRUE);
 
                         client.register(selector, SelectionKey.OP_WRITE|SelectionKey.OP_READ);
                         continue;
@@ -97,6 +101,10 @@ public class Cliente {
 
                         if(memorama.getRecibir_tipo()){
                             if(memorama.getTipo_juego().equals("Solitario")){
+                                memorama.setImagenes_orden(Archivos.obtenerOrdenImagenes(true));
+                                memorama.setTiene_orden_imagenes(Boolean.TRUE);
+
+                                System.out.println("Se asigno orden de imagenes");
                                 client.write(ByteBuffer.wrap((tipo_mensaje.get(3) + new String("uno")).getBytes()));
                             }
                             if(memorama.getTipo_juego().equals("Pareja")){
@@ -121,7 +129,26 @@ public class Cliente {
                             key.interestOps(SelectionKey.OP_READ);
                         }
 
+                        if(memorama.getSolicitar_pareja()){
+                            client.write(ByteBuffer.wrap(tipo_mensaje.get(7).getBytes()));
+                            System.out.println("Solicitando contrincante");
 
+                            key.interestOps(SelectionKey.OP_READ);
+                        }
+
+                        if(memorama.getSolicitar_orden_imagenes()){
+                            client.write(ByteBuffer.wrap(tipo_mensaje.get(5).getBytes()));
+                            System.out.println("Solicitando orden de imagenes");
+
+                            key.interestOps(SelectionKey.OP_READ);
+                        }
+
+                        if(memorama.getSolicitar_turno()){
+                            client.write(ByteBuffer.wrap(tipo_mensaje.get(6).getBytes()));
+                            System.out.println("Solicitando turno inicial");
+
+                            key.interestOps(SelectionKey.OP_READ);
+                        }
 
                         continue;
 
@@ -177,9 +204,6 @@ public class Cliente {
                                 memorama.setHay_imagenes(Boolean.TRUE);
                                 System.out.println("Imagenes recibidas correctamente");
 
-                                // TODO : Mostrar tablero
-
-
                                 // TODO : Enviar al servidor el tipo de juego
                                 memorama.setRecibir_tipo(Boolean.TRUE);
                             }
@@ -188,19 +212,13 @@ public class Cliente {
                                 System.out.println("El servidor registro el modo de juego");
                                 memorama.setRecibir_tipo(Boolean.FALSE);
 
-                                // TODO : Solicitar inicar juego sin importar modo de juego
                                 // A LA ESPERA DEL BOTON INCIAR
+                                // TODO : REVISAR PARA MODO PAREJA
                                 memorama.configurarTablero(images_path.toString());
                                 memorama.implementsListener();
 
-                                if(memorama.getTipo_juego().equals("Solitario")){
-                                    // Se solicita mediante listener al presionar un boton
-                                    while(!memorama.getSolicitar_inicio()){
-                                        continue;
-                                    }
-
-                                }else if(memorama.getTipo_juego().equals("Pareja")){
-                                    // Habilita boton de inicar solo hasta que
+                                if(memorama.getTipo_juego().equals("Pareja")){
+                                    memorama.setSolicitar_pareja(Boolean.TRUE);
                                 }
                             }
 
@@ -231,6 +249,71 @@ public class Cliente {
                                 System.out.println("Tiempo de juego: "  +
                                         Duration.between(memorama.getHora_inicio(),memorama.getHora_fin()).toSeconds() + " segundos");
                                 System.out.println("Juego terminado, socket cerrado correctamente");
+                            }
+
+
+                            if(tipo_msg.equals("jug")){
+                                ByteBuffer puerto = ByteBuffer.allocate(5);
+                                channel.read(puerto);
+                                String puerto_msg = new String(puerto.array(),0,5);
+                                puerto.flip();
+
+                                System.out.println("Contrincante puerto: " + puerto_msg);
+                                memorama.setPuerto_contrincante(puerto_msg);
+
+                                // Actualizar tablero lbl de contrincante
+                                memorama.getTablero().lbl_player_2.setText(puerto_msg);
+                                System.out.println("Actualización de tablero, contrincante");
+
+                                memorama.setSolicitar_pareja(Boolean.FALSE);
+                                memorama.setTiene_pareja(Boolean.TRUE);
+
+                                if(memorama.getTipo_juego().equals("Pareja")){
+                                    memorama.setSolicitar_orden_imagenes(Boolean.TRUE);
+                                }
+                            }
+
+                            if(tipo_msg.equals("ord")){
+                                memorama.setSolicitar_orden_imagenes(Boolean.FALSE);
+
+                                ByteBuffer orden = ByteBuffer.allocate(600);
+                                int aux = channel.read(orden);
+                                String orden_imagenes = new String(orden.array(),0,542);
+                                orden_imagenes = orden_imagenes.replace("[","");
+                                orden_imagenes = orden_imagenes.replace("]","");
+                                orden_imagenes = orden_imagenes.replace(" ","");
+
+                                orden.flip();
+                                orden.clear();
+
+                                memorama.setImagenes_orden(Arrays.asList(orden_imagenes.split(",")));
+                                System.out.println("Se establecio el orden de imagenes");
+
+                                Thread.sleep(50);
+
+                                memorama.setSolicitar_turno(Boolean.TRUE);
+                            }
+
+                            if(tipo_msg.equals("tur")){
+                                memorama.setSolicitar_turno(Boolean.FALSE);
+
+                                ByteBuffer turno = ByteBuffer.allocate(5);
+                                channel.read(turno);
+                                String turno_msg = new String(turno.array(),0,1);
+                                turno.flip();
+                                turno.clear();
+
+                                if(turno_msg.equals("1")){
+                                    memorama.setEs_mi_turno(Boolean.TRUE);
+                                    System.out.println("Cliente toma primer turno");
+
+                                }else{
+                                    memorama.setEs_mi_turno(Boolean.FALSE);
+                                    System.out.println("Cliente toma segundo turno");
+                                }
+
+                                memorama.getTablero().btn_start.setEnabled(Boolean.TRUE);
+                                System.out.println("Se habilito botón de inicio");
                             }
 
                             if(channel.isOpen()){ key.interestOps(SelectionKey.OP_WRITE);}

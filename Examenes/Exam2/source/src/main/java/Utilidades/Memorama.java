@@ -6,7 +6,6 @@ import javax.swing.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
-import java.net.SocketAddress;
 import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -43,6 +42,12 @@ public class Memorama implements ActionListener {
     private Boolean es_mi_turno;
     private Boolean check_buttons[] = new Boolean[41]; // no usar indice cero
     private Boolean es_juego_terminado;
+    private Boolean solicitar_orden_imagenes;
+    private Boolean tiene_orden_imagenes;
+    private Integer id_juego;
+    private Boolean solicitar_pareja;
+    private Boolean es_jugador_1;
+    private Boolean solicitar_turno;
 
     public Memorama(){
         imagenes = new ArrayList<>();
@@ -57,11 +62,15 @@ public class Memorama implements ActionListener {
         hay_imagen_volteada = Boolean.FALSE;
         es_juego_terminado = Boolean.FALSE;
         terminar_juego = Boolean.FALSE;
-        es_mi_turno = Boolean.TRUE;
+        tiene_orden_imagenes = Boolean.FALSE;
+        solicitar_orden_imagenes = Boolean.FALSE;
+        solicitar_pareja = Boolean.FALSE;
+        es_mi_turno = Boolean.FALSE;
         botones_libres = 40;
         imagenes_visibles = 0;
-        imagenes_orden = Archivos.obtenerOrdenImagenes(true); // 1,1,2,2,3,3, ..., 20, 20
         pares_ganados = 0;
+        es_jugador_1 = Boolean.FALSE;
+        solicitar_turno = Boolean.FALSE;
     }
 
     // Antes debera de haber sido establecido el puerto del jugadro, modo de juego
@@ -70,13 +79,16 @@ public class Memorama implements ActionListener {
         tablero = new Board(puerto);
         if(tipo_juego.equals("Solitario")){
             tablero.deshabilitarJugador2();
+        }else{
+            tablero.lbl_player_2.setText(puerto_contrincante);
+            tablero.btn_start.setEnabled(Boolean.FALSE);
         }
 
         tablero.lbl_player_1.setText(puerto);
         tablero.ponerImagenFondo(this.path_carpeta + "fondo.jpg");
         tablero.deshabilitarBotones();
-        //tablero.btn_start.setEnabled(Boolean.FALSE);
 
+        System.out.println("Tablero visible");
         tablero.setVisible(Boolean.TRUE);
     }
 
@@ -160,6 +172,8 @@ public class Memorama implements ActionListener {
 
                 if (e.getSource() == tablero.btn_start) {
                     this.setSolicitar_inicio(Boolean.TRUE);
+
+                    establecerLblTurno();
                 }
 
                 if (e.getSource() == tablero.btn_11) {
@@ -370,10 +384,29 @@ public class Memorama implements ActionListener {
                     }
                 }
             }
+            else if((!es_mi_turno && !juego_iniciado) || (es_mi_turno && !juego_iniciado)){
+                if (e.getSource() == tablero.btn_start) {
+                    this.setSolicitar_inicio(Boolean.TRUE);
+                    establecerLblTurno();
+                }
+            }
+        }
+    }
+
+    public void establecerLblTurno(){
+        if(this.getTipo_juego().equals("Pareja")){
+            if(es_mi_turno){
+                tablero.lbl_turn.setText(this.getPuerto());
+            }else{
+                tablero.lbl_turn.setText(this.getPuerto_contrincante());
+            }
         }
     }
 
     public void revisaMovimiento(Integer boton, String path_carpeta) {
+        //System.out.println("Path " + path_carpeta+imagenes_orden.get(boton-1));
+
+
         if(!hay_imagen_volteada){
             this.setHay_imagen_volteada(Boolean.TRUE);
             this.setImagen_volteada(boton);
@@ -394,9 +427,16 @@ public class Memorama implements ActionListener {
                 System.out.println("No se encontro par de imagenes iguales");
             }
 
+
             tablero.score_1.setText(""+this.getPares_ganados());
             this.setHay_imagen_volteada(Boolean.FALSE);
             this.setImagen_volteada(null);
+
+            if(this.getTipo_juego().equals("Pareja")){
+                this.setEs_mi_turno(Boolean.FALSE);
+            }
+            establecerLblTurno();
+
 
             if(this.getPares_ganados()==20){
                 this.setTerminar_juego(Boolean.TRUE);

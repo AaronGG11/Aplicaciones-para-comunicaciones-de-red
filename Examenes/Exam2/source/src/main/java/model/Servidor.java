@@ -1,5 +1,6 @@
 package model;
 
+import Servicio.JuegoPareja;
 import Utilidades.Memorama;
 import java.io.File;
 import java.io.FileInputStream;
@@ -12,6 +13,7 @@ import java.nio.channels.ServerSocketChannel;
 import java.nio.channels.SocketChannel;
 import java.time.LocalTime;
 import java.util.*;
+import java.util.concurrent.atomic.AtomicInteger;
 
 
 public class Servidor {
@@ -30,9 +32,17 @@ public class Servidor {
         tipo_mensaje.add("ini"); // inicio de jeugo
         tipo_mensaje.add("tip"); // tipo juego
         tipo_mensaje.add("fin"); // fin de juego
+        tipo_mensaje.add("ord"); // orden de imagenes
+        tipo_mensaje.add("tur"); // turno
+        tipo_mensaje.add("jug"); // solicitar pareja
+
 
         // TODO : Control de jugadores
-        Map<SocketChannel, Memorama> jugadores = new Hashtable<>();
+        Map<SocketChannel, Memorama> jugadores = new Hashtable<>(); // todos los jugadores
+        Map<Integer, JuegoPareja> juegos_pareja= new Hashtable<>(); // juegos en tiempo real
+        List<SocketChannel> lista_espera = new ArrayList<>();
+
+        AtomicInteger contador_juegos = new AtomicInteger(0);
 
         String inputFile = images_path.toString() + "images.zip", host = "127.0.0.1";
         int port = 9000, bufferSize = 20000000;
@@ -94,6 +104,45 @@ public class Servidor {
 
                             jugadores.get(channel).setRecibir_tipo(Boolean.TRUE);
 
+                            // TODO : Jugadores en pareja
+                            if(jugadores.get(channel).getTipo_juego().equals("Pareja")){
+                                if(lista_espera.isEmpty()){ // no hay en lista de espera
+                                    lista_espera.add(channel);
+
+                                    System.out.println("Cliente " + channel.getRemoteAddress() + " espera contrincante");
+                                }else{ // hay en lista de espera
+                                    contador_juegos.incrementAndGet();
+                                    juegos_pareja.put(contador_juegos.get(),new JuegoPareja(contador_juegos.get()));
+
+                                    juegos_pareja.get(contador_juegos.get()).setJugador_1(lista_espera.get(0));
+                                    juegos_pareja.get(contador_juegos.get()).setJugador_2(channel);
+
+                                    // Asignaciones a jugadores
+                                    // Jugador #1
+                                    jugadores.get(lista_espera.get(0)).setEs_mi_turno(Boolean.TRUE);
+                                    jugadores.get(lista_espera.get(0)).setPuerto_contrincante("" + channel.socket().getPort());
+                                    jugadores.get(lista_espera.get(0)).setImagenes_orden(juegos_pareja.get(contador_juegos.get()).getImagenes_orden());
+                                    jugadores.get(lista_espera.get(0)).setTiene_pareja(Boolean.TRUE);
+                                    jugadores.get(lista_espera.get(0)).setId_juego(contador_juegos.get());
+                                    jugadores.get(lista_espera.get(0)).setEs_jugador_1(Boolean.TRUE);
+
+                                    // Jugador #2 (actual)
+                                    jugadores.get(channel).setEs_mi_turno(Boolean.TRUE);
+                                    jugadores.get(channel).setPuerto_contrincante("" + lista_espera.get(0).socket().getPort());
+                                    jugadores.get(channel).setImagenes_orden(juegos_pareja.get(contador_juegos.get()).getImagenes_orden());
+                                    jugadores.get(channel).setTiene_pareja(Boolean.TRUE);
+                                    jugadores.get(channel).setId_juego(contador_juegos.get());
+                                    jugadores.get(channel).setEs_jugador_1(Boolean.FALSE);
+
+                                    // Mensages de operaciones realizadas
+                                    System.out.println("Se creo juego id=" + contador_juegos.get() + ", clientes: " + lista_espera.get(0).socket().getPort() + " VS " + channel.socket().getPort());
+
+                                    // Remover de lista de espera
+                                    System.out.println("Cliente "+ lista_espera.get(0).getRemoteAddress() +" removido de la lista de espera");
+                                    lista_espera.remove(0);
+                                }
+                            }
+
                             System.out.println("Cliente " + channel.getRemoteAddress() + " avisa modo juego -> " + jugadores.get(channel).getTipo_juego());
                         }
 
@@ -107,6 +156,7 @@ public class Servidor {
                         }
 
                         if(tipo_msg.equals("ini")){
+                            // TODO : Revisar tipo de inicio para pareja
                             jugadores.get(channel).setSolicitar_inicio(Boolean.TRUE);
                             System.out.println("Cliente " + channel.getRemoteAddress() + " solicita iniciar juego");
                         }
@@ -115,6 +165,22 @@ public class Servidor {
                             jugadores.get(channel).setTerminar_juego(Boolean.TRUE);
                             System.out.println("Cliente " + channel.getRemoteAddress() + " solicita terminar juego");
                         }
+
+                        if(tipo_msg.equals("jug")){
+                            jugadores.get(channel).setSolicitar_pareja(Boolean.TRUE);
+                            System.out.println("Cliente " + channel.getRemoteAddress() + " solicita contrincante");
+                        }
+
+                        if(tipo_msg.equals("ord")){
+                            jugadores.get(channel).setSolicitar_orden_imagenes(Boolean.TRUE);
+                            System.out.println("Cliente " + channel.getRemoteAddress() + " solicita orden de imagenes");
+                        }
+
+                        if(tipo_msg.equals("tur")){
+                            jugadores.get(channel).setSolicitar_turno(Boolean.TRUE);
+                            System.out.println("Cliente " + channel.getRemoteAddress() + " solicita turno inicial");
+                        }
+
 
 
 
@@ -178,6 +244,49 @@ public class Servidor {
                             System.out.println("Cliente " + client.getRemoteAddress() + " termino su ejecucion");
                             client.close();
                         }
+
+                        if(jugadores.get(client).getSolicitar_pareja() &&
+                            jugadores.get(client).getTipo_juego().equals("Pareja") &&
+                                jugadores.get(client).getTiene_pareja()){
+
+                            // TODO : Enviar tipo de mensaje jugador
+                            client.write(ByteBuffer.wrap((tipo_mensaje.get(7) + jugadores.get(client).getPuerto_contrincante()).getBytes()));
+                            jugadores.get(client).setSolicitar_pareja(Boolean.FALSE);
+
+                            // TODO : Enviar puerto de contrincante
+
+                            System.out.println("Enviando al cliente " + client.getRemoteAddress() + ", el puerto de su contrincante -> " + jugadores.get(client).getPuerto_contrincante());
+                            key.interestOps(SelectionKey.OP_READ);
+                        }
+
+                        if(jugadores.get(client).getSolicitar_orden_imagenes()){
+                            jugadores.get(client).setSolicitar_orden_imagenes(Boolean.FALSE);
+
+                            // TODO : Enviar tipo de mensaje y string con orden de imagenes[longitud 501]
+                            client.write(ByteBuffer.wrap((tipo_mensaje.get(5)+
+                                    juegos_pareja.get(jugadores.get(client).getId_juego()).getImagenes_orden()).getBytes()));
+
+                            System.out.println("Enviando al cliente " + client.getRemoteAddress() + " el orden de imagenes + longitug " + juegos_pareja.get(jugadores.get(client).getId_juego()).getImagenes_orden());
+
+                            key.interestOps(SelectionKey.OP_READ);
+                        }
+
+                        if(jugadores.get(client).getSolicitar_turno()){
+                            jugadores.get(client).setSolicitar_turno(Boolean.FALSE);
+
+                            // TODO : Enviar tipo de mensaje y 0 -> si no es turno, 1 -> si es turno
+                            if(jugadores.get(client).getEs_jugador_1()){
+                                client.write(ByteBuffer.wrap((tipo_mensaje.get(6) + "1").getBytes()));
+                                System.out.println("Enviando al cliente " + client.getRemoteAddress() + " turno activo");
+                            }
+                            else{
+                                client.write(ByteBuffer.wrap((tipo_mensaje.get(6) + "0").getBytes()));
+                                System.out.println("Enviando al cliente " + client.getRemoteAddress() + " turno no activo");
+                            }
+
+                            key.interestOps(SelectionKey.OP_READ);
+                        }
+
 
                         continue;
                     }
