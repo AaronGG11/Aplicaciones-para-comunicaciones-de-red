@@ -47,7 +47,18 @@ public class Memorama implements ActionListener {
     private Integer id_juego;
     private Boolean solicitar_pareja;
     private Boolean es_jugador_1;
-    private Boolean solicitar_turno;
+    private Boolean solicitar_turno; // inicial
+
+    private Boolean enviar_primer_imagen;
+    private Boolean enviar_segunda_imagen;
+
+    private Boolean recibir_primer_imagen;
+    private Boolean recibir_segunda_imagen;
+
+    private String imagen_a_voltear;
+
+    private Boolean son_imagenes_iguales;
+
 
     public Memorama(){
         imagenes = new ArrayList<>();
@@ -71,6 +82,11 @@ public class Memorama implements ActionListener {
         pares_ganados = 0;
         es_jugador_1 = Boolean.FALSE;
         solicitar_turno = Boolean.FALSE;
+        enviar_primer_imagen = Boolean.FALSE;
+        enviar_segunda_imagen = Boolean.FALSE;
+        recibir_primer_imagen = Boolean.FALSE;
+        recibir_segunda_imagen = Boolean.FALSE;
+        son_imagenes_iguales = Boolean.FALSE;
     }
 
     // Antes debera de haber sido establecido el puerto del jugadro, modo de juego
@@ -409,10 +425,27 @@ public class Memorama implements ActionListener {
 
         if(!hay_imagen_volteada){
             this.setHay_imagen_volteada(Boolean.TRUE);
-            this.setImagen_volteada(boton);
+            this.setImagen_volteada(boton); // Pones la imagen uno
+
+            if(this.getTipo_juego().equals("Pareja")){
+                if(boton < 10){
+                    this.setImagen_a_voltear("0" + boton);
+                }else{
+                    this.setImagen_a_voltear("" + boton);
+                }
+            }
 
             tablero.establecerImagen(boton, path_carpeta+imagenes_orden.get(boton-1));
+            this.setEnviar_primer_imagen(Boolean.TRUE);
         }else{
+            if(this.getTipo_juego().equals("Pareja")){
+                if(boton < 10){
+                    this.setImagen_a_voltear("0" + boton);
+                }else{
+                    this.setImagen_a_voltear("" + boton);
+                }
+            }
+
             tablero.establecerImagen(boton, path_carpeta+imagenes_orden.get(boton-1));
 
             if(imagenes_orden.get(boton-1).equals(imagenes_orden.get(imagen_volteada-1))){ // Son iguales
@@ -420,22 +453,21 @@ public class Memorama implements ActionListener {
                 tablero.deshabilitarBoton(boton);
                 this.setImagenes_visibles(this.getImagenes_visibles()+2);
                 this.setPares_ganados(this.getPares_ganados()+1);
+                this.setSon_imagenes_iguales(Boolean.TRUE);
                 System.out.println("Se encontro un par de imagenes iguales");
             }else{ // No son iguales
                 tablero.establecerImagen(imagen_volteada, path_carpeta+"fondo.jpg");
                 tablero.establecerImagen(boton, path_carpeta+"fondo.jpg");
+                this.setSon_imagenes_iguales(Boolean.FALSE);
                 System.out.println("No se encontro par de imagenes iguales");
             }
+
+            this.setEnviar_segunda_imagen(Boolean.TRUE);
 
 
             tablero.score_1.setText(""+this.getPares_ganados());
             this.setHay_imagen_volteada(Boolean.FALSE);
             this.setImagen_volteada(null);
-
-            if(this.getTipo_juego().equals("Pareja")){
-                this.setEs_mi_turno(Boolean.FALSE);
-            }
-            establecerLblTurno();
 
 
             if(this.getPares_ganados()==20){

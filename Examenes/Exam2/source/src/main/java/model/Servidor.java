@@ -27,14 +27,16 @@ public class Servidor {
 
         // TODO : Tipos de mensajes
         List<String> tipo_mensaje = new ArrayList<>();
-        tipo_mensaje.add("img"); // imagenes de juego
-        tipo_mensaje.add("mov"); // movimeinto de juego
-        tipo_mensaje.add("ini"); // inicio de jeugo
-        tipo_mensaje.add("tip"); // tipo juego
-        tipo_mensaje.add("fin"); // fin de juego
-        tipo_mensaje.add("ord"); // orden de imagenes
-        tipo_mensaje.add("tur"); // turno
-        tipo_mensaje.add("jug"); // solicitar pareja
+        tipo_mensaje.add("img"); // 0 - imagenes de juego
+        tipo_mensaje.add("mov"); // 1 - movimeinto de juego
+        tipo_mensaje.add("ini"); // 2 - inicio de jeugo
+        tipo_mensaje.add("tip"); // 3 - tipo juego
+        tipo_mensaje.add("fin"); // 4 - fin de juego
+        tipo_mensaje.add("ord"); // 5 - orden de imagenes
+        tipo_mensaje.add("tur"); // 6 - turno
+        tipo_mensaje.add("jug"); // 7 - solicitar pareja
+        tipo_mensaje.add("mv1"); // 8 - movimiento de primer imagen
+        tipo_mensaje.add("mv2"); // 9 - movimiento de segunda imagen
 
 
         // TODO : Control de jugadores
@@ -91,6 +93,7 @@ public class Servidor {
                         if(tipo_msg.equals("img")) {
                             System.out.println("Cliente " + channel.getRemoteAddress() + " solicita imagenes");
                             jugadores.get(channel).setRecibir_imagenes(Boolean.TRUE);
+                            key.interestOps(SelectionKey.OP_WRITE);
                         }
 
                         if(tipo_msg.equals("tip")){
@@ -144,47 +147,83 @@ public class Servidor {
                             }
 
                             System.out.println("Cliente " + channel.getRemoteAddress() + " avisa modo juego -> " + jugadores.get(channel).getTipo_juego());
+                            key.interestOps(SelectionKey.OP_WRITE);
                         }
 
                         if(tipo_msg.equals("mov")){
                             System.out.println("Cliente " + channel.getRemoteAddress() + " envia movimiento");
+                            key.interestOps(SelectionKey.OP_WRITE);
                         }
 
                         if(tipo_msg.equals("fin")){
                             jugadores.get(channel).setTerminar_juego(Boolean.TRUE);
                             System.out.println("Cliente " + channel.getRemoteAddress() + " va a terminar juego");
+                            key.interestOps(SelectionKey.OP_WRITE);
                         }
 
                         if(tipo_msg.equals("ini")){
                             // TODO : Revisar tipo de inicio para pareja
                             jugadores.get(channel).setSolicitar_inicio(Boolean.TRUE);
                             System.out.println("Cliente " + channel.getRemoteAddress() + " solicita iniciar juego");
+                            key.interestOps(SelectionKey.OP_WRITE);
                         }
 
                         if(tipo_msg.equals("fin")){
                             jugadores.get(channel).setTerminar_juego(Boolean.TRUE);
                             System.out.println("Cliente " + channel.getRemoteAddress() + " solicita terminar juego");
+                            key.interestOps(SelectionKey.OP_WRITE);
                         }
 
                         if(tipo_msg.equals("jug")){
                             jugadores.get(channel).setSolicitar_pareja(Boolean.TRUE);
                             System.out.println("Cliente " + channel.getRemoteAddress() + " solicita contrincante");
+                            key.interestOps(SelectionKey.OP_WRITE);
                         }
 
                         if(tipo_msg.equals("ord")){
                             jugadores.get(channel).setSolicitar_orden_imagenes(Boolean.TRUE);
                             System.out.println("Cliente " + channel.getRemoteAddress() + " solicita orden de imagenes");
+                            key.interestOps(SelectionKey.OP_WRITE);
                         }
 
                         if(tipo_msg.equals("tur")){
                             jugadores.get(channel).setSolicitar_turno(Boolean.TRUE);
                             System.out.println("Cliente " + channel.getRemoteAddress() + " solicita turno inicial");
+                            key.interestOps(SelectionKey.OP_WRITE);
                         }
 
+                        if(tipo_msg.equals("mv1")){
+                            // Captura imagen que hay que mover
+                            ByteBuffer imagen = ByteBuffer.allocate(2);
+                            channel.read(imagen);
+                            imagen.flip();
+                            String imagen_mov = new String(imagen.array(),0,2);
+                            imagen.clear();
 
+                            jugadores.get(channel).setEnviar_primer_imagen(Boolean.TRUE);
+                            jugadores.get(channel).setImagen_a_voltear(imagen_mov);
 
+                            // Ahora va a escribir la imagen para el oponente
+                            System.out.println("Cliente " + channel.getRemoteAddress() + " envia movimiento de primer imagen -> " + imagen_mov);
+                            key.interestOps(SelectionKey.OP_WRITE);
+                        }
 
-                        key.interestOps(SelectionKey.OP_WRITE);
+                        if(tipo_msg.equals("mv2")){
+                            // Captura imagen que hay que mover
+                            ByteBuffer imagen = ByteBuffer.allocate(2);
+                            channel.read(imagen);
+                            imagen.flip();
+                            String imagen_mov = new String(imagen.array(),0,2);
+                            imagen.clear();
+
+                            jugadores.get(channel).setEnviar_segunda_imagen(Boolean.TRUE);
+                            jugadores.get(channel).setImagen_a_voltear(imagen_mov);
+
+                            // Ahora va a escribir la imagen para el oponente
+                            System.out.println("Cliente " + channel.getRemoteAddress() + " envia movimiento de segunda imagen -> " + imagen_mov);
+                            key.interestOps(SelectionKey.OP_WRITE);
+                        }
+
 
                     }else if (key.isWritable()){ // TODO : ES ESCRIBIBLE
                         SocketChannel client = (SocketChannel) key.channel();
@@ -285,6 +324,52 @@ public class Servidor {
                             }
 
                             key.interestOps(SelectionKey.OP_READ);
+                        }
+
+                        if(jugadores.get(client).getEnviar_primer_imagen()){
+                            jugadores.get(client).setEnviar_primer_imagen(Boolean.FALSE);
+
+                            // TODO : Enviar tipo de mensaje e imagen AL OPONENTE
+
+                            if(jugadores.get(client).getEs_jugador_1()){ // Se lo envia al jugador #2
+                                juegos_pareja.get(jugadores.get(client).getId_juego()).getJugador_2().
+                                        write(ByteBuffer.wrap((tipo_mensaje.get(8) +
+                                                jugadores.get(client).getImagen_a_voltear()).getBytes()));
+
+                                System.out.println("Informando al oponente " + juegos_pareja.get(jugadores.get(client).getId_juego()).getJugador_2().getRemoteAddress() + " primer movimiento");
+                            }else{ // Se lo envia al jugador #1
+                                juegos_pareja.get(jugadores.get(client).getId_juego()).getJugador_1().
+                                        write(ByteBuffer.wrap((tipo_mensaje.get(8) +
+                                                jugadores.get(client).getImagen_a_voltear()).getBytes()));
+
+                                System.out.println("Informando al oponente " + juegos_pareja.get(jugadores.get(client).getId_juego()).getJugador_1().getRemoteAddress() + " primer movimiento");
+                            }
+
+                            key.interestOps(SelectionKey.OP_READ);
+                        }
+
+                        if(jugadores.get(client).getEnviar_segunda_imagen()){
+                            jugadores.get(client).setEnviar_primer_imagen(Boolean.FALSE);
+                            jugadores.get(client).setEnviar_segunda_imagen(Boolean.FALSE);
+
+                            // TODO : Enviar tipo de mensaje e imagen AL OPONENTE
+
+                            if(jugadores.get(client).getEs_jugador_1()){ // Se lo envia al jugador #2
+                                juegos_pareja.get(jugadores.get(client).getId_juego()).getJugador_2().
+                                        write(ByteBuffer.wrap((tipo_mensaje.get(9) +
+                                                jugadores.get(client).getImagen_a_voltear()).getBytes()));
+
+                                System.out.println("Informando al oponente " + juegos_pareja.get(jugadores.get(client).getId_juego()).getJugador_2().getRemoteAddress() + " segundo movimiento");
+                            }else{ // Se lo envia al jugador #1
+                                juegos_pareja.get(jugadores.get(client).getId_juego()).getJugador_1().
+                                        write(ByteBuffer.wrap((tipo_mensaje.get(9) +
+                                                jugadores.get(client).getImagen_a_voltear()).getBytes()));
+
+                                System.out.println("Informando al oponente " + juegos_pareja.get(jugadores.get(client).getId_juego()).getJugador_1().getRemoteAddress() + " segundo movimiento");
+                            }
+
+                            key.interestOps(SelectionKey.OP_READ);
+
                         }
 
 

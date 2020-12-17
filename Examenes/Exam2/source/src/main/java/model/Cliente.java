@@ -29,14 +29,16 @@ public class Cliente {
 
         // TODO : Tipos de mensajes
         List<String> tipo_mensaje = new ArrayList<>();
-        tipo_mensaje.add("img"); // imagenes de juego
-        tipo_mensaje.add("mov"); // movimeinto de juego
-        tipo_mensaje.add("ini"); // inicio de jeugo
-        tipo_mensaje.add("tip"); // tipo juego
-        tipo_mensaje.add("fin"); // fin de juego
-        tipo_mensaje.add("ord"); // orden de imagenes
-        tipo_mensaje.add("tur"); // turno
-        tipo_mensaje.add("jug"); // solicitar pareja
+        tipo_mensaje.add("img"); // 0 - imagenes de juego
+        tipo_mensaje.add("mov"); // 1 - movimeinto de juego
+        tipo_mensaje.add("ini"); // 2 - inicio de jeugo
+        tipo_mensaje.add("tip"); // 3 - tipo juego
+        tipo_mensaje.add("fin"); // 4 - fin de juego
+        tipo_mensaje.add("ord"); // 5 - orden de imagenes
+        tipo_mensaje.add("tur"); // 6 - turno
+        tipo_mensaje.add("jug"); // 7 - solicitar pareja
+        tipo_mensaje.add("mv1"); // 8 - movimiento de primer imagen
+        tipo_mensaje.add("mv2"); // 9 - movimiento de segunda imagen
 
 
         // TODO : Instancia de memorama
@@ -81,7 +83,7 @@ public class Cliente {
                         memorama.setTipo_juego(Memorama.obtenerModoJuego(memorama.getPuerto()));
 
                         System.out.println("Seleccion de modo de juego -> " + memorama.getTipo_juego());
-                        memorama.setEs_mi_turno(Boolean.TRUE);
+                        //memorama.setEs_mi_turno(Boolean.TRUE);
 
                         client.register(selector, SelectionKey.OP_WRITE|SelectionKey.OP_READ);
                         continue;
@@ -150,6 +152,61 @@ public class Cliente {
                             key.interestOps(SelectionKey.OP_READ);
                         }
 
+                        if(memorama.getEnviar_primer_imagen()){
+                            // TODO : Escribir tipo de mensaje y numero de imagen
+                            System.out.println("Imagen a enviar movimiento -> " + memorama.getImagen_a_voltear());
+                            client.write(ByteBuffer.wrap((tipo_mensaje.get(8) + memorama.getImagen_a_voltear()).getBytes()));
+                            System.out.println("Enviando primer imagen");
+
+                            memorama.setEnviar_primer_imagen(Boolean.FALSE);
+
+                            // Escribir de nuevo en cuanto llegue la bandera de segunda imagen
+                            key.interestOps(SelectionKey.OP_WRITE);
+                        }
+
+                        if(memorama.getEnviar_segunda_imagen()){
+                            // TODO : Escribir tipo de mensaje y numero de imagen
+                            System.out.println("Imagen a enviar movimiento -> " + memorama.getImagen_a_voltear());
+                            client.write(ByteBuffer.wrap((tipo_mensaje.get(9) + memorama.getImagen_a_voltear()).getBytes()));
+                            System.out.println("Enviando segunda imagen");
+
+                            memorama.setEnviar_segunda_imagen(Boolean.FALSE);
+
+                            // DEFINIR TURNO
+                            if(memorama.getTipo_juego().equals("Pareja")){
+                                if(memorama.getSon_imagenes_iguales()){
+                                    if(memorama.getEs_mi_turno()){
+                                        // es mi turno y las imagenes fueron iguales
+                                        memorama.setEs_mi_turno(Boolean.TRUE);
+                                    }else{
+                                        // no es mi turno y las imagenes fueron iguales
+                                        memorama.setEs_mi_turno(Boolean.FALSE);
+                                    }
+                                }else{
+                                    if(memorama.getEs_mi_turno()){
+                                        // es mi turno y las imagenes no fueron iguales
+                                        memorama.setEs_mi_turno(Boolean.FALSE);
+                                    }else{
+                                        // no es mi turno y las imagenes no fueron iguales
+                                        memorama.setEs_mi_turno(Boolean.TRUE);
+                                    }
+                                }
+                            }
+
+                            System.out.println("¿Es mi turno? " + memorama.getEs_mi_turno());
+
+
+                            if (memorama.getEs_mi_turno()){
+                                System.out.println("Se fue a escribir desde escritura");
+                                key.interestOps(SelectionKey.OP_WRITE);
+                            }else{
+                                System.out.println("Se fue a leer desde escritura");
+                                key.interestOps(SelectionKey.OP_READ);
+                            }
+
+                        }
+
+
                         continue;
 
                     } else if(key.isReadable()){ // TODO : ES LEIBLE
@@ -206,6 +263,8 @@ public class Cliente {
 
                                 // TODO : Enviar al servidor el tipo de juego
                                 memorama.setRecibir_tipo(Boolean.TRUE);
+
+                                key.interestOps(SelectionKey.OP_WRITE);
                             }
 
                             if(tipo_msg.equals("tip")){
@@ -220,6 +279,8 @@ public class Cliente {
                                 if(memorama.getTipo_juego().equals("Pareja")){
                                     memorama.setSolicitar_pareja(Boolean.TRUE);
                                 }
+
+                                key.interestOps(SelectionKey.OP_WRITE);
                             }
 
                             if(tipo_msg.equals("ini")){
@@ -233,8 +294,14 @@ public class Cliente {
                                 System.out.println("Se desactivo boton de iniciar");
                                 System.out.println("Puede comenzar jugar, el servidor registro hora de incio");
 
-                                while(!memorama.getTerminar_juego()){
-                                    continue;
+                                //while(!memorama.getTerminar_juego()){
+                                //    continue;
+                                //}
+
+                                if(!memorama.getEs_mi_turno()){
+                                    key.interestOps(SelectionKey.OP_READ);
+                                }else{
+                                    key.interestOps(SelectionKey.OP_WRITE);
                                 }
                             }
 
@@ -249,6 +316,7 @@ public class Cliente {
                                 System.out.println("Tiempo de juego: "  +
                                         Duration.between(memorama.getHora_inicio(),memorama.getHora_fin()).toSeconds() + " segundos");
                                 System.out.println("Juego terminado, socket cerrado correctamente");
+
                             }
 
 
@@ -271,6 +339,8 @@ public class Cliente {
                                 if(memorama.getTipo_juego().equals("Pareja")){
                                     memorama.setSolicitar_orden_imagenes(Boolean.TRUE);
                                 }
+
+                                key.interestOps(SelectionKey.OP_WRITE);
                             }
 
                             if(tipo_msg.equals("ord")){
@@ -292,6 +362,8 @@ public class Cliente {
                                 Thread.sleep(50);
 
                                 memorama.setSolicitar_turno(Boolean.TRUE);
+
+                                key.interestOps(SelectionKey.OP_WRITE);
                             }
 
                             if(tipo_msg.equals("tur")){
@@ -314,9 +386,80 @@ public class Cliente {
 
                                 memorama.getTablero().btn_start.setEnabled(Boolean.TRUE);
                                 System.out.println("Se habilito botón de inicio");
+
+                                key.interestOps(SelectionKey.OP_WRITE);
                             }
 
-                            if(channel.isOpen()){ key.interestOps(SelectionKey.OP_WRITE);}
+                            if(tipo_msg.equals("mv1")){
+                                // Captura imagen que hay que mover
+                                ByteBuffer imagen = ByteBuffer.allocate(2);
+                                channel.read(imagen);
+                                imagen.flip();
+                                String imagen_mov = new String(imagen.array(),0,2);
+                                imagen.clear();
+
+                                Integer img_aux = Integer.parseInt(imagen_mov);
+
+                                memorama.revisaMovimiento(img_aux, images_path.toString() + memorama.getPuerto() + File.separator);
+                                memorama.setEnviar_primer_imagen(Boolean.FALSE);
+                                memorama.setEnviar_segunda_imagen(Boolean.FALSE);
+
+                                System.out.println("Se mostro primer imagen volteada por oponente -> " + imagen_mov);
+                                key.interestOps(SelectionKey.OP_READ);
+                            }
+
+                            if(tipo_msg.equals("mv2")){
+                                // Captura imagen que hay que mover
+                                ByteBuffer imagen = ByteBuffer.allocate(2);
+                                channel.read(imagen);
+                                imagen.flip();
+                                String imagen_mov = new String(imagen.array(),0,2);
+                                imagen.clear();
+
+                                Integer img_aux = Integer.parseInt(imagen_mov);
+
+                                memorama.revisaMovimiento(img_aux, images_path.toString() + memorama.getPuerto() + File.separator);
+
+                                memorama.setEnviar_primer_imagen(Boolean.FALSE);
+                                memorama.setEnviar_segunda_imagen(Boolean.FALSE);
+
+
+                                System.out.println("Se mostro segunda imagen volteada por oponente -> " + imagen_mov);
+                                //memorama.setEs_mi_turno(Boolean.TRUE);
+
+                                // DEFINIR TURNO
+                                if(memorama.getTipo_juego().equals("Pareja")){
+                                    if(memorama.getSon_imagenes_iguales()){
+                                        if(memorama.getEs_mi_turno()){
+                                            // es mi turno y las imagenes fueron iguales
+                                            memorama.setEs_mi_turno(Boolean.TRUE);
+                                        }else{
+                                            // no es mi turno y las imagenes fueron iguales
+                                            memorama.setEs_mi_turno(Boolean.FALSE);
+                                        }
+                                    }else{
+                                        if(memorama.getEs_mi_turno()){
+                                            // es mi turno y las imagenes no fueron iguales
+                                            memorama.setEs_mi_turno(Boolean.FALSE);
+                                        }else{
+                                            // no es mi turno y las imagenes no fueron iguales
+                                            memorama.setEs_mi_turno(Boolean.TRUE);
+                                        }
+                                    }
+                                }
+
+                                System.out.println("¿Es mi turno? " + memorama.getEs_mi_turno());
+
+                                if(memorama.getEs_mi_turno()){
+                                    System.out.println("Se fue a escribir desde lectura");
+                                    key.interestOps(SelectionKey.OP_WRITE);
+                                }else{
+                                    System.out.println("Se fue a leer desde lectura");
+                                    key.interestOps(SelectionKey.OP_READ);
+                                }
+                            }
+
+                            //if(channel.isOpen()){ key.interestOps(SelectionKey.OP_WRITE);}
                             continue;
                             //channel.close();
                         }catch (IOException io){}
