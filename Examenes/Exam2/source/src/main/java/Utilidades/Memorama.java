@@ -490,12 +490,16 @@ public class Memorama implements ActionListener {
                     if(getEs_jugador_1()){
                         if(getPares_ganados_jugador_1() > 10){ // gano
                             JOptionPane.showMessageDialog(null, "Jugador " + this.getPuerto() + ", Ganaste");
+                        }else if(getPares_ganados_jugador_1() == 10){
+                            JOptionPane.showMessageDialog(null, "Jugador " + this.getPuerto() + ", Empate");
                         }else{
                             JOptionPane.showMessageDialog(null, "Jugador " + this.getPuerto() + ", Perdiste");
                         }
                     }else{
                         if(getPares_ganados_jugador_2() > 10){ // gano
                             JOptionPane.showMessageDialog(null, "Jugador " + this.getPuerto() + ", Ganaste");
+                        }else if(getPares_ganados_jugador_1() == 10){
+                            JOptionPane.showMessageDialog(null, "Jugador " + this.getPuerto() + ", Empate");
                         }else{
                             JOptionPane.showMessageDialog(null, "Jugador " + this.getPuerto() + ", Perdiste");
                         }
