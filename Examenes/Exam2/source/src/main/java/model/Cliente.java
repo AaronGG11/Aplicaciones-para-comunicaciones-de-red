@@ -173,21 +173,42 @@ public class Cliente {
                             memorama.setEnviar_segunda_imagen(Boolean.FALSE);
 
                             // DEFINIR TURNO
+                            // DEFINIR TURNO -> revisar si es espejo
                             if(memorama.getTipo_juego().equals("Pareja")){
                                 if(memorama.getSon_imagenes_iguales()){
                                     if(memorama.getEs_mi_turno()){
                                         // es mi turno y las imagenes fueron iguales
+
+                                        if(memorama.getEs_jugador_1()){ // jugador uno
+                                            memorama.setPares_ganados_jugador_1(memorama.getPares_ganados_jugador_1() + 1);
+                                            memorama.getTablero().score_1.setText("" + memorama.getPares_ganados_jugador_1());
+                                        }else{ // jugador dos
+                                            memorama.setPares_ganados_jugador_2(memorama.getPares_ganados_jugador_2() + 1);
+                                            memorama.getTablero().score_1.setText("" + memorama.getPares_ganados_jugador_2());
+                                        }
+
+                                        memorama.getTablero().lbl_turn.setText(memorama.getPuerto());
                                         memorama.setEs_mi_turno(Boolean.TRUE);
-                                    }else{
-                                        // no es mi turno y las imagenes fueron iguales
+                                    }else{ // no es mi turno y las imagenes fueron iguales
+                                        if(memorama.getEs_jugador_1()){ // jugador uno
+                                            memorama.setPares_ganados_jugador_2(memorama.getPares_ganados_jugador_2() + 1);
+                                            memorama.getTablero().score_2.setText("" + memorama.getPares_ganados_jugador_2());
+                                        }else{ // jugador dos
+                                            memorama.setPares_ganados_jugador_1(memorama.getPares_ganados_jugador_1() + 1);
+                                            memorama.getTablero().score_2.setText("" + memorama.getPares_ganados_jugador_1());
+                                        }
+
+                                        memorama.getTablero().lbl_turn.setText(memorama.getPuerto_contrincante());
                                         memorama.setEs_mi_turno(Boolean.FALSE);
                                     }
                                 }else{
                                     if(memorama.getEs_mi_turno()){
                                         // es mi turno y las imagenes no fueron iguales
+                                        memorama.getTablero().lbl_turn.setText(memorama.getPuerto_contrincante());
                                         memorama.setEs_mi_turno(Boolean.FALSE);
                                     }else{
                                         // no es mi turno y las imagenes no fueron iguales
+                                        memorama.getTablero().lbl_turn.setText(memorama.getPuerto());
                                         memorama.setEs_mi_turno(Boolean.TRUE);
                                     }
                                 }
@@ -293,6 +314,10 @@ public class Cliente {
                                 System.out.println("Se habilitaron imagenes de memorama");
                                 System.out.println("Se desactivo boton de iniciar");
                                 System.out.println("Puede comenzar jugar, el servidor registro hora de incio");
+
+                                if(memorama.getTipo_juego().equals("Solitario")){
+                                    memorama.setEs_mi_turno(Boolean.TRUE);
+                                }
 
                                 //while(!memorama.getTerminar_juego()){
                                 //    continue;
@@ -432,17 +457,37 @@ public class Cliente {
                                     if(memorama.getSon_imagenes_iguales()){
                                         if(memorama.getEs_mi_turno()){
                                             // es mi turno y las imagenes fueron iguales
+
+                                            if(memorama.getEs_jugador_1()){ // jugador uno
+                                                memorama.setPares_ganados_jugador_1(memorama.getPares_ganados_jugador_1() + 1);
+                                                memorama.getTablero().score_1.setText("" + memorama.getPares_ganados_jugador_1());
+                                            }else{ // jugador dos
+                                                memorama.setPares_ganados_jugador_2(memorama.getPares_ganados_jugador_2() + 1);
+                                                memorama.getTablero().score_1.setText("" + memorama.getPares_ganados_jugador_2());
+                                            }
+
+                                            memorama.getTablero().lbl_turn.setText(memorama.getPuerto());
                                             memorama.setEs_mi_turno(Boolean.TRUE);
-                                        }else{
-                                            // no es mi turno y las imagenes fueron iguales
+                                        }else{ // no es mi turno y las imagenes fueron iguales
+                                            if(memorama.getEs_jugador_1()){ // jugador uno
+                                                memorama.setPares_ganados_jugador_2(memorama.getPares_ganados_jugador_2() + 1);
+                                                memorama.getTablero().score_2.setText("" + memorama.getPares_ganados_jugador_2());
+                                            }else{ // jugador dos
+                                                memorama.setPares_ganados_jugador_1(memorama.getPares_ganados_jugador_1() + 1);
+                                                memorama.getTablero().score_2.setText("" + memorama.getPares_ganados_jugador_1());
+                                            }
+
+                                            memorama.getTablero().lbl_turn.setText(memorama.getPuerto_contrincante());
                                             memorama.setEs_mi_turno(Boolean.FALSE);
                                         }
                                     }else{
                                         if(memorama.getEs_mi_turno()){
                                             // es mi turno y las imagenes no fueron iguales
+                                            memorama.getTablero().lbl_turn.setText(memorama.getPuerto_contrincante());
                                             memorama.setEs_mi_turno(Boolean.FALSE);
                                         }else{
                                             // no es mi turno y las imagenes no fueron iguales
+                                            memorama.getTablero().lbl_turn.setText(memorama.getPuerto());
                                             memorama.setEs_mi_turno(Boolean.TRUE);
                                         }
                                     }

@@ -58,6 +58,8 @@ public class Memorama implements ActionListener {
     private String imagen_a_voltear;
 
     private Boolean son_imagenes_iguales;
+    private Integer pares_ganados_jugador_1;
+    private Integer pares_ganados_jugador_2;
 
 
     public Memorama(){
@@ -87,6 +89,8 @@ public class Memorama implements ActionListener {
         recibir_primer_imagen = Boolean.FALSE;
         recibir_segunda_imagen = Boolean.FALSE;
         son_imagenes_iguales = Boolean.FALSE;
+        pares_ganados_jugador_1 = 0;
+        pares_ganados_jugador_2 = 0;
     }
 
     // Antes debera de haber sido establecido el puerto del jugadro, modo de juego
@@ -421,33 +425,23 @@ public class Memorama implements ActionListener {
 
     public void revisaMovimiento(Integer boton, String path_carpeta) {
         //System.out.println("Path " + path_carpeta+imagenes_orden.get(boton-1));
+        if(this.getTipo_juego().equals("Pareja")){
+            if(boton < 10){
+                this.setImagen_a_voltear("0" + boton);
+            }else{
+                this.setImagen_a_voltear("" + boton);
+            }
+        }
 
+        tablero.establecerImagen(boton, path_carpeta+imagenes_orden.get(boton-1));
 
         if(!hay_imagen_volteada){
-            this.setHay_imagen_volteada(Boolean.TRUE);
             this.setImagen_volteada(boton); // Pones la imagen uno
-
+            this.setHay_imagen_volteada(Boolean.TRUE);
             if(this.getTipo_juego().equals("Pareja")){
-                if(boton < 10){
-                    this.setImagen_a_voltear("0" + boton);
-                }else{
-                    this.setImagen_a_voltear("" + boton);
-                }
+                this.setEnviar_primer_imagen(Boolean.TRUE);
             }
-
-            tablero.establecerImagen(boton, path_carpeta+imagenes_orden.get(boton-1));
-            this.setEnviar_primer_imagen(Boolean.TRUE);
-        }else{
-            if(this.getTipo_juego().equals("Pareja")){
-                if(boton < 10){
-                    this.setImagen_a_voltear("0" + boton);
-                }else{
-                    this.setImagen_a_voltear("" + boton);
-                }
-            }
-
-            tablero.establecerImagen(boton, path_carpeta+imagenes_orden.get(boton-1));
-
+        }else{ // hay imagen volteada
             if(imagenes_orden.get(boton-1).equals(imagenes_orden.get(imagen_volteada-1))){ // Son iguales
                 tablero.deshabilitarBoton(imagen_volteada);
                 tablero.deshabilitarBoton(boton);
@@ -456,28 +450,62 @@ public class Memorama implements ActionListener {
                 this.setSon_imagenes_iguales(Boolean.TRUE);
                 System.out.println("Se encontro un par de imagenes iguales");
             }else{ // No son iguales
+                this.setSon_imagenes_iguales(Boolean.FALSE);
+                customWait(2000);
                 tablero.establecerImagen(imagen_volteada, path_carpeta+"fondo.jpg");
                 tablero.establecerImagen(boton, path_carpeta+"fondo.jpg");
-                this.setSon_imagenes_iguales(Boolean.FALSE);
+
                 System.out.println("No se encontro par de imagenes iguales");
             }
 
-            this.setEnviar_segunda_imagen(Boolean.TRUE);
+            if(this.getTipo_juego().equals("Pareja")){
+                this.setEnviar_primer_imagen(Boolean.FALSE);
+                this.setEnviar_segunda_imagen(Boolean.TRUE);
+            }
 
 
-            tablero.score_1.setText(""+this.getPares_ganados());
+            if(tipo_juego.equals("Solitario")){
+                tablero.score_1.setText(""+this.getPares_ganados());
+            }
+
             this.setHay_imagen_volteada(Boolean.FALSE);
             this.setImagen_volteada(null);
 
 
-            if(this.getPares_ganados()==20){
-                this.setTerminar_juego(Boolean.TRUE);
-                JOptionPane.showMessageDialog(null, "Ganaste");
-                this.setEs_juego_terminado(Boolean.TRUE);
-                System.out.println("Tablero eliminado");
-                customWait(3000);
-                tablero.dispose();
-                System.exit( 0 );
+            if(this.getTipo_juego().equals("Solitario")) {
+                if (this.getPares_ganados() == 20) {
+                    this.setTerminar_juego(Boolean.TRUE);
+                    JOptionPane.showMessageDialog(null, "Ganaste");
+                    this.setEs_juego_terminado(Boolean.TRUE);
+                    System.out.println("Tablero eliminado");
+                    customWait(2000);
+                    tablero.dispose();
+                    System.exit(0);
+                }
+            }
+
+            if(this.getTipo_juego().equals("Pareja")){
+                if(this.getPares_ganados() == 20){
+                    this.setTerminar_juego(Boolean.TRUE);
+                    if(getEs_jugador_1()){
+                        if(getPares_ganados_jugador_1() > 10){ // gano
+                            JOptionPane.showMessageDialog(null, "Jugador " + this.getPuerto() + ", Ganaste");
+                        }else{
+                            JOptionPane.showMessageDialog(null, "Jugador " + this.getPuerto() + ", Perdiste");
+                        }
+                    }else{
+                        if(getPares_ganados_jugador_2() > 10){ // gano
+                            JOptionPane.showMessageDialog(null, "Jugador " + this.getPuerto() + ", Ganaste");
+                        }else{
+                            JOptionPane.showMessageDialog(null, "Jugador " + this.getPuerto() + ", Perdiste");
+                        }
+                    }
+                    this.setEs_juego_terminado(Boolean.TRUE);
+                    System.out.println("Tablero eliminado");
+                    customWait(2000);
+                    tablero.dispose();
+                    System.exit(0);
+                }
             }
         }
     }
