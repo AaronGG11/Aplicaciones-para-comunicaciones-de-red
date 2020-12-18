@@ -427,7 +427,7 @@ public class Cliente {
                                 System.out.println("Se mostro segunda imagen volteada por oponente -> " + imagen_mov);
                                 //memorama.setEs_mi_turno(Boolean.TRUE);
 
-                                // DEFINIR TURNO
+                                // DEFINIR TURNO -> revisar si es espejo
                                 if(memorama.getTipo_juego().equals("Pareja")){
                                     if(memorama.getSon_imagenes_iguales()){
                                         if(memorama.getEs_mi_turno()){
