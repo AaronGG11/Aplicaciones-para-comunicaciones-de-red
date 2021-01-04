@@ -5,7 +5,7 @@ import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 /**
  *
- * @author miguel angel amador nava
+ * @author Aaron Antonio Garcia Gonzalez
  */
 
 public class UIFunctions {

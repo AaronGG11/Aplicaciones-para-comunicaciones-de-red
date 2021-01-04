@@ -14,7 +14,7 @@ import javax.swing.JTextField;
 
 /**
  *
- * @author miguel angel amador nava
+ *  @author Aaron Antonio Garcia Gonzalez
  */
 public class LogIn extends javax.swing.JDialog implements ActionListener{
 

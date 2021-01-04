@@ -7,7 +7,7 @@ import java.net.MulticastSocket;
 
 /**
  *
- * @author miguel angel amador nava
+ *  @author Aaron Antonio Garcia Gonzalez
  */
 public class AdministradorDeOperaciones 
 {

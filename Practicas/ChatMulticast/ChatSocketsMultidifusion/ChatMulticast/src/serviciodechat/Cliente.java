@@ -20,7 +20,7 @@ import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 /**
  *
- * @author miguel angel amador nava
+ *  @author Aaron Antonio Garcia Gonzalez
  */
 public class Cliente extends javax.swing.JFrame implements Runnable, ActionListener, 
         DocumentListener
