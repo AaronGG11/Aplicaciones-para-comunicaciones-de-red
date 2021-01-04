@@ -170,10 +170,12 @@ public class Cliente extends javax.swing.JFrame implements Runnable, ActionListe
         if(nombreDestino.equals(GRUPO))
         {
             Conversacion.setText(am.formatoAMensaje(msj));
-            grupo.setBackground(Color.BLUE);
+            grupo.setForeground(Color.white);
+            grupo.setBackground(new Color(59,89,152));
         }else
         {
-            grupo.setBackground(Color.GREEN);
+            grupo.setForeground(Color.white);
+            grupo.setBackground(new Color(234,161,27));
         }
     }
     
@@ -183,10 +185,12 @@ public class Cliente extends javax.swing.JFrame implements Runnable, ActionListe
         if(nombreDestino.equals(mensaje.getNombreOrigen()))
         {
             Conversacion.setText(am.formatoAMensaje(mensaje.getMensaje()));
-            usuarios.get(mensaje.getNombreOrigen()).setBackground(Color.BLUE);
+            usuarios.get(mensaje.getNombreOrigen()).setForeground(Color.white);
+            usuarios.get(mensaje.getNombreOrigen()).setBackground(new Color(59,89,152));
         }else
         {
-            usuarios.get(mensaje.getNombreOrigen()).setBackground(Color.GREEN);
+            usuarios.get(mensaje.getNombreOrigen()).setForeground(Color.white);
+            usuarios.get(mensaje.getNombreOrigen()).setBackground(new Color(234,161,27));
         }
     }        
         
@@ -234,7 +238,8 @@ public class Cliente extends javax.swing.JFrame implements Runnable, ActionListe
         {
             conversaciones.put(nombre, nombre + " ha iniciado sesión");
             JButton b = new JButton(nombre);
-            b.setBackground(Color.GREEN);
+            b.setForeground(Color.white);
+            b.setBackground(new Color(234,161,27));
             b.addActionListener(this);
             usuarios.put(nombre, b);
             return false;
@@ -265,6 +270,8 @@ public class Cliente extends javax.swing.JFrame implements Runnable, ActionListe
         jScrollPane3.setViewportView(Texto);
 
         Enviar.setText("Enviar");
+        Enviar.setForeground(Color.white);
+        Enviar.setBackground(Color.black);
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -384,7 +391,8 @@ public class Cliente extends javax.swing.JFrame implements Runnable, ActionListe
         else
         {
             JButton b = (JButton) ae.getSource();
-            b.setBackground(Color.BLUE);
+            b.setForeground(Color.white);
+            b.setBackground(new Color(59,89,152));
             nombreDestino = b.getText();
             Conversacion.setText(am.formatoAMensaje(conversaciones.get(nombreDestino)));
             this.setTitle(nombre + " - " + nombreDestino);
