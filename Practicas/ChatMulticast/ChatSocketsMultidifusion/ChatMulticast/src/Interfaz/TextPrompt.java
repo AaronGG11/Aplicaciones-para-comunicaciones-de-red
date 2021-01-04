@@ -22,9 +22,7 @@ import javax.swing.text.JTextComponent;
  *  of the parent text component. You are free to change the properties after
  *  class construction.
  */
-public class TextPrompt extends JLabel
-	implements FocusListener, DocumentListener
-{
+public class TextPrompt extends JLabel implements FocusListener, DocumentListener {
 	public enum Show
 	{
 		ALWAYS,

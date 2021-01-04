@@ -22,9 +22,7 @@ import javax.swing.event.DocumentListener;
  *
  *  @author Aaron Antonio Garcia Gonzalez
  */
-public class Cliente extends javax.swing.JFrame implements Runnable, ActionListener, 
-        DocumentListener
-{
+public class Cliente extends javax.swing.JFrame implements Runnable, ActionListener, DocumentListener {
     public final static String GRUPO = "GRUPO";
     
     public final int DESCONOCIDO_ID     = 0;
@@ -39,7 +37,7 @@ public class Cliente extends javax.swing.JFrame implements Runnable, ActionListe
     HashMap<String, String> conversaciones = new HashMap<>();//K = Nombre, V = Mensajes
     HashMap<String, JButton> usuarios = new HashMap<>(); //K = nombre , V = jbutton
     JButton grupo;
-    private final PanelFondo contenedor = new PanelFondo("/Interfaz/cuadro-blanco.png");
+    private final PanelFondo contenedor = new PanelFondo("/Interfaz/Patrones.jpg");
     
     public Cliente() throws IOException {
         
