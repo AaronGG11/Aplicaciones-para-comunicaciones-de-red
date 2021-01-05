@@ -44,7 +44,7 @@ public class Cliente extends javax.swing.JFrame implements Runnable, ActionListe
         setContentPane(contenedor);
         initComponents();
         init();
-        this.setResizable(false);//no permite que sea redimincionable
+        this.setResizable(false);//no permite que sea redimencionable
         this.setLocationRelativeTo(null);//la ventana aparece al centro de la pantalla
         this.setTitle(nombre);
         am = new AnalisisDeMensajes();
@@ -270,8 +270,6 @@ public class Cliente extends javax.swing.JFrame implements Runnable, ActionListe
         jScrollPane3.setViewportView(Texto);
 
         Enviar.setText("Enviar");
-        Enviar.setForeground(Color.white);
-        Enviar.setBackground(Color.black);
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -282,10 +280,10 @@ public class Cliente extends javax.swing.JFrame implements Runnable, ActionListe
                     .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 309, Short.MAX_VALUE)
                     .addComponent(jScrollPane3))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                    .addComponent(UsuariosConectados, javax.swing.GroupLayout.DEFAULT_SIZE, 100, Short.MAX_VALUE)
-                    .addComponent(Enviar, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(UsuariosConectados)
+                    .addComponent(Enviar, javax.swing.GroupLayout.DEFAULT_SIZE, 129, Short.MAX_VALUE))
+                .addContainerGap())
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)

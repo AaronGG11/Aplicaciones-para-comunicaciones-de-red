@@ -7,21 +7,46 @@ package serviciodechat;
  */
 public class AnalisisDeMensajes 
 {
-    private final String ALEGRE = " <img src=" +this.getClass().getClassLoader()
-                                    .getResource("Emojis/alegre.png").toString() 
-                                    + " width='50' height='50' alt='emoji'> ";
+    // Alegre -> 
+    private final String ALEGRE = " <img src=" +
+                                    "http://tusimagenesde.com/wp-content/uploads/2015/01/gifs-animados-5.gif"
+                                    + " width='30' height='30' alt='emoji'> ";
     
+    // Lengua
     private final String LENGUA = " <img src=" +this.getClass().getClassLoader()
                                     .getResource("Emojis/lengua.png").toString() 
-                                    + " width='50' height='50' alt='emoji'> ";
+                                    + " width='30' height='30' alt='emoji'> ";
     
-    private final  String RISA = " <img src=" +this.getClass().getClassLoader()
-                                    .getResource("Emojis/risa.png").toString() 
-                                    + " width='50' height='50' alt='emoji'> ";
-    
+    // Triste -> 
     private final String TRISTE = " <img src=" +this.getClass().getClassLoader()
                                     .getResource("Emojis/triste.png").toString() 
-                                    + " width='50' height='50' alt='emoji'> ";
+                                    + " width='30' height='30' alt='emoji'> ";
+    
+    // Amor -> :o
+     private final String AMOR = " <img src=" +this.getClass().getClassLoader()
+                                    .getResource("Emojis/amor.png").toString() 
+                                    + " width='30' height='30' alt='emoji'> ";
+     
+    // Risa -> :) * xd
+    private final  String RISA = " <img src=" +this.getClass().getClassLoader()
+                                    .getResource("Emojis/risa.png").toString() 
+                                    + " width='30' height='30' alt='emoji'> ";
+    
+    // Enojo -> :S
+    private final  String ENOJO = " <img src=" +this.getClass().getClassLoader()
+                                    .getResource("Emojis/enojo.png").toString() 
+                                    + " width='30' height='30' alt='emoji'> ";
+    
+    // Loco -> _loco_
+    private final  String LOCO = " <img src=" +this.getClass().getClassLoader()
+                                    .getResource("Emojis/loco.gif").toString() 
+                                    + " width='30' height='30' alt='emoji'> ";
+    
+    // Homero -> _Homero_
+    private final  String HOMERO = " <img src=" +
+                                    "http://tusimagenesde.com/wp-content/uploads/2015/01/gifs-animados-5.gif"
+                                    + " width='30' height='30' alt='emoji'> ";
+    
     
     
     public String formatoAMensaje(String mensaje)
@@ -121,5 +146,4 @@ public class AnalisisDeMensajes
         //return formatoAMensaje(msj);
         return msj;
     }
-   
 }
