@@ -65,7 +65,7 @@ public class AnalisisDeMensajes
                 {   //risa
                     if(mensaje.charAt(i + 2) == 'd' && mensaje.charAt(i + 3) == ' ')
                     {
-                        msj += RISA;
+                        msj += ALEGRE;
                         i += 3;
                         System.out.print("imgr");
                     }
@@ -92,7 +92,12 @@ public class AnalisisDeMensajes
                         }
                         else if(c == ')')
                         {
-                           msj += ALEGRE;
+                           msj += RISA;
+                            i += 3;
+                            System.out.print("imga");
+                        }
+                        else if(c == 'o'){
+                            msj += AMOR;
                             i += 3;
                             System.out.print("imga");
                         }
