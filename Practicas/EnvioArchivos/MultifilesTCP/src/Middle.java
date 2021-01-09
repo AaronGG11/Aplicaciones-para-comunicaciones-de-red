@@ -1,3 +1,4 @@
+import java.io.File;
 import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
@@ -10,6 +11,10 @@ public class Middle {
     public static void main(String[] args) {
         // This is a client and a server
         StringBuilder LOCAL_PATH = new StringBuilder();
+        LOCAL_PATH.append(".");
+        LOCAL_PATH.append(File.separator);
+        LOCAL_PATH.append("middle_files");
+        LOCAL_PATH.append(File.separator);
 
         // Client part
         // Server's credentials to connect

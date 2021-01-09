@@ -1,3 +1,4 @@
+import java.io.File;
 import java.io.IOException;
 import java.net.Socket;
 
@@ -6,10 +7,14 @@ import java.net.Socket;
  * @author Aaron Garcia
  */
 
-public class Final {
+public class Terminal {
     public static void main(String[] args) {
         // This is just a client
         StringBuilder LOCAL_PATH = new StringBuilder();
+        LOCAL_PATH.append(".");
+        LOCAL_PATH.append(File.separator);
+        LOCAL_PATH.append("terminal_files");
+        LOCAL_PATH.append(File.separator);
 
 
         // Server's credentials to connect
