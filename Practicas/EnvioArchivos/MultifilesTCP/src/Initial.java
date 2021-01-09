@@ -11,7 +11,7 @@ public class Initial {
     public static void main(String[] args) {
         // Configuration values
         Integer longitud_buffer = 1024;
-        Integer numero_archivos = 7;
+        Integer numero_archivos = 0;
         Boolean algoritmo_nigle = Boolean.TRUE;
 
         // This is just a server
@@ -25,6 +25,9 @@ public class Initial {
 
 
         JFileChooser jf = new JFileChooser();
+        jf.setFileSelectionMode(JFileChooser.FILES_AND_DIRECTORIES);
+        jf.setMultiSelectionEnabled(true);
+
         int r = jf.showOpenDialog(null);
         if (r==JFileChooser.APPROVE_OPTION) {
             File f = jf.getSelectedFile();  //Manejador
@@ -65,7 +68,7 @@ public class Initial {
                 dos.writeLong(tam);
                 dos.flush();
 
-                byte[] b = new byte[1024];
+                byte[] b = new byte[longitud_buffer];
                 long enviados = 0;
                 int porcentaje, n;
 
