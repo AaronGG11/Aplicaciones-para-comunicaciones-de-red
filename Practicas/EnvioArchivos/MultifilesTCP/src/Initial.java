@@ -13,6 +13,7 @@ public class Initial {
         Integer longitud_buffer = 1024;
         Integer numero_archivos = 0;
         Boolean algoritmo_nigle = Boolean.TRUE;
+        File archivos[] = null;
 
         // This is just a server
         Integer PORT = 7000;
@@ -23,20 +24,15 @@ public class Initial {
         String nombre = new String();
         Long tam = 0L;
 
-
         JFileChooser jf = new JFileChooser();
-        jf.setFileSelectionMode(JFileChooser.FILES_AND_DIRECTORIES);
+        jf.setFileSelectionMode(JFileChooser.FILES_ONLY);
         jf.setMultiSelectionEnabled(true);
 
-        int r = jf.showOpenDialog(null);
-        if (r==JFileChooser.APPROVE_OPTION) {
-            File f = jf.getSelectedFile();  //Manejador
-            archivo = f.getAbsolutePath(); //Dirección
-            nombre = f.getName(); //Nombre
-            tam = f.length();  //Tamaño
-
+        if (jf.showOpenDialog(null) == JFileChooser.APPROVE_OPTION) {
+            archivos = jf.getSelectedFiles();
+            numero_archivos = archivos.length;
         }
-        System.out.println("Cargando archivo ...");
+        System.out.println("Cargando archivos ...");
 
         try
         {
