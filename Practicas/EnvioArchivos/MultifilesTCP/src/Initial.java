@@ -18,12 +18,14 @@ public class Initial {
         // This is just a server
         Integer PORT = 7000;
 
+        // This is a client and a server
+        StringBuilder LOCAL_PATH = new StringBuilder();
+        LOCAL_PATH.append(".");
+        LOCAL_PATH.append(File.separator);
+        LOCAL_PATH.append("initial_files");
+        LOCAL_PATH.append(File.separator);
 
-        // Read files
-        String archivo = new String();
-        String nombre = new String();
-        Long tam = 0L;
-
+        // JFile Chooser
         JFileChooser jf = new JFileChooser();
         jf.setFileSelectionMode(JFileChooser.FILES_ONLY);
         jf.setMultiSelectionEnabled(true);
@@ -46,40 +48,55 @@ public class Initial {
                 Socket client = server.accept();
                 System.out.println("Cliente conectado desde: " + client.getInetAddress() + ":" + client.getPort());
 
-                DataOutputStream dos = new DataOutputStream(client.getOutputStream());
-                DataInputStream dis = new DataInputStream(new FileInputStream(archivo));
+                DataOutputStream dos = new DataOutputStream(client.getOutputStream()); // misma salida
 
+                // Enviar longitud de buffer
                 dos.writeInt(longitud_buffer);
                 dos.flush();
 
+                // Enviar numero de archivos a enviar
                 dos.writeInt(numero_archivos);
                 dos.flush();
 
+                // Enviar bandera de algoritmo de nigle
                 dos.writeBoolean(algoritmo_nigle);
                 dos.flush();
 
-                dos.writeUTF(nombre);
-                dos.flush();
-
-                dos.writeLong(tam);
-                dos.flush();
-
-                byte[] b = new byte[longitud_buffer];
-                long enviados = 0;
-                int porcentaje, n;
-
-                while (enviados < tam){
-                    n = dis.read(b);
-                    dos.write(b,0,n);
+                // Enviar cada archivo
+                for(File archivo : archivos){
+                    // Enviar nombre de archivo
+                    String nombre_archivo = archivo.getName();
+                    dos.writeUTF(nombre_archivo);
                     dos.flush();
-                    enviados = enviados+n;
-                    porcentaje = (int)(enviados*100/tam);
-                    System.out.print("Enviado: "+porcentaje+"%\r");
-                }//While
-                System.out.println("Archivo enviado\n\n");
-                dos.close();
-                dis.close();
 
+                    // Enviar tamaño de archivo
+                    Long longitud_archivo = archivo.length();
+                    dos.writeLong(longitud_archivo);
+                    dos.flush();
+
+                    // Entrada de datos
+                    String path_carpeta = LOCAL_PATH + archivo.getAbsolutePath();
+                    DataInputStream dis = new DataInputStream(new FileInputStream(path_carpeta)); // diferente entrada
+
+                    // Enviar archivo
+                    byte[] b = new byte[longitud_buffer];
+                    long enviados = 0;
+                    int porcentaje, n;
+
+                    while (enviados < longitud_archivo){
+                        n = dis.read(b);
+                        dos.write(b,0,n);
+                        dos.flush();
+                        enviados = enviados+n;
+                        porcentaje = (int)((enviados*100) / longitud_archivo);
+                        System.out.print("Enviado: " + porcentaje + "%\r");
+                    }
+
+                    dis.close();
+                    System.out.println("Se envio archivo: " + nombre_archivo);
+                }
+
+                dos.close();
                 client.close();
             }
         } catch (IOException e) {
