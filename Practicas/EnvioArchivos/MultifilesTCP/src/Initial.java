@@ -18,13 +18,6 @@ public class Initial {
         // This is just a server
         Integer PORT = 7000;
 
-        // This is a client and a server
-        StringBuilder LOCAL_PATH = new StringBuilder();
-        LOCAL_PATH.append(".");
-        LOCAL_PATH.append(File.separator);
-        LOCAL_PATH.append("initial_files");
-        LOCAL_PATH.append(File.separator);
-
         // JFile Chooser
         JFileChooser jf = new JFileChooser();
         jf.setFileSelectionMode(JFileChooser.FILES_ONLY);
@@ -75,11 +68,11 @@ public class Initial {
                     dos.flush();
 
                     // Entrada de datos
-                    String path_carpeta = LOCAL_PATH + archivo.getAbsolutePath();
+                    String path_carpeta = archivo.getAbsolutePath();
                     DataInputStream dis = new DataInputStream(new FileInputStream(path_carpeta)); // diferente entrada
 
                     // Enviar archivo
-                    byte[] b = new byte[longitud_buffer];
+                    byte[] b = new byte[1024];
                     long enviados = 0;
                     int porcentaje, n;
 

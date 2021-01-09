@@ -50,6 +50,7 @@ public class Middle {
             DataOutputStream dos = new DataOutputStream(new FileOutputStream(LOCAL_PATH + nombre));
             long recibidos=0;
             int n, porcentaje;
+
             while(recibidos < tam){
                 n = dis.read(b);
                 dos.write(b,0,n);
