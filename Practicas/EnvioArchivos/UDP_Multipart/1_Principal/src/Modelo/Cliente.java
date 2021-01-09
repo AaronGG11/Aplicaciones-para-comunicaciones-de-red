@@ -5,46 +5,48 @@ import java.io.*;
 import javax.swing.JFileChooser;
 
 public class Cliente {
-    public static void main(String[] args) {
-        try{
-            BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
-            System.out.printf("Escriba la dirección del servidor:");
-            String host = br.readLine();
-            System.out.printf("\n\nEscriba el puerto:");
-            int pto = Integer.parseInt(br.readLine());
-            Socket cl = new Socket(host, pto);
-            JFileChooser jf = new JFileChooser();
-            int r = jf.showOpenDialog(null);
-            if (r==JFileChooser.APPROVE_OPTION){
-                File f = jf.getSelectedFile();  //Manejador
-                String archivo = f.getAbsolutePath(); //Dirección
-                String nombre = f.getName(); //Nombre
-                long tam = f.length();  //Tamaño
-                DataOutputStream dos = new DataOutputStream(cl.getOutputStream());
-                DataInputStream dis = new DataInputStream(new FileInputStream(archivo));
-                dos.writeUTF(nombre);
+    private static final int PUERTO = 9911;
+    public static void main(String[] args) throws IOException {
+        ServerSocket s = new ServerSocket(PUERTO);
+        s.setReuseAddress(true);
+        System.out.println("Servicio iniciado...");
+        for (; ; ) {
+            System.out.println("Eperando conexion...");
+            Socket cl = s.accept();
+            System.out.format("Cliente conectado desde: %s:%s\n", cl.getInetAddress(), cl.getPort());
+            DataInputStream dis = new DataInputStream(cl.getInputStream());
+            String ruta = dis.readUTF();
+            String nombre = dis.readUTF();
+
+            escribirArchivo("", dis);
+
+            System.out.println("¡Archivo recibido!\n");
+            dis.close();
+            cl.close();
+        }
+
+    }
+
+    private static void escribirArchivo(String nombre, DataInputStream dis) {
+        System.out.format("Escribiendo el archivo: %s\n", nombre);
+        try {
+            DataOutputStream dos = new DataOutputStream(new FileOutputStream(nombre));
+            long recibidos = 0;
+            long tam = dis.readLong();
+            int n;
+            while (recibidos < tam) {
+                byte[] buffer = new byte[1500];
+                n = dis.read(buffer);
+                dos.write(buffer, 0, n);
                 dos.flush();
-                dos.writeLong(tam);
-                dos.flush();
-                byte[] b = new byte[1024];
-                long enviados = 0;
-                int porcentaje, n;
-                while (enviados < tam){
-                    n = dis.read(b);
-                    dos.write(b,0,n);
-                    dos.flush();
-                    enviados = enviados+n;
-                    porcentaje = (int)(enviados*100/tam);
-                    System.out.print("Enviado: "+porcentaje+"%\r");
-                }//While
-                System.out.print("\n\nArchivo enviado");
-                dos.close();
-                dis.close();
-                cl.close();
-            }//if
-        }catch(Exception e){
+                recibidos += n;
+            }
+            dos.close();
+        } catch (IOException e) {
             e.printStackTrace();
         }
 
     }
 }
+
+
