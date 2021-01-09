@@ -53,7 +53,6 @@ public class Servidor {
         }//catch
     }
 }
-
 ```
 
 #### Cliente
@@ -105,12 +104,25 @@ public class Cliente {
         }
     }
 }
+```
+
+### Algoritmo de Nable
+El Algoritmo de Nagle se trata de un procedimiento que supone una mejora y aumento de eficiencia de las redes de comunicación basadas en Transmission Control Protocol (TCP). El algoritmo de Nagle es un método heurístico para evitar enviar paquetes IP particularmente pequeños, también denominados pequegramas. El algoritmo de Nagle intenta evitar la congestión que estos paquetes pueden ocasionar en la red reteniendo por poco tiempo la transmisión de datos TCP en algunas circunstancias.
 
 ```
+if hay nuevos datos en enviar
+ if el tamaño de ventana y su disponibilidad de datos es >= MSS
+  envía el tamaño de MSS ahora
+ else
+  if hay datos sin confirmar en espera
+   encola los datos en el buffer hasta recibir un reconocimiento
+  else
+   envía los datos ahora
+  end if
+ end if
+end if
+```
+
 
 ## Pruebas
 Realiza pruebas intentando enviar distintos tipos de archivo (imágenes, texto, ejecutables), así mismo intenta enviar archivos de distintos tamaños (menos de 100KB, más de 100KB y menos de 10MB, más de 10MB y menos de 200MB, más de 200MB y hasta 2GB).
-
-
-
-
