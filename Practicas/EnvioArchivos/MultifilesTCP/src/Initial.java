@@ -9,8 +9,14 @@ import java.net.Socket;
 
 public class Initial {
     public static void main(String[] args) {
+        // Configuration values
+        Integer longitud_buffer = 1024;
+        Integer numero_archivos = 7;
+        Boolean algoritmo_nigle = Boolean.TRUE;
+
         // This is just a server
         Integer PORT = 7000;
+
 
         // Read files
         String archivo = new String();
@@ -43,6 +49,15 @@ public class Initial {
 
                 DataOutputStream dos = new DataOutputStream(client.getOutputStream());
                 DataInputStream dis = new DataInputStream(new FileInputStream(archivo));
+
+                dos.writeInt(longitud_buffer);
+                dos.flush();
+
+                dos.writeInt(numero_archivos);
+                dos.flush();
+
+                dos.writeBoolean(algoritmo_nigle);
+                dos.flush();
 
                 dos.writeUTF(nombre);
                 dos.flush();

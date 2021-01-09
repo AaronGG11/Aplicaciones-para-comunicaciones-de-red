@@ -8,6 +8,11 @@ import java.net.Socket;
 
 public class Terminal {
     public static void main(String[] args) {
+        // Configuration values
+        Integer longitud_buffer;
+        Integer numero_archivos;
+        Boolean algoritmo_nigle;
+
         // This is just a client
         StringBuilder LOCAL_PATH = new StringBuilder();
         LOCAL_PATH.append(".");
@@ -27,6 +32,15 @@ public class Terminal {
 
 
             DataInputStream dis = new DataInputStream(cliente.getInputStream());
+
+            longitud_buffer = dis.readInt();
+            numero_archivos = dis.readInt();
+            algoritmo_nigle = dis.readBoolean();
+
+            System.out.println(longitud_buffer);
+            System.out.println(numero_archivos);
+            System.out.println(algoritmo_nigle);
+
             byte[] b = new byte[1024];
             nombre = dis.readUTF();
             System.out.println("Recibimos el archivo:"+nombre);

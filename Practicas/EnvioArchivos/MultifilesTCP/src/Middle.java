@@ -8,6 +8,12 @@ import java.net.Socket;
 
 public class Middle {
     public static void main(String[] args) {
+        // Configuration values
+        Integer longitud_buffer = null;
+        Integer numero_archivos = null;
+        Boolean algoritmo_nigle = null;
+
+
         // This is a client and a server
         StringBuilder LOCAL_PATH = new StringBuilder();
         LOCAL_PATH.append(".");
@@ -26,8 +32,17 @@ public class Middle {
             Socket cliente = new Socket(HOST, PORT);
             System.out.println("Cliente: " + cliente.getLocalSocketAddress() + " conectado");
 
-
             DataInputStream dis = new DataInputStream(cliente.getInputStream());
+
+            longitud_buffer = dis.readInt();
+            numero_archivos = dis.readInt();
+            algoritmo_nigle = dis.readBoolean();
+
+            System.out.println(longitud_buffer);
+            System.out.println(numero_archivos);
+            System.out.println(algoritmo_nigle);
+
+
             byte[] b = new byte[1024];
             nombre = dis.readUTF();
             System.out.println("Recibimos el archivo:"+nombre);
@@ -43,7 +58,7 @@ public class Middle {
                 porcentaje = (int)(recibidos*100/tam);
                 System.out.print("Recibido: "+porcentaje+"%\r");
             }//While
-            System.out.print("\n\nArchivo recibido.\n");
+            System.out.println("Archivo recibido.\n");
             dos.close();
             dis.close();
 
@@ -75,6 +90,15 @@ public class Middle {
 
                 DataOutputStream dos = new DataOutputStream(client.getOutputStream());
                 DataInputStream dis = new DataInputStream(new FileInputStream(archivo));
+
+                dos.writeInt(longitud_buffer);
+                dos.flush();
+
+                dos.writeInt(numero_archivos);
+                dos.flush();
+
+                dos.writeBoolean(algoritmo_nigle);
+                dos.flush();
 
                 dos.writeUTF(nombre_local);
                 dos.flush();
