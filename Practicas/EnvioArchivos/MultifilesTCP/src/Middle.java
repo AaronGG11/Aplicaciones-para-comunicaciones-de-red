@@ -1,5 +1,4 @@
-import java.io.File;
-import java.io.IOException;
+import java.io.*;
 import java.net.ServerSocket;
 import java.net.Socket;
 
@@ -16,6 +15,8 @@ public class Middle {
         LOCAL_PATH.append("middle_files");
         LOCAL_PATH.append(File.separator);
 
+        String nombre = new String();
+
         // Client part
         // Server's credentials to connect
         String HOST = "localhost";
@@ -23,7 +24,28 @@ public class Middle {
 
         try {
             Socket cliente = new Socket(HOST, PORT);
+            System.out.println("Cliente: " + cliente.getLocalSocketAddress() + " conectado");
 
+
+            DataInputStream dis = new DataInputStream(cliente.getInputStream());
+            byte[] b = new byte[1024];
+            nombre = dis.readUTF();
+            System.out.println("Recibimos el archivo:"+nombre);
+            long tam = dis.readLong();
+            DataOutputStream dos = new DataOutputStream(new FileOutputStream(LOCAL_PATH + nombre));
+            long recibidos=0;
+            int n, porcentaje;
+            while(recibidos < tam){
+                n = dis.read(b);
+                dos.write(b,0,n);
+                dos.flush();
+                recibidos = recibidos + n;
+                porcentaje = (int)(recibidos*100/tam);
+                System.out.print("Recibido: "+porcentaje+"%\r");
+            }//While
+            System.out.print("\n\nArchivo recibido.\n");
+            dos.close();
+            dis.close();
 
             cliente.close();
         } catch (IOException e) {
@@ -32,7 +54,8 @@ public class Middle {
 
 
         // Server part
-        Integer LOCAL_PORT = 7000;
+        Integer LOCAL_PORT = 7001;
+        System.out.println();
 
         try {
             ServerSocket server = new ServerSocket(LOCAL_PORT);
@@ -45,7 +68,35 @@ public class Middle {
                 Socket client = server.accept();
                 System.out.println("Cliente conectado desde: " + client.getInetAddress() + " : " + client.getPort());
 
+                File f = new File(LOCAL_PATH + nombre);
+                String archivo = f.getAbsolutePath(); //Dirección
+                String nombre_local = f.getName(); //Nombre
+                Long tam = f.length();  //Tamaño
 
+                DataOutputStream dos = new DataOutputStream(client.getOutputStream());
+                DataInputStream dis = new DataInputStream(new FileInputStream(archivo));
+
+                dos.writeUTF(nombre_local);
+                dos.flush();
+
+                dos.writeLong(tam);
+                dos.flush();
+
+                byte[] b = new byte[1024];
+                long enviados = 0;
+                int porcentaje, n;
+
+                while (enviados < tam){
+                    n = dis.read(b);
+                    dos.write(b,0,n);
+                    dos.flush();
+                    enviados = enviados+n;
+                    porcentaje = (int)(enviados*100/tam);
+                    System.out.print("Enviado: "+porcentaje+"%\r");
+                }//While
+                System.out.println("Archivo enviado\n\n");
+                dos.close();
+                dis.close();
 
                 client.close();
             }
