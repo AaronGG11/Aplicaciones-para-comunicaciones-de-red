@@ -8,8 +8,21 @@ Implementar una aplicación para el envío de múltiples archivos a través de l
 ## Requerimientos
 - Implementar un servicio de transferencia de archivos para que el cliente de la aplicación pueda enviar uno o más archivos de cualquier tamaño y tipo hacia el servidor.
 -  Desde la aplicación cliente, la posibilidad demodificar parámetros de la comunicación  para modificar el desempeño de la aplicación, mediante el uso de opciones de socket:
- - Habilitar/deshabilitar el algoritmo de Nagle.
- - Modificar el tamaño de los buffers de escritura/lectura.
+	- Habilitar/deshabilitar el algoritmo de Nagle.
+	- Modificar el tamaño de los buffers de escritura/lectura.
+- Initial
+	- Funciona como servidor.
+	- Carga archivos mediante Java chooser.
+	- Envia archivos a los clientes (middle) que lo solicitan.
+- Middle
+	- Funciona como cliente y servidor.
+	- Inmediatamente al iniciar, la parte cliente solicita archivos al servidor (initital).
+	- Guarda archivos recibidos en su carpeta local.
+	- Envia archivos a los clientes (terminal) que lo solicitan.
+- Terminal
+	- Funciona como cliente.
+	- Inmediatamente al iniciar, solicita archivos al servidor (middle).
+	- Guarda archivos recibidos en su carpeta local.
 
 ## Código base
 #### Servidor
@@ -106,7 +119,7 @@ public class Cliente {
 }
 ```
 
-### Algoritmo de Nable
+### Algoritmo de Nagle
 El Algoritmo de Nagle se trata de un procedimiento que supone una mejora y aumento de eficiencia de las redes de comunicación basadas en Transmission Control Protocol (TCP). El algoritmo de Nagle es un método heurístico para evitar enviar paquetes IP particularmente pequeños, también denominados pequegramas. El algoritmo de Nagle intenta evitar la congestión que estos paquetes pueden ocasionar en la red reteniendo por poco tiempo la transmisión de datos TCP en algunas circunstancias.
 
 ```
