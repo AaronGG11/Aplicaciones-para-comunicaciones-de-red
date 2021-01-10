@@ -21,10 +21,29 @@ public class Ventana extends javax.swing.JFrame {
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JLabel labelTitle;
 
+    private Integer longitud_buffer;
+    private Boolean algoritmo_nigle;
+
     /**
      * Creates new form EnviarArchivo
      */
     public Ventana() {
+        this.longitud_buffer = Integer.parseInt(JOptionPane.showInputDialog(null, "Tamaño de buffer",
+                "Configuración", JOptionPane.PLAIN_MESSAGE));
+
+        String[] values = {"Si","No"};
+        String result = (String)JOptionPane.showInputDialog(null, "¿Usar algoritmo de Nigle?",
+                "Configuración", JOptionPane.PLAIN_MESSAGE, null, values, values);
+
+        if(result.equals("Si")){
+            this.algoritmo_nigle = Boolean.TRUE;
+        }else{
+            this.algoritmo_nigle = Boolean.FALSE;
+        }
+
+        System.out.println(algoritmo_nigle);
+        System.out.println(longitud_buffer);
+        //JOptionPane.showMessageDialog(null, "Click OK", null, JOptionPane.PLAIN_MESSAGE);
         initComponents();
         myInitComponents();
     }
@@ -64,6 +83,7 @@ public class Ventana extends javax.swing.JFrame {
         //</editor-fold>
         //</editor-fold>
         //</editor-fold>
+
 
         /* Create and display the form */
         java.awt.EventQueue.invokeLater(() -> {
