@@ -87,12 +87,13 @@ public class Initial {
 
                     dis.close();
                     System.out.println("Se envio archivo: " + nombre_archivo);
+                    Thread.sleep(200);
                 }
 
                 dos.close();
                 client.close();
             }
-        } catch (IOException e) {
+        } catch (IOException | InterruptedException e) {
             e.printStackTrace();
         }
     }
