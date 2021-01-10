@@ -21,8 +21,6 @@ public class Middle {
         LOCAL_PATH.append("middle_files");
         LOCAL_PATH.append(File.separator);
 
-        String nombre = new String();
-
         // Client part
         // Server's credentials to connect
         String HOST = "localhost";
@@ -32,8 +30,9 @@ public class Middle {
             Socket cliente = new Socket(HOST, PORT);
             System.out.println("Cliente: " + cliente.getLocalSocketAddress() + " conectado");
 
-            DataInputStream dis = new DataInputStream(cliente.getInputStream());
+            DataInputStream dis = new DataInputStream(cliente.getInputStream()); // misma entrada
 
+            // Recibir valores de configuracion
             longitud_buffer = dis.readInt();
             numero_archivos = dis.readInt();
             algoritmo_nigle = dis.readBoolean();
@@ -42,27 +41,39 @@ public class Middle {
             System.out.println(numero_archivos);
             System.out.println(algoritmo_nigle);
 
+            Integer contador = 0;
+            while(contador < numero_archivos){
+                // Recibir nombre de achivo
+                byte[] b = new byte[1024];
+                String nombre = dis.readUTF();
 
-            byte[] b = new byte[1024];
-            nombre = dis.readUTF();
-            System.out.println("Recibimos el archivo:"+nombre);
-            long tam = dis.readLong();
-            DataOutputStream dos = new DataOutputStream(new FileOutputStream(LOCAL_PATH + nombre));
-            long recibidos=0;
-            int n, porcentaje;
+                System.out.println("Recibimos el archivo:"+nombre);
 
-            while(recibidos < tam){
-                n = dis.read(b);
-                dos.write(b,0,n);
-                dos.flush();
-                recibidos = recibidos + n;
-                porcentaje = (int)(recibidos*100/tam);
-                System.out.print("Recibido: "+porcentaje+"%\r");
-            }//While
-            System.out.println("Archivo recibido.\n");
-            dos.close();
+                // Recibir longitud de archivo
+                long tam = dis.readLong();
+
+                // Salida de datos, diferente por cada archivo
+                DataOutputStream dos = new DataOutputStream(new FileOutputStream(LOCAL_PATH + nombre));
+
+                // Control de cada archivo
+                long recibidos=0;
+                int n, porcentaje;
+
+                while(recibidos < tam){
+                    n = dis.read(b);
+                    dos.write(b,0,n);
+                    dos.flush();
+                    recibidos = recibidos + n;
+                    porcentaje = (int)(recibidos*100/tam);
+                    System.out.print("Recibido: "+porcentaje+"%\r");
+                }//While
+
+                System.out.println("Archivo recibido.");
+
+                dos.close();
+                contador += 1;
+            }
             dis.close();
-
             cliente.close();
         } catch (IOException e) {
             e.printStackTrace();
@@ -83,6 +94,8 @@ public class Middle {
 
                 Socket client = server.accept();
                 System.out.println("Cliente conectado desde: " + client.getInetAddress() + " : " + client.getPort());
+
+                String nombre = new String();
 
                 File f = new File(LOCAL_PATH + nombre);
                 String archivo = f.getAbsolutePath(); //Dirección
