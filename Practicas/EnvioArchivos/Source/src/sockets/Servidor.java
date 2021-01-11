@@ -122,12 +122,15 @@ public class Servidor {
             long recibidos = 0;
             long tam = dis.readLong();
             int n;
+            int porcentaje;
             while (recibidos < tam) {
                 byte[] buffer = new byte[tam_buffer];
                 n = dis.read(buffer);
                 dos.write(buffer, 0, n);
                 dos.flush();
                 recibidos += n;
+                porcentaje = (int) (recibidos * 100 / tam);
+                System.out.println("\rSe ha recibido el: " + porcentaje + "% ...");
             }
             dos.close();
         } catch (IOException e) {

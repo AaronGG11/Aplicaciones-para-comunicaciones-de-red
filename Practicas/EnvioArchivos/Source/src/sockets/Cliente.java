@@ -46,6 +46,7 @@ public class Cliente {
 
                 DataOutputStream dos_archivos = new DataOutputStream(new FileOutputStream(ruta));
                 long recibidos = 0;
+                int porcentaje;
                 int n;
                 while (recibidos < longitud_archivo) {
                     byte[] buffer = new byte[tam_buffer];
@@ -53,6 +54,8 @@ public class Cliente {
                     dos_archivos.write(buffer, 0, n);
                     dos_archivos.flush();
                     recibidos += n;
+                    porcentaje = (int) (recibidos * 100 / longitud_archivo);
+                    System.out.println("\rSe ha recibido el: " + porcentaje + "% ...");
                 }
 
                 dos_archivos.close();
