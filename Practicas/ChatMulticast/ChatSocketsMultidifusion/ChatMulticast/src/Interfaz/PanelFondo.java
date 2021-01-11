@@ -5,6 +5,10 @@ import java.awt.Graphics;
 import java.awt.Image;
 import javax.swing.ImageIcon;
 
+/**
+* Author: Aarón Antonio Garcia González
+* */
+
 public class PanelFondo extends javax.swing.JPanel{
     private Image imagen;
     
