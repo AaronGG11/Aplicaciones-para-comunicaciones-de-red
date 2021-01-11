@@ -1,4 +1,6 @@
 # Práctica: Envio de multiples archivos (Drive)
+- Option #1: Carpeta MultifilesTCP (60%)
+- Option #2: Carpeta Source (100%)
 
 ## Descripción
 Implementar una aplicación para el envío de múltiples archivos a través de la red haciendo uso de sockets de flujo.
