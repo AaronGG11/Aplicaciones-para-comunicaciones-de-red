@@ -16,7 +16,7 @@ public class Cliente {
         LOCAL_PATH.append(File.separator);
 
         // Server's credentials to connect
-        String HOST = "localhost";
+        String HOST = "201.114.240.145";
         Integer PORT = 9999;
 
         try {
