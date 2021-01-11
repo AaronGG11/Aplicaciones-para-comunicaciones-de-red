@@ -47,7 +47,8 @@ public class AdministradorDeOperaciones
         }
     }
     
-    public static AdministradorDeOperaciones getInstance() {
+    public static AdministradorDeOperaciones getInstance()
+    {
         return AdministradorDeOperacionesHolder.INSTANCE;
     }
     
