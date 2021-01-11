@@ -43,7 +43,7 @@ public class Ventana extends javax.swing.JFrame {
 
         System.out.println(algoritmo_nigle);
         System.out.println(longitud_buffer);
-        //JOptionPane.showMessageDialog(null, "Click OK", null, JOptionPane.PLAIN_MESSAGE);
+
         initComponents();
         myInitComponents();
     }
@@ -160,8 +160,13 @@ public class Ventana extends javax.swing.JFrame {
             for (File archivo : archivos) {
                 try {
                     // Manda las carpetas recursivamente
-                    if (archivo.isDirectory()) socketEnvio.enviarCarpetas(archivo, "");
-                    else socketEnvio.enviarArchivo(archivo, ""); // Manda un solo archivo
+                    if (archivo.isDirectory()) {
+                        socketEnvio.enviarCarpetas(archivo, "");
+                    }
+                    else {
+                        // Aqui hay que pasarle nigle y tamaño de buffer
+                        socketEnvio.enviarArchivo(archivo, ""); // Manda un solo archivo
+                    }
                 } catch (IOException ex) {
                     Logger.getLogger(Ventana.class.getName()).log(Level.SEVERE, null, ex);
                     JOptionPane.showMessageDialog(this,
@@ -175,7 +180,7 @@ public class Ventana extends javax.swing.JFrame {
 
     private void myInitComponents() {
         // Creamos nuestro socket de envio
-        socketEnvio = new SocketEnvio(HOST, PORT);
+        socketEnvio = new SocketEnvio(HOST, PORT, longitud_buffer, algoritmo_nigle);
         // Utilizamos drag an drop sobre la jList
         jListFiles.setTransferHandler(new ListTransferHandler(TransferHandler.COPY, socketEnvio));
         // la posiscion en la que se inserte sera la que ocupe en la jList

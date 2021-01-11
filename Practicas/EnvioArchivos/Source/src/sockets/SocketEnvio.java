@@ -9,15 +9,23 @@ import java.net.Socket;
 public class SocketEnvio {
     private final String host;
     private final int port;
+    private final int tam_buffer;
+    private final boolean algoritmo_nigle;
 
-    public SocketEnvio(String host, int port) {
+
+    public SocketEnvio(String host, int port, int tam_buffer, boolean algoritmo_nigle) {
         this.host = host;
         this.port = port;
+        this.tam_buffer = tam_buffer;
+        this.algoritmo_nigle = algoritmo_nigle;
     }
 
     public void enviarArchivo(File file, String destino) throws IOException {
         Socket cl = new Socket(host, port);
         String nombre = file.getName();
+
+        cl.setTcpNoDelay(algoritmo_nigle);
+
         long tam = file.length();
         long enviados = 0;
         int porcentaje;
@@ -30,6 +38,14 @@ public class SocketEnvio {
 
         // tipo de cliente
         dos.writeInt(1); // cliente tipo 1
+        dos.flush();
+
+        // tam de buffer
+        dos.writeInt(tam_buffer);
+        dos.flush();
+
+        // bandera de niggle
+        dos.writeBoolean(algoritmo_nigle);
         dos.flush();
 
         // Usamos destino para ir almacenando la ruta del archivo/carpeta
@@ -46,7 +62,7 @@ public class SocketEnvio {
         System.out.format("Que esta en la ruta: %s\n", ruta);
 
         while (enviados < tam) {
-            byte[] b = new byte[1500];
+            byte[] b = new byte[tam_buffer];
             n = dis.read(b);
             dos.write(b, 0, n);
             dos.flush();

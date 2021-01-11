@@ -12,15 +12,19 @@ public class Servidor {
 
     public static void main(String[] args) throws IOException, InterruptedException {
         StringBuilder LOCAL_PATH = new StringBuilder();
+
+        Integer tam_buffer = 1024; // deafult
+        Boolean algoritmo_nigle = Boolean.FALSE; // DEFAULT
+
         LOCAL_PATH.append(".");
         LOCAL_PATH.append(File.separator);
         LOCAL_PATH.append("middle_files");
         LOCAL_PATH.append(File.separator);
 
-
         ServerSocket s = new ServerSocket(PUERTO);
         s.setReuseAddress(true);
         System.out.println("Servicio iniciado...");
+
         while (true ) {
             System.out.println("Eperando conexion...");
             Socket cl = s.accept();
@@ -28,14 +32,23 @@ public class Servidor {
             System.out.format("Cliente conectado desde: %s:%s\n", cl.getInetAddress(), cl.getPort());
             DataInputStream dis = new DataInputStream(cl.getInputStream());
             DataOutputStream dos = new DataOutputStream(cl.getOutputStream());
+
             Integer tipo = dis.readInt();
 
             if(tipo == 1){ // cliente tipo #1 -> incial
+                Integer local_buffer = dis.readInt();
+                Boolean local_nigle = dis.readBoolean();
+
+                tam_buffer = local_buffer;
+                algoritmo_nigle = local_nigle;
+
+                cl.setTcpNoDelay(local_nigle);
+
                 String ruta = dis.readUTF();
                 String nombre = dis.readUTF();
 
                 // recibir archivo
-                escribirArchivo(LOCAL_PATH + nombre, dis);
+                escribirArchivo(LOCAL_PATH + nombre, dis, local_buffer);
 
                 System.out.println("¡Archivo recibido!\n");
             }else{ // cliente tipo #2 -> final
@@ -46,7 +59,7 @@ public class Servidor {
                 if (listado == null || listado.length == 0) {
                     System.out.println("No hay elementos dentro de la carpeta actual");
                 }
-                else {
+                else { // el servidor tiene archivos
                     Integer numero_archivos = listado.length;
 
                     dos.writeInt(numero_archivos);
@@ -94,7 +107,7 @@ public class Servidor {
 
     }
 
-    private static void escribirArchivo(String nombre, DataInputStream dis) {
+    private static void escribirArchivo(String nombre, DataInputStream dis, Integer tam_buffer) {
         System.out.format("Escribiendo el archivo: %s\n", nombre);
         try {
             DataOutputStream dos = new DataOutputStream(new FileOutputStream(nombre));
@@ -102,7 +115,7 @@ public class Servidor {
             long tam = dis.readLong();
             int n;
             while (recibidos < tam) {
-                byte[] buffer = new byte[1024];
+                byte[] buffer = new byte[tam_buffer];
                 n = dis.read(buffer);
                 dos.write(buffer, 0, n);
                 dos.flush();
