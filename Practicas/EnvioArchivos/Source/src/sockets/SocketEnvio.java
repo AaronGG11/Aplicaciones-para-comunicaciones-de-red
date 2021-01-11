@@ -68,7 +68,7 @@ public class SocketEnvio {
             dos.flush();
             enviados = enviados + n;
             porcentaje = (int) (enviados * 100 / tam);
-            System.out.println("\rSe ha transmitido el: " + porcentaje + "% ...");
+            System.out.print("\rSe ha transmitido el: " + porcentaje + "% ...\n");
         }
 
         System.out.println("Archivo enviado");

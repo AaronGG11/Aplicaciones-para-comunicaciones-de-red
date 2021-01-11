@@ -26,6 +26,11 @@ public class Cliente {
             dos.writeInt(2);
             dos.flush();
 
+            Integer tam_buffer = dis.readInt();
+            Boolean algoritmo_nigle = dis.readBoolean();
+
+            cliente.setTcpNoDelay(algoritmo_nigle);
+
             Integer numero_archivos = 0;
             numero_archivos= dis.readInt();
 
@@ -43,7 +48,7 @@ public class Cliente {
                 long recibidos = 0;
                 int n;
                 while (recibidos < longitud_archivo) {
-                    byte[] buffer = new byte[1500];
+                    byte[] buffer = new byte[tam_buffer];
                     n = dis.read(buffer);
                     dos_archivos.write(buffer, 0, n);
                     dos_archivos.flush();

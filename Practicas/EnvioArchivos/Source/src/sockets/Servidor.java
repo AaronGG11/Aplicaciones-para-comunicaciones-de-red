@@ -60,7 +60,15 @@ public class Servidor {
                     System.out.println("No hay elementos dentro de la carpeta actual");
                 }
                 else { // el servidor tiene archivos
+                    cl.setTcpNoDelay(algoritmo_nigle);
+
                     Integer numero_archivos = listado.length;
+
+                    dos.writeInt(tam_buffer);
+                    dos.flush();
+
+                    dos.writeBoolean(algoritmo_nigle);
+                    dos.flush();
 
                     dos.writeInt(numero_archivos);
                     dos.flush();
