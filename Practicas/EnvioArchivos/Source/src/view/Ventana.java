@@ -9,7 +9,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 /**
- * @author tona
+ * @author Aaron Garcia
  */
 public class Ventana extends javax.swing.JFrame {
     private SocketEnvio socketEnvio;

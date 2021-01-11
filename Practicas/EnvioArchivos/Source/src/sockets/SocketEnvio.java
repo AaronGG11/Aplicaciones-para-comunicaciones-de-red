@@ -4,7 +4,7 @@ import java.io.*;
 import java.net.Socket;
 
 /**
- * @author tona
+ * @author Aaron Garcia
  */
 public class SocketEnvio {
     private final String host;

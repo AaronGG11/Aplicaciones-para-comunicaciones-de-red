@@ -9,6 +9,10 @@ import java.io.File;
 import java.io.IOException;
 import java.util.List;
 
+
+/**
+ * @author Aaron Garcia
+ */
 public class ListTransferHandler extends TransferHandler {
     private final SocketEnvio socketEnvio; // Socket que usamos en la transferencia
     private int action;

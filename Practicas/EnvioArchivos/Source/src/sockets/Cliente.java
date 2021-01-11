@@ -3,6 +3,9 @@ package sockets;
 import java.io.*;
 import java.net.Socket;
 
+/**
+ * @author Aaron Garcia
+ */
 public class Cliente {
     public static void main(String[] args) {
         // This is just a client

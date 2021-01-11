@@ -5,7 +5,7 @@ import java.net.ServerSocket;
 import java.net.Socket;
 
 /**
- * @author tona
+ * @author Aaron Garcia
  */
 public class Servidor {
     private static final int PUERTO = 9999;
