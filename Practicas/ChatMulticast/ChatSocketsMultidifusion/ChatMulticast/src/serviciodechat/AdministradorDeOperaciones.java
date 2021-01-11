@@ -21,7 +21,7 @@ public class AdministradorDeOperaciones
     
     private final String INICIO          = "<inicio>";
     private final String MENSAJE_PRIVADO = "<privado>";
-    private final String MENSAJE_PUBLICO = "<msj>";
+    private final String  MENSAJE_PUBLICO = "<msj>";
     private final String FIN             = "<fin>";
     public final int DESCONOCIDO_ID     = 0;
     public final int INICIO_ID          = 1;
