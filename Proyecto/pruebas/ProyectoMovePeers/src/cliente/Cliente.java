@@ -16,24 +16,7 @@ import uk.co.caprica.vlcj.player.component.EmbeddedMediaPlayerComponent;
 public class Cliente {
     public static void main(String args[]){
         EmbeddedMediaPlayerComponent empc = new EmbeddedMediaPlayerComponent();
-        JFrame f = new JFrame();
         VerPelicula ventana=new VerPelicula();
-        //f.setSize(800, 600);
-        //f.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        //f.setContentPane(empc);
-            
-        //f.setVisible(true);
-        //////
-        /*
-        EmbeddedMediaPlayerComponent player = new EmbeddedMediaPlayerComponent();
-        jPanel2.add(player);
-        try{
-            player.mediaPlayer().media().play("rtsp://127.0.0.1:10000/",
-                    "rtsp-frame-buffer-size=10000000");
-        }catch (Exception e){
-            e.printStackTrace();
-        }
-        */
         
     }
     
