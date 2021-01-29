@@ -3,7 +3,7 @@ package serviciodechat;
 
 /**
  *
- * @author Aaron Antonio Garcia Gonzalez
+ * @author miguel angel amador nava
  */
 public class AnalisisDeMensajes 
 {

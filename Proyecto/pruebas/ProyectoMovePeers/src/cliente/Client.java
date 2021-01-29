@@ -13,11 +13,10 @@ import uk.co.caprica.vlcj.player.component.EmbeddedMediaPlayerComponent;
  *
  * @author end user
  */
-public class Cliente {
+public class Client {
     public static void main(String args[]){
         EmbeddedMediaPlayerComponent empc = new EmbeddedMediaPlayerComponent();
-        VerPelicula ventana=new VerPelicula();
-        
+        VerPelicula verPelicula = new VerPelicula();
     }
     
 }
