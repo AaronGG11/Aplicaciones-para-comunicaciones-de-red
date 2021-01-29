@@ -1,6 +1,7 @@
 package serviciodechat;
 
 import Interfaz.PanelFondo;
+import java.awt.BorderLayout;
 import java.awt.Button;
 import java.awt.Color;
 import java.awt.GridLayout;
@@ -18,11 +19,14 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
+import uk.co.caprica.vlcj.player.component.EmbeddedMediaPlayerComponent;
 /**
  *
  *  @author Aaron Antonio Garcia Gonzalez
  */
 public class Cliente extends javax.swing.JFrame implements Runnable, ActionListener, DocumentListener {
+    EmbeddedMediaPlayerComponent empc;
+    
     public final static String GRUPO = "GRUPO";
     
     public final int DESCONOCIDO_ID     = 0;
@@ -40,17 +44,18 @@ public class Cliente extends javax.swing.JFrame implements Runnable, ActionListe
     private final PanelFondo contenedor = new PanelFondo("/Interfaz/cuadro-blanco.png");
     
     public Cliente() throws IOException {
-        
         setContentPane(contenedor);
         initComponents();
         init();
-        this.setResizable(false);//no permite que sea redimencionable
+        this.setResizable(false); //no permite que sea redimencionable
         this.setLocationRelativeTo(null);//la ventana aparece al centro de la pantalla
         this.setTitle(nombre);
         am = new AnalisisDeMensajes();
         
         Conversacion.setContentType("text/html");
         Conversacion.setEditable(false);
+        
+        initVideo();
         
          addWindowListener(new java.awt.event.WindowAdapter() {
             @Override
@@ -63,8 +68,8 @@ public class Cliente extends javax.swing.JFrame implements Runnable, ActionListe
                 }
             }
         });
-        
     }
+    
     private void close() throws IOException{
         if (JOptionPane.showConfirmDialog(rootPane, "¿Deseas salir?",
                 "Salir", JOptionPane.YES_NO_OPTION) == JOptionPane.YES_OPTION)
@@ -103,6 +108,20 @@ public class Cliente extends javax.swing.JFrame implements Runnable, ActionListe
         conversaciones.put(GRUPO, "");
         usuarios.put(GRUPO, grupo);
         actualizarBotones();
+    }
+    
+    private void initVideo(){
+        empc = new EmbeddedMediaPlayerComponent();
+        setLayout(new BorderLayout());
+        Video.add(empc, BorderLayout.CENTER); 
+        
+       
+        try{
+            empc.mediaPlayer().media().play("rtsp://127.0.0.1:10000/",
+                    "rtsp-frame-buffer-size=10000000");
+        }catch (Exception e){
+            e.printStackTrace();
+        }
     }
     
     private void mostrarMensaje(Mensaje mensaje)
@@ -257,7 +276,7 @@ public class Cliente extends javax.swing.JFrame implements Runnable, ActionListe
         jScrollPane3 = new javax.swing.JScrollPane();
         Texto = new javax.swing.JTextArea();
         Enviar = new javax.swing.JButton();
-        jPanel1 = new javax.swing.JPanel();
+        Video = new javax.swing.JPanel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DO_NOTHING_ON_CLOSE);
         setBackground(new java.awt.Color(254, 254, 254));
@@ -272,49 +291,39 @@ public class Cliente extends javax.swing.JFrame implements Runnable, ActionListe
 
         Enviar.setText("Enviar");
 
-        jPanel1.setBackground(java.awt.Color.black);
-
-        javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
-        jPanel1.setLayout(jPanel1Layout);
-        jPanel1Layout.setHorizontalGroup(
-            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 0, Short.MAX_VALUE)
-        );
-        jPanel1Layout.setVerticalGroup(
-            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 235, Short.MAX_VALUE)
-        );
+        Video.setBackground(java.awt.Color.black);
+        Video.setLayout(new java.awt.BorderLayout());
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(jScrollPane3, javax.swing.GroupLayout.DEFAULT_SIZE, 427, Short.MAX_VALUE)
-                    .addComponent(jScrollPane2, javax.swing.GroupLayout.Alignment.LEADING))
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                    .addComponent(jScrollPane2, javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(Video, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(jScrollPane3, javax.swing.GroupLayout.DEFAULT_SIZE, 385, Short.MAX_VALUE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                    .addComponent(UsuariosConectados)
-                    .addComponent(Enviar, javax.swing.GroupLayout.DEFAULT_SIZE, 129, Short.MAX_VALUE))
-                .addContainerGap())
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(UsuariosConectados, javax.swing.GroupLayout.PREFERRED_SIZE, 129, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(Enviar, javax.swing.GroupLayout.PREFERRED_SIZE, 129, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(0, 13, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                     .addGroup(layout.createSequentialGroup()
-                        .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(Video, javax.swing.GroupLayout.PREFERRED_SIZE, 247, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 141, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 103, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(jScrollPane3, javax.swing.GroupLayout.PREFERRED_SIZE, 52, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addGroup(layout.createSequentialGroup()
                         .addComponent(UsuariosConectados)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(Enviar)))
-                .addContainerGap())
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
         pack();
@@ -363,7 +372,7 @@ public class Cliente extends javax.swing.JFrame implements Runnable, ActionListe
     private javax.swing.JButton Enviar;
     private javax.swing.JTextArea Texto;
     private javax.swing.JScrollPane UsuariosConectados;
-    private javax.swing.JPanel jPanel1;
+    private javax.swing.JPanel Video;
     private javax.swing.JScrollPane jScrollPane2;
     private javax.swing.JScrollPane jScrollPane3;
     // End of variables declaration//GEN-END:variables

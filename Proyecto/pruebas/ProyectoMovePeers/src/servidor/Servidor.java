@@ -29,7 +29,7 @@ public class Servidor {
             frame.setVisible(true);
             frame.setContentPane(em);
             frame.setDefaultCloseOperation(EXIT_ON_CLOSE);
-            em.mediaPlayer().media().play("completo.mp4", options,
+            em.mediaPlayer().media().play("houston.mp4", options,
                     ":no-sout-rtp-sap",
                     ":no-sout-standard-sap",
                     ":sout-all",

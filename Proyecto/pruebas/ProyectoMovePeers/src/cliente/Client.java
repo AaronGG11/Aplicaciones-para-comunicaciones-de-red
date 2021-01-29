@@ -15,7 +15,6 @@ import uk.co.caprica.vlcj.player.component.EmbeddedMediaPlayerComponent;
  */
 public class Client {
     public static void main(String args[]){
-        EmbeddedMediaPlayerComponent empc = new EmbeddedMediaPlayerComponent();
         VerPelicula verPelicula = new VerPelicula();
     }
     
