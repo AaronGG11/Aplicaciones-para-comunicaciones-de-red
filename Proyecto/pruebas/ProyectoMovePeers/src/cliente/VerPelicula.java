@@ -109,8 +109,8 @@ public class VerPelicula extends javax.swing.JFrame {
        this.jPanel2.add(empc);    
        
        try{
-            empc.mediaPlayer().media().play("rtsp://230.1.1.1:10000/",
-                    "rtsp-frame-buffer-size=10000000");
+            empc.mediaPlayer().media().play("rtp://@239.0.0.1:10000/",
+                    "rtp-frame-buffer-size=10000000");
         }catch (Exception e){
             e.printStackTrace();
         }

@@ -22,7 +22,7 @@ public class Servidor {
    public static void main(String args[]){
             
         try {
-            String options = ":sout=#rtp{sdp=rtsp://127.0.0.1:10000/}";
+            String options = ":sout=#rtp{sdp=rtp://@239.0.0.1:10000/}";
             JFrame frame = new JFrame();
             EmbeddedMediaPlayerComponent em = new EmbeddedMediaPlayerComponent();
             frame.setBounds(0, 0, 500, 600);
@@ -34,7 +34,7 @@ public class Servidor {
                     ":no-sout-standard-sap",
                     ":sout-all",
                     ":sout-keep",
-                    "rtsp-frame-buffer-size=10000000"
+                    "rtp-frame-buffer-size=10000000"
             );
             frame.setVisible(false);
             System.out.println("Reproduciendo pelicula");

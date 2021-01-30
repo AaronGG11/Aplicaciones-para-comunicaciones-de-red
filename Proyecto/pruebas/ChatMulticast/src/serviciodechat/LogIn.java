@@ -41,12 +41,17 @@ public class LogIn extends javax.swing.JDialog implements ActionListener{
     public String getOperationType(){
         return operation_type;
     }
+    
+    public String getMovieType(){
+        return movie_type;
+    }
 
     private String nombre = null;
     private String operation_type = null;
     private String movie_path = null;
     private String movie_name = null;
     private String movie_description = null;
+    private String movie_type = null;
     
     
     private final JPanel contenedor = new JPanel();
@@ -105,6 +110,8 @@ public class LogIn extends javax.swing.JDialog implements ActionListener{
         jLabel2 = new javax.swing.JLabel();
         jScrollPane1 = new javax.swing.JScrollPane();
         jta_descripcion = new javax.swing.JTextArea();
+        jl_visility = new javax.swing.JLabel();
+        jcb_visibility = new javax.swing.JComboBox<>();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
         setBackground(java.awt.Color.black);
@@ -122,7 +129,7 @@ public class LogIn extends javax.swing.JDialog implements ActionListener{
             }
         });
 
-        jcbaction.setBackground(java.awt.Color.white);
+        jcbaction.setBackground(new java.awt.Color(54, 54, 54));
         jcbaction.setForeground(java.awt.Color.black);
         jcbaction.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "SHOW MOVIE", "SHARE MOVIE" }));
 
@@ -221,6 +228,13 @@ public class LogIn extends javax.swing.JDialog implements ActionListener{
         jta_descripcion.setRows(5);
         jScrollPane1.setViewportView(jta_descripcion);
 
+        jl_visility.setForeground(java.awt.Color.white);
+        jl_visility.setText("VISIBILITY:");
+
+        jcb_visibility.setBackground(new java.awt.Color(54, 54, 54));
+        jcb_visibility.setForeground(java.awt.Color.white);
+        jcb_visibility.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "PUBLIC", "PRIVATE" }));
+
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
         jPanel1Layout.setHorizontalGroup(
@@ -248,7 +262,7 @@ public class LogIn extends javax.swing.JDialog implements ActionListener{
                             .addComponent(jPanel4, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))))
                 .addGap(26, 26, 26)
                 .addComponent(jPanel3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(jl_sharemovie, javax.swing.GroupLayout.PREFERRED_SIZE, 296, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addGroup(jPanel1Layout.createSequentialGroup()
@@ -262,10 +276,12 @@ public class LogIn extends javax.swing.JDialog implements ActionListener{
                             .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 293, Short.MAX_VALUE)
                             .addGroup(jPanel1Layout.createSequentialGroup()
                                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addComponent(jl_visility, javax.swing.GroupLayout.PREFERRED_SIZE, 69, javax.swing.GroupLayout.PREFERRED_SIZE)
                                     .addComponent(jLabel2, javax.swing.GroupLayout.PREFERRED_SIZE, 122, javax.swing.GroupLayout.PREFERRED_SIZE)
                                     .addComponent(jl_movie_name, javax.swing.GroupLayout.PREFERRED_SIZE, 149, javax.swing.GroupLayout.PREFERRED_SIZE)
                                     .addComponent(jl_select_share, javax.swing.GroupLayout.PREFERRED_SIZE, 157, javax.swing.GroupLayout.PREFERRED_SIZE))
-                                .addGap(0, 0, Short.MAX_VALUE)))))
+                                .addGap(0, 0, Short.MAX_VALUE))
+                            .addComponent(jcb_visibility, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))))
                 .addGap(23, 23, 23))
         );
         jPanel1Layout.setVerticalGroup(
@@ -281,7 +297,7 @@ public class LogIn extends javax.swing.JDialog implements ActionListener{
                         .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                             .addGroup(jPanel1Layout.createSequentialGroup()
                                 .addGap(22, 22, 22)
-                                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                                     .addGroup(jPanel1Layout.createSequentialGroup()
                                         .addComponent(jLabel1)
                                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
@@ -302,10 +318,14 @@ public class LogIn extends javax.swing.JDialog implements ActionListener{
                                         .addComponent(jl_movie_name)
                                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                                         .addComponent(jtf_movie_name, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                                        .addComponent(jl_visility)
                                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                        .addComponent(jcb_visibility, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                                         .addComponent(jLabel2)
-                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                        .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 164, Short.MAX_VALUE))))
+                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                                        .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 81, javax.swing.GroupLayout.PREFERRED_SIZE))))
                             .addGroup(jPanel1Layout.createSequentialGroup()
                                 .addGap(18, 18, 18)
                                 .addComponent(jl_select_show)
@@ -313,7 +333,7 @@ public class LogIn extends javax.swing.JDialog implements ActionListener{
                                 .addComponent(jPanel4, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))))
                     .addComponent(jPanel3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, 350, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addGap(2, 12, Short.MAX_VALUE))
         );
 
         getContentPane().add(jPanel1, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 0, 910, 400));
@@ -353,12 +373,14 @@ public class LogIn extends javax.swing.JDialog implements ActionListener{
     private javax.swing.JPanel jPanel4;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JButton jbingresar;
+    private javax.swing.JComboBox<String> jcb_visibility;
     private javax.swing.JComboBox<String> jcbaction;
     private javax.swing.JLabel jl_movie_name;
     private javax.swing.JLabel jl_select_share;
     private javax.swing.JLabel jl_select_show;
     private javax.swing.JLabel jl_sharemovie;
     private javax.swing.JLabel jl_title;
+    private javax.swing.JLabel jl_visility;
     private javax.swing.JLabel jlaction;
     private javax.swing.JLabel jlshowmovie;
     private javax.swing.JTextArea jta_descripcion;
@@ -379,6 +401,7 @@ public class LogIn extends javax.swing.JDialog implements ActionListener{
                 if(operation_type.equals("SHARE MOVIE")){
                     movie_name = jtf_movie_name.getText().trim();
                     movie_description = jta_descripcion.getText().trim();
+                    movie_type = jcb_visibility.getSelectedItem().toString().trim();    
                 }
                 
                 
