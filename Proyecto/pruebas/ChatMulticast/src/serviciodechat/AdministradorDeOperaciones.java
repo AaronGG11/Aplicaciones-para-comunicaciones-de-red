@@ -22,12 +22,14 @@ public class AdministradorDeOperaciones
     private final String INICIO          = "<inicio>";
     private final String MENSAJE_PRIVADO = "<privado>";
     private final String MENSAJE_PUBLICO = "<msj>";
+    private final String MENSAJE_GRUPO   = "<grupo>";
     private final String FIN             = "<fin>";
     public final int DESCONOCIDO_ID     = 0;
     public final int INICIO_ID          = 1;
     public final int MENSAJE_PRIVADO_ID = 2;
     public final int MENSAJE_PUBLICO_ID = 3;
     public final int FIN_ID             = 4;
+    public final int MENSAJE_GRUPO_ID   = 5;
    
     
     private AdministradorDeOperaciones() 
@@ -71,6 +73,16 @@ public class AdministradorDeOperaciones
         packet = new DatagramPacket(b, b.length, grupo, PUERTO);
         cl.send(packet); 
     }
+    
+    
+    public void mensajeGrupo(String nombreOrigen , String grupoDestino, String mensaje) throws IOException{
+        String msj = "<grupo>" + "<" + nombreOrigen + ">" +  "<" + grupoDestino + ">"
+                     + " " + mensaje + " ";
+        b = msj.getBytes();
+        packet = new DatagramPacket(b, b.length, grupo, PUERTO);
+        cl.send(packet); 
+    } 
+    
     
     public void mensajePrivado(String nombreOrigen , String nombreDestino, String mensaje) 
             throws IOException
@@ -138,6 +150,9 @@ public class AdministradorDeOperaciones
                 }
                 break;
                 
+            case MENSAJE_GRUPO:
+                break;
+                
             case FIN:
                 msj.setId(FIN_ID);
                 msj.setNombreOrigen(getUsuarioDeSalidaSesion(mensaje));
@@ -201,9 +216,43 @@ public class AdministradorDeOperaciones
             return null;
     }
     
-    private String[] getUsuariosMensajeDeOrigenPrivado(String mensaje)
-    {
+    private String[] getUsuariosMensajeDeOrigenPrivado(String mensaje){
         mensaje = mensaje.substring(MENSAJE_PRIVADO.length());
+        String origen = "", destino = "", msj = "";
+        char c;
+        int i = 1;
+        if(mensaje.charAt(0) == '<')
+        {
+            while((c = mensaje.charAt(i)) != '>' && i < mensaje.length())
+            {
+                origen += c;
+                i++;
+            }
+        }
+        else
+            return null;
+        i++;
+        if(i < mensaje.length() && mensaje.charAt(i) == '<')
+        {
+            i++;
+            while((c = mensaje.charAt(i)) != '>' && i < mensaje.length())
+            {
+                destino += c;
+                i++;
+            }
+        }
+        else
+            return null;
+        i++;
+        if(i < mensaje.length())
+            msj = mensaje.substring(i);
+        
+        return new String[]{origen, destino, msj};
+            
+    }
+    
+    private String[] getUsuariosMensajeDeOrigenGrupo(String mensaje){
+        mensaje = mensaje.substring(MENSAJE_GRUPO.length());
         String origen = "", destino = "", msj = "";
         char c;
         int i = 1;

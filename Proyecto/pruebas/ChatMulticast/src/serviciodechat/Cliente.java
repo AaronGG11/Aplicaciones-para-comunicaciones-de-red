@@ -28,18 +28,30 @@ public class Cliente extends javax.swing.JFrame implements Runnable, ActionListe
     EmbeddedMediaPlayerComponent empc;
     
     public final static String GRUPO = "GRUPO";
-    
     public final int DESCONOCIDO_ID     = 0;
     public final int INICIO_ID          = 1;
     public final int MENSAJE_PRIVADO_ID = 2;
     public final int MENSAJE_PUBLICO_ID = 3;
     public final int FIN_ID             = 4;
+    public final int CONFIG_ID          = 5;
+    public final int CREATE_GROUP       = 6;
+    public final int JOIN_GROUP         = 7;
     
     private String nombre = null;
+    private String operation_type = null;
+    private String movie_path = null;
+    private String movie_name = null;
+    private String movie_description = null;
+    private String movie_type = null;
+    private String movie_code = null;
+
+    
     private String nombreDestino = "";
     private AnalisisDeMensajes am;
     HashMap<String, String> conversaciones = new HashMap<>();//K = Nombre, V = Mensajes
     HashMap<String, JButton> usuarios = new HashMap<>(); //K = nombre , V = jbutton
+    HashMap<String, JButton> gruposPrivados = new HashMap<>();
+    
     JButton grupo;
     private final PanelFondo contenedor = new PanelFondo("/Interfaz/cuadro-blanco.png");
     
@@ -82,9 +94,35 @@ public class Cliente extends javax.swing.JFrame implements Runnable, ActionListe
     {
         LogIn login = new LogIn(new javax.swing.JFrame(), true);
         login.setVisible(true);
+    
         nombre = login.getNombre();
-        if(nombre == null)
+        operation_type = login.getOperationType();
+        movie_path = login.getMoviePath();
+        movie_name = login.getMovieName();
+        movie_description = login.getMovieDescription();
+        movie_type = login.getMovieType();
+        movie_code = login.getMovieCode();
+        
+        System.out.println("nombre: " + nombre);
+        System.out.println("tipo de operacion: " + operation_type);
+        System.out.println("path: " + movie_path);
+        System.out.println("nombre de peli: " + movie_name);
+        System.out.println("descripcion de peli: " + movie_description);
+        System.out.println("tipo de peli: " + movie_type);
+        System.out.println("codigo de peli: " + movie_code);
+        
+        if((nombre == null) && (operation_type == null))
         {
+            if(operation_type.equals("SHOW MOVIE")){
+                if(movie_code == null){
+                    System.exit(0);
+                }
+            } else if(operation_type.equals("SHARE MOVIE")){
+                if((movie_path == null) && (movie_name == null) && (movie_type  == null) && (movie_description == null)){
+                   System.exit(0); 
+                }
+            }
+            
             System.exit(0);
         }
         else
@@ -102,6 +140,10 @@ public class Cliente extends javax.swing.JFrame implements Runnable, ActionListe
         iniciarChat();
         Enviar.addActionListener(this);
         Enviar.setEnabled(false);
+        
+        Create.addActionListener(this);
+        Join.addActionListener(this);
+        
         Texto.getDocument().addDocumentListener(this);
         grupo = new JButton("GRUPO");
         grupo.addActionListener(this);
@@ -172,6 +214,10 @@ public class Cliente extends javax.swing.JFrame implements Runnable, ActionListe
                         mensaje.setNombreOrigen("Tú");
                     }
                     visualizarMensajePublico(mensaje);
+                    break;
+                case CREATE_GROUP :
+                    break;
+                case JOIN_GROUP : 
                     break;
                 default:
 
@@ -247,9 +293,37 @@ public class Cliente extends javax.swing.JFrame implements Runnable, ActionListe
         if(usuariosConectados.size() == 1)
             grupo.setEnabled(false);
         else
-            grupo.setEnabled(true);
-            
+            grupo.setEnabled(true);   
     }
+    
+    
+    private void actualizarBotonPrivado(String codigo)
+    {
+        JPanel panel = new JPanel(new GridLayout(50,0));
+        panel.setBackground(Color.WHITE);
+        panel.add(grupo);
+        Collection<JButton> usuariosConectados = usuarios.values();
+        for (JButton u : usuariosConectados) 
+            panel.add(u);
+        
+        JButton aux_button = new JButton(codigo);
+        aux_button.setEnabled(false);
+        
+        gruposPrivados.put(codigo, aux_button);
+        
+        Collection<JButton> private_chats = gruposPrivados.values();
+        for( JButton u : private_chats)
+            panel.add(u);
+        
+        
+        
+        UsuariosConectados.setViewportView(panel);
+        if(usuariosConectados.size() == 1)
+            grupo.setEnabled(false);
+        else
+            grupo.setEnabled(true); 
+    }
+    
     
     private boolean existiaUsuario(String nombre)
     {
@@ -277,6 +351,9 @@ public class Cliente extends javax.swing.JFrame implements Runnable, ActionListe
         Texto = new javax.swing.JTextArea();
         Enviar = new javax.swing.JButton();
         Video = new javax.swing.JPanel();
+        jtf_code = new javax.swing.JTextField();
+        Join = new javax.swing.JButton();
+        Create = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DO_NOTHING_ON_CLOSE);
         setBackground(new java.awt.Color(254, 254, 254));
@@ -294,6 +371,24 @@ public class Cliente extends javax.swing.JFrame implements Runnable, ActionListe
         Video.setBackground(java.awt.Color.black);
         Video.setLayout(new java.awt.BorderLayout());
 
+        jtf_code.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jtf_codeActionPerformed(evt);
+            }
+        });
+
+        Join.setFont(new java.awt.Font("Ubuntu", 0, 10)); // NOI18N
+        Join.setText("JOIN");
+
+        Create.setFont(new java.awt.Font("Ubuntu", 0, 10)); // NOI18N
+        Create.setText("CREATE");
+        Create.setPreferredSize(new java.awt.Dimension(60, 28));
+        Create.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                CreateActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
@@ -305,9 +400,15 @@ public class Cliente extends javax.swing.JFrame implements Runnable, ActionListe
                     .addComponent(jScrollPane3, javax.swing.GroupLayout.DEFAULT_SIZE, 385, Short.MAX_VALUE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(UsuariosConectados, javax.swing.GroupLayout.PREFERRED_SIZE, 129, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(Enviar, javax.swing.GroupLayout.PREFERRED_SIZE, 129, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(0, 13, Short.MAX_VALUE))
+                    .addComponent(jtf_code)
+                    .addComponent(UsuariosConectados)
+                    .addComponent(Enviar, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addGroup(layout.createSequentialGroup()
+                        .addComponent(Join, javax.swing.GroupLayout.PREFERRED_SIZE, 60, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(Create, javax.swing.GroupLayout.PREFERRED_SIZE, 70, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(0, 0, Short.MAX_VALUE)))
+                .addContainerGap())
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -320,61 +421,51 @@ public class Cliente extends javax.swing.JFrame implements Runnable, ActionListe
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(jScrollPane3, javax.swing.GroupLayout.PREFERRED_SIZE, 52, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addGroup(layout.createSequentialGroup()
-                        .addComponent(UsuariosConectados)
+                        .addComponent(jtf_code, javax.swing.GroupLayout.PREFERRED_SIZE, 23, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(Join)
+                            .addComponent(Create, javax.swing.GroupLayout.PREFERRED_SIZE, 23, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(UsuariosConectados, javax.swing.GroupLayout.DEFAULT_SIZE, 327, Short.MAX_VALUE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(Enviar)))
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addContainerGap(13, Short.MAX_VALUE))
         );
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
+    private void CreateActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_CreateActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_CreateActionPerformed
+
+    private void jtf_codeActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jtf_codeActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_jtf_codeActionPerformed
+
     /**
      * @param args the command line arguments
      */
     public static void main(String args[]) throws IOException {
-        /* Set the Nimbus look and feel */
-        //<editor-fold defaultstate="collapsed" desc=" Look and feel setting code (optional) ">
-        /* If Nimbus (introduced in Java SE 6) is not available, stay with the default look and feel.
-         * For details see http://download.oracle.com/javase/tutorial/uiswing/lookandfeel/plaf.html 
-         */
-        try {
-            for (javax.swing.UIManager.LookAndFeelInfo info : javax.swing.UIManager.getInstalledLookAndFeels()) {
-                if ("Nimbus".equals(info.getName())) {
-                    javax.swing.UIManager.setLookAndFeel(info.getClassName());
-                    break;
-                }
-            }
-        } catch (ClassNotFoundException ex) {
-            java.util.logging.Logger.getLogger(Cliente.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (InstantiationException ex) {
-            java.util.logging.Logger.getLogger(Cliente.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (IllegalAccessException ex) {
-            java.util.logging.Logger.getLogger(Cliente.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (javax.swing.UnsupportedLookAndFeelException ex) {
-            java.util.logging.Logger.getLogger(Cliente.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        }
-        //</editor-fold>
-        //</editor-fold>
-
-        
         Cliente c =new Cliente();
         c.setVisible(true);
         Runnable run = c;
         Thread thread = new Thread(c);
         thread.start();
-        
-        
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JTextPane Conversacion;
+    private javax.swing.JButton Create;
     private javax.swing.JButton Enviar;
+    private javax.swing.JButton Join;
     private javax.swing.JTextArea Texto;
     private javax.swing.JScrollPane UsuariosConectados;
     private javax.swing.JPanel Video;
     private javax.swing.JScrollPane jScrollPane2;
     private javax.swing.JScrollPane jScrollPane3;
+    private javax.swing.JTextField jtf_code;
     // End of variables declaration//GEN-END:variables
 
     @Override
@@ -412,6 +503,8 @@ public class Cliente extends javax.swing.JFrame implements Runnable, ActionListe
             } catch (IOException ex) {
                 Logger.getLogger(Cliente.class.getName()).log(Level.SEVERE, null, ex);
             }
+        } else if(ae.getSource().equals(Create)){
+            actualizarBotonPrivado(jtf_code.getText().trim());
         }
         else
         {
