@@ -36,6 +36,7 @@ public class Cliente extends javax.swing.JFrame implements Runnable, ActionListe
     public final int CONFIG_ID          = 5;
     public final int CREATE_GROUP       = 6;
     public final int JOIN_GROUP         = 7;
+    public final int MENSAJE_GRUPO_ID   = 8;
     
     private String nombre = null;
     private String operation_type = null;
@@ -50,7 +51,9 @@ public class Cliente extends javax.swing.JFrame implements Runnable, ActionListe
     private AnalisisDeMensajes am;
     HashMap<String, String> conversaciones = new HashMap<>();//K = Nombre, V = Mensajes
     HashMap<String, JButton> usuarios = new HashMap<>(); //K = nombre , V = jbutton
+    
     HashMap<String, JButton> gruposPrivados = new HashMap<>();
+    HashMap<String, Collection<String>> usuarios_por_grupo = new HashMap<>();
     
     JButton grupo;
     private final PanelFondo contenedor = new PanelFondo("/Interfaz/cuadro-blanco.png");
@@ -66,6 +69,8 @@ public class Cliente extends javax.swing.JFrame implements Runnable, ActionListe
         
         Conversacion.setContentType("text/html");
         Conversacion.setEditable(false);
+        
+        
         
         initVideo();
         
@@ -189,6 +194,7 @@ public class Cliente extends javax.swing.JFrame implements Runnable, ActionListe
     {
         Mensaje mensaje = AdministradorDeOperaciones.getInstance().recibe();
         mostrarMensaje(mensaje); 
+        
         if (mensaje.getNombreOrigen() != null) {
             switch (mensaje.getId()) {
                 case INICIO_ID:
@@ -209,11 +215,36 @@ public class Cliente extends javax.swing.JFrame implements Runnable, ActionListe
                     }
                     break;
                 case MENSAJE_PUBLICO_ID:
-
                     if (mensaje.getNombreOrigen().equals(nombre)) {
                         mensaje.setNombreOrigen("Tú");
                     }
                     visualizarMensajePublico(mensaje);
+                    break;
+                
+                case MENSAJE_GRUPO_ID:
+                    if (mensaje.getNombreOrigen().equals(nombre)) { // es para mi mismo ? -> lo agregas a tu grupo y muestras tu boton
+                        
+                        if(usuarios_por_grupo.keySet().contains(mensaje.getNombreDestino())){ // no existe aun grupo de usuarios por grupo
+                            // se crea coleccion de usuarios por grupo
+                            usuarios_por_grupo.put(mensaje.getNombreDestino(), null);
+
+                            // se agrega este usuario a la coleccion
+                            usuarios_por_grupo.get(mensaje.getNombreDestino()).add(nombre);
+
+                            // agregar el boton a este usuario
+                            crearGrupo(mensaje.getNombreDestino());
+                        }
+                        
+                    }else{ // es para los demas ? -> No haces nada mas que informar que ya hay un grupo 
+                        // se crea grupo id en conversaciones
+                        conversaciones.put(mensaje.getNombreDestino(), "Sala privada " + mensaje.getNombreDestino() + " creada por notificacion");
+                        // se crea coleccion de usuarios por grupo
+                        usuarios_por_grupo.put(mensaje.getNombreDestino(), null);
+                    }
+                    
+                    
+                    
+                    
                     break;
                 case CREATE_GROUP :
                     break;
@@ -257,7 +288,29 @@ public class Cliente extends javax.swing.JFrame implements Runnable, ActionListe
             usuarios.get(mensaje.getNombreOrigen()).setForeground(Color.white);
             usuarios.get(mensaje.getNombreOrigen()).setBackground(new Color(234,161,27));
         }
-    }        
+    }   
+    
+    
+    private void visualizarMensajeGrupo(Mensaje mensaje)
+    {
+        String   msj = conversaciones.get(mensaje.getNombreDestino()) + "<br>" + mensaje.getNombreOrigen() 
+                  + ": " + mensaje.getMensaje();
+        
+        conversaciones.put(mensaje.getNombreDestino(), msj );
+        
+        if(nombreDestino.equals(mensaje.getNombreDestino()))
+        {
+            Conversacion.setText(am.formatoAMensaje(msj));
+            
+            gruposPrivados.get(mensaje.getNombreDestino()).setForeground(Color.white);
+            gruposPrivados.get(mensaje.getNombreDestino()).setBackground(new Color(59,89,152));
+        }else
+        {
+            gruposPrivados.get(mensaje.getNombreDestino()).setForeground(Color.white);
+            gruposPrivados.get(mensaje.getNombreDestino()).setBackground(new Color(234,161,27));
+        }
+    } 
+    
         
     private void finSesion(String usuario)
     {
@@ -281,14 +334,27 @@ public class Cliente extends javax.swing.JFrame implements Runnable, ActionListe
         }
     }
     
+    private void crearGrupo(String nombreGrupo) throws IOException
+    {   
+        if (!existiaGrupo(nombreGrupo)) 
+        {
+            actualizarBotones();
+        }
+    }
+    
+    
+
+    
     private void actualizarBotones()
     {
         JPanel panel = new JPanel(new GridLayout(50,0));
         panel.setBackground(Color.WHITE);
         panel.add(grupo);
         Collection<JButton> usuariosConectados = usuarios.values();
+        
         for (JButton u : usuariosConectados) 
             panel.add(u);
+        
         UsuariosConectados.setViewportView(panel);
         if(usuariosConectados.size() == 1)
             grupo.setEnabled(false);
@@ -335,6 +401,23 @@ public class Cliente extends javax.swing.JFrame implements Runnable, ActionListe
             b.setBackground(new Color(234,161,27));
             b.addActionListener(this);
             usuarios.put(nombre, b);
+            return false;
+        }
+        return true;
+    }
+    
+    private boolean existiaGrupo(String nombre){
+        if(conversaciones.get(nombre) == null){
+            // se crea grupo id en conversaciones
+            conversaciones.put(nombre, "Sala privada " + nombre + " creada directamente");
+            
+            JButton b = new JButton(nombre);
+            b.setForeground(Color.white);
+            b.setBackground(new Color(234,161,27));
+            b.addActionListener(this);
+            
+            // se agrega boton a grupos
+            gruposPrivados.put(nombre, b);
             return false;
         }
         return true;
@@ -489,7 +572,6 @@ public class Cliente extends javax.swing.JFrame implements Runnable, ActionListe
                 
                 if(nombreDestino.equals(GRUPO))
                 {
-                    
                     AdministradorDeOperaciones.getInstance()
                         .mensajeASala(Texto.getText(), nombre);
                 }
@@ -504,7 +586,15 @@ public class Cliente extends javax.swing.JFrame implements Runnable, ActionListe
                 Logger.getLogger(Cliente.class.getName()).log(Level.SEVERE, null, ex);
             }
         } else if(ae.getSource().equals(Create)){
-            actualizarBotonPrivado(jtf_code.getText().trim());
+            try {
+                AdministradorDeOperaciones.getInstance()
+                        .mensajeGrupo(nombre, jtf_code.getText(), "Creacion de grupo privado");
+                
+            } catch (IOException ex) {
+                Logger.getLogger(Cliente.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        } else if(ae.getSource().equals(Join)){
+        
         }
         else
         {

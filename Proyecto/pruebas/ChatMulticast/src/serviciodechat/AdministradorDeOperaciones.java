@@ -29,7 +29,10 @@ public class AdministradorDeOperaciones
     public final int MENSAJE_PRIVADO_ID = 2;
     public final int MENSAJE_PUBLICO_ID = 3;
     public final int FIN_ID             = 4;
-    public final int MENSAJE_GRUPO_ID   = 5;
+    public final int CONFIG_ID          = 5;
+    public final int CREATE_GROUP       = 6;
+    public final int JOIN_GROUP         = 7;
+    public final int MENSAJE_GRUPO_ID   = 8;
    
     
     private AdministradorDeOperaciones() 
@@ -65,6 +68,8 @@ public class AdministradorDeOperaciones
         packet = new DatagramPacket(b, b.length, grupo, PUERTO);
         cl.send(packet); 
     }
+   
+    
     //Con espacios solucionamos de manera temporal el analisis de la cadena
     public void mensajeASala(String mensaje, String nombreOrigen) throws IOException
     {
@@ -75,6 +80,7 @@ public class AdministradorDeOperaciones
     }
     
     
+    // for server
     public void mensajeGrupo(String nombreOrigen , String grupoDestino, String mensaje) throws IOException{
         String msj = "<grupo>" + "<" + nombreOrigen + ">" +  "<" + grupoDestino + ">"
                      + " " + mensaje + " ";
@@ -151,6 +157,18 @@ public class AdministradorDeOperaciones
                 break;
                 
             case MENSAJE_GRUPO:
+                msj.setId(MENSAJE_GRUPO_ID);
+                
+                String msjgrupo[] = getUsuariosMensajeDeOrigenGrupo(mensaje);
+                if(msjgrupo != null)
+                {
+                    msj.setNombreOrigen(msjgrupo[0]);
+                    msj.setNombreDestino(msjgrupo[1]);
+                    msj.setMensaje(msjgrupo[2]);
+                }
+                
+                
+                
                 break;
                 
             case FIN:
