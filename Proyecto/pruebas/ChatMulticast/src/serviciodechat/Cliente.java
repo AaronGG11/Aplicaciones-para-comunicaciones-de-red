@@ -342,9 +342,7 @@ public class Cliente extends javax.swing.JFrame implements Runnable, ActionListe
         }
     }
     
-    
-
-    
+  
     private void actualizarBotones()
     {
         JPanel panel = new JPanel(new GridLayout(50,0));
@@ -354,40 +352,14 @@ public class Cliente extends javax.swing.JFrame implements Runnable, ActionListe
         
         for (JButton u : usuariosConectados) 
             panel.add(u);
+       
         
         UsuariosConectados.setViewportView(panel);
+        
         if(usuariosConectados.size() == 1)
             grupo.setEnabled(false);
         else
             grupo.setEnabled(true);   
-    }
-    
-    
-    private void actualizarBotonPrivado(String codigo)
-    {
-        JPanel panel = new JPanel(new GridLayout(50,0));
-        panel.setBackground(Color.WHITE);
-        panel.add(grupo);
-        Collection<JButton> usuariosConectados = usuarios.values();
-        for (JButton u : usuariosConectados) 
-            panel.add(u);
-        
-        JButton aux_button = new JButton(codigo);
-        aux_button.setEnabled(false);
-        
-        gruposPrivados.put(codigo, aux_button);
-        
-        Collection<JButton> private_chats = gruposPrivados.values();
-        for( JButton u : private_chats)
-            panel.add(u);
-        
-        
-        
-        UsuariosConectados.setViewportView(panel);
-        if(usuariosConectados.size() == 1)
-            grupo.setEnabled(false);
-        else
-            grupo.setEnabled(true); 
     }
     
     
@@ -418,9 +390,12 @@ public class Cliente extends javax.swing.JFrame implements Runnable, ActionListe
             
             // se agrega boton a grupos
             gruposPrivados.put(nombre, b);
+            
             return false;
+        }else{
+            return true;
         }
-        return true;
+        
     }
     
     @SuppressWarnings("unchecked")
