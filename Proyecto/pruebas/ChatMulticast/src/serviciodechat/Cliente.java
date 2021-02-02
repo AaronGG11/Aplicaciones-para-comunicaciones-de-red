@@ -354,6 +354,8 @@ public class Cliente extends javax.swing.JFrame implements Runnable, ActionListe
             panel.add(u);
        
         
+        
+        
         UsuariosConectados.setViewportView(panel);
         
         if(usuariosConectados.size() == 1)
